@@ -5148,8 +5148,6 @@ function renderHomeV2() {
 function renderWorldDragonCavePage(index) {
   console.log("[renderDragonCavePage]");
   const slots = (state.hatchIsland?.hatchSlots || createDefaultHatchSlots()).slice(0, 6);
-  const previewEgg = slots.find((slot) => slot.currentEgg)?.currentEgg || (state.eggInventory || [])[0] || null;
-  const previewEggImage = previewEgg ? homeV2EggImage(previewEgg) : ASSETS.eggs.common;
   return `
     <section class="worldPage dragonCavePage" data-world-index="${index}" aria-label="龍窟">
       <div class="home-v2-title">
@@ -5157,22 +5155,15 @@ function renderWorldDragonCavePage(index) {
         <p>管理龍蛋與孵化器</p>
       </div>
       <section class="hatch-island-section" aria-label="孵蛋島嶼">
-        <span class="hatch-island-aura" aria-hidden="true"></span>
         <img
           class="hatch-island-art"
           src="${ASSETS.islands.hatch}"
           alt="孵蛋島嶼"
           decoding="async"
           loading="lazy"
-          onerror="this.hidden=true;this.nextElementSibling.hidden=false"
+          onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${ASSETS.islands.rest}'}else{this.hidden=true;this.nextElementSibling.hidden=false}"
         >
         <div class="hatch-island-fallback" hidden>孵蛋島嶼</div>
-        <div class="hatch-island-magic" aria-hidden="true"></div>
-        <div class="hatch-island-egg-preview asset-host">
-          ${homeV2Image(previewEggImage, previewEgg?.name || "龍蛋", "🥚")}
-        </div>
-        <span class="hatch-island-crystal crystal-left" aria-hidden="true"></span>
-        <span class="hatch-island-crystal crystal-right" aria-hidden="true"></span>
       </section>
       <section class="hatch-machines-section" aria-label="孵化器列表">
         <div class="hatch-machines-title">孵化器列表</div>

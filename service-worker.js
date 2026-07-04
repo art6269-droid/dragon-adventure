@@ -1,4 +1,4 @@
-const CACHE_NAME = "dragon-adventure-v33";
+const CACHE_NAME = "dragon-adventure-v34";
 
 const CORE_ASSETS = [
   "./",
@@ -23,6 +23,7 @@ const CORE_ASSETS = [
   "./home-v2.css?v=22",
   "./home-v2.css?v=23",
   "./home-v2.css?v=24",
+  "./home-v2.css?v=25",
   "./app.js",
   "./app.js?v=14",
   "./app.js?v=15",
@@ -38,6 +39,7 @@ const CORE_ASSETS = [
   "./app.js?v=26",
   "./app.js?v=27",
   "./app.js?v=28",
+  "./app.js?v=29",
   "./home-v2-overrides.js",
   "./home-v2-overrides.js?v=1",
   "./manifest.json",
