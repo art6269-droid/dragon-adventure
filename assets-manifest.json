@@ -131,6 +131,26 @@
     "hatchSlotStep": {
       "path": "assets/ui/hatch-slot-step.png",
       "purpose": "Temporary step incubator icon, reserved for later."
+    },
+    "hatchSlotEmpty": {
+      "path": "assets/ui/hatch-slot-empty.png",
+      "purpose": "Temporary empty incubator slot icon."
+    },
+    "hatchSlotLocked": {
+      "path": "assets/ui/hatch-slot-locked.png",
+      "purpose": "Temporary locked incubator slot icon."
+    },
+    "hatchProgressBar": {
+      "path": "assets/ui/hatch-progress-bar.png",
+      "purpose": "Temporary hatch progress bar art."
+    },
+    "iconLock": {
+      "path": "assets/ui/icon-lock.png",
+      "purpose": "Temporary lock icon for locked hatch slots."
+    },
+    "iconPlus": {
+      "path": "assets/ui/icon-plus.png",
+      "purpose": "Temporary plus icon for empty hatch slots."
     }
   }
 }

@@ -515,6 +515,11 @@ const ASSETS = {
     gachaButton: "assets/ui/gacha/gacha-button.png",
     dragonShadow: "assets/ui/dragon-shadow.png",
     dragonGlow: "assets/ui/dragon-glow.png",
+    hatchSlotEmpty: "assets/ui/hatch-slot-empty.png",
+    hatchSlotLocked: "assets/ui/hatch-slot-locked.png",
+    hatchProgressBar: "assets/ui/hatch-progress-bar.png",
+    iconLock: "assets/ui/icon-lock.png",
+    iconPlus: "assets/ui/icon-plus.png",
     navHome: "assets/ui/nav-home.png",
     navDragonCave: "assets/ui/nav-dragon-cave.png",
     navGearShop: "assets/ui/nav-gear-shop.png",
@@ -2818,6 +2823,19 @@ function updateHomeV2ActiveSlide() {
       activeNav.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     }
   }
+
+  const dialogueText = document.querySelector(".mimi-guide-text p, .home-v2-dialogue p");
+  if (dialogueText) {
+    const pageTips = [
+      "歡迎回來！這裡是休息島，龍寶們正在休息喔。",
+      "歡迎回來！這裡是孵蛋島，快來照顧你的龍蛋吧。",
+      "裝備店之後可以替龍寶與夥伴準備冒險裝備。",
+      "道具店會準備探險卷、食物與孵化道具。",
+      "探索可以找到新的龍蛋，帶回龍窟孵化吧。",
+      "任務完成後記得回來找我領獎勵。"
+    ];
+    dialogueText.textContent = pageTips[page] || pageTips[0];
+  }
 }
 
 function getHomeV2DragTarget(target) {
@@ -2825,6 +2843,11 @@ function getHomeV2DragTarget(target) {
   if (target.closest("[data-v2-nav-arrow]")) return null;
   const bottomNav = target.closest("#bottomNavViewport");
   if (bottomNav) return bottomNav;
+  const hatchScroller = target.closest(".hatch-machines-scroll");
+  if (hatchScroller) {
+    if (target.closest("button, select, input, textarea, a, [data-v2-action]")) return null;
+    return hatchScroller;
+  }
   if (target.closest("button, select, input, textarea, a, [data-v2-action], [data-world-page], [data-page], .egg-modal, .egg-modal-backdrop, .home-v2-slot, .egg-choice-card")) return null;
   return target.closest("#worldPager");
 }
@@ -5125,16 +5148,41 @@ function renderHomeV2() {
 function renderWorldDragonCavePage(index) {
   console.log("[renderDragonCavePage]");
   const slots = (state.hatchIsland?.hatchSlots || createDefaultHatchSlots()).slice(0, 6);
+  const previewEgg = slots.find((slot) => slot.currentEgg)?.currentEgg || (state.eggInventory || [])[0] || null;
+  const previewEggImage = previewEgg ? homeV2EggImage(previewEgg) : ASSETS.eggs.common;
   return `
     <section class="worldPage dragonCavePage" data-world-index="${index}" aria-label="龍窟">
       <div class="home-v2-title">
         <h1>龍窟</h1>
         <p>管理龍蛋與孵化器</p>
       </div>
-      <div class="home-v2-ground home-v2-hatch-ground cave-platform islandDecoration"></div>
-      <div class="home-v2-hatch-grid">
-        ${slots.map(renderHomeV2Slot).join("")}
-      </div>
+      <section class="hatch-island-section" aria-label="孵蛋島嶼">
+        <span class="hatch-island-aura" aria-hidden="true"></span>
+        <img
+          class="hatch-island-art"
+          src="${ASSETS.islands.hatch}"
+          alt="孵蛋島嶼"
+          decoding="async"
+          loading="lazy"
+          onerror="this.hidden=true;this.nextElementSibling.hidden=false"
+        >
+        <div class="hatch-island-fallback" hidden>孵蛋島嶼</div>
+        <div class="hatch-island-magic" aria-hidden="true"></div>
+        <div class="hatch-island-egg-preview asset-host">
+          ${homeV2Image(previewEggImage, previewEgg?.name || "龍蛋", "🥚")}
+        </div>
+        <span class="hatch-island-crystal crystal-left" aria-hidden="true"></span>
+        <span class="hatch-island-crystal crystal-right" aria-hidden="true"></span>
+      </section>
+      <section class="hatch-machines-section" aria-label="孵化器列表">
+        <div class="hatch-machines-title">孵化器列表</div>
+        <div class="hatch-machines-scroll">
+          ${slots.map(renderHomeV2Slot).join("")}
+        </div>
+        <div class="hatch-scroll-dots" aria-hidden="true">
+          ${slots.map((_, dotIndex) => `<span class="${dotIndex === 0 ? "is-active" : ""}"></span>`).join("")}
+        </div>
+      </section>
     </section>
   `;
 }
@@ -5144,13 +5192,17 @@ function renderHomeV2Slot(slot) {
 
   if (!slot.unlocked || status.state === "locked") {
     return `
-      <article class="home-v2-slot is-time is-locked" data-slot-id="${slot.id}">
-        <span class="home-v2-slot-type">時間孵化器</span>
-        <div class="home-v2-slot-visual">🔒</div>
-        <h3>孵化器鎖定</h3>
-        <p>使用 ${formatNumber(slot.unlockCostDiamonds || 0)} 鑽石解鎖</p>
+      <article class="hatch-slot-card home-v2-slot is-time is-locked" data-slot-id="${slot.id}">
+        <header>
+          <span class="home-v2-slot-type">孵化器</span>
+          <h3>${escapeHtml(slot.id?.replace("slot-", "孵化器 ") || "孵化器")}</h3>
+        </header>
+        <div class="home-v2-slot-visual asset-host">
+          ${homeV2Image(ASSETS.ui.hatchSlotLocked, "鎖定孵化器", "🔒")}
+        </div>
+        <p class="slot-status-text">使用 ${formatNumber(slot.unlockCostDiamonds || 0)} 鑽石解鎖</p>
         <button class="home-v2-unlock" type="button" data-v2-action="unlock-slot" data-slot-id="${slot.id}">
-          💎 ${formatNumber(slot.unlockCostDiamonds || 0)}
+          解鎖 💎 ${formatNumber(slot.unlockCostDiamonds || 0)}
         </button>
       </article>
     `;
@@ -5158,11 +5210,15 @@ function renderHomeV2Slot(slot) {
 
   if (!slot.currentEgg || status.state === "empty") {
     return `
-      <article class="home-v2-slot is-time is-empty" data-slot-id="${slot.id}">
-        <span class="home-v2-slot-type">時間孵化器</span>
-        <div class="home-v2-slot-visual">🥚</div>
-        <h3>空的孵化器</h3>
-        <p>點擊放入龍蛋</p>
+      <article class="hatch-slot-card home-v2-slot is-time is-empty" data-slot-id="${slot.id}">
+        <header>
+          <span class="home-v2-slot-type">時間孵化器</span>
+          <h3>${escapeHtml(slot.id?.replace("slot-", "孵化器 ") || "孵化器")}</h3>
+        </header>
+        <div class="home-v2-slot-visual asset-host">
+          ${homeV2Image(ASSETS.ui.hatchSlotEmpty, "空蛋槽", "+")}
+        </div>
+        <p class="slot-status-text">點擊放入龍蛋</p>
         <button class="home-v2-unlock" type="button" data-v2-action="open-egg-modal" data-slot-id="${slot.id}">
           放入龍蛋
         </button>
@@ -5171,13 +5227,16 @@ function renderHomeV2Slot(slot) {
   }
 
   return `
-    <article class="home-v2-slot is-time${status.ready ? " is-ready" : ""}" data-slot-id="${slot.id}">
-      <span class="home-v2-slot-type">時間孵化器</span>
+    <article class="hatch-slot-card home-v2-slot is-time${status.ready ? " is-ready" : ""}" data-slot-id="${slot.id}">
+      <header>
+        <span class="home-v2-slot-type">時間孵化器</span>
+        <h3>${escapeHtml(slot.id?.replace("slot-", "孵化器 ") || "孵化器")}</h3>
+      </header>
       <div class="home-v2-slot-visual">
         ${homeV2Image(homeV2EggImage(slot.currentEgg), slot.currentEgg.name, "龍蛋")}
       </div>
-      <h3>${escapeHtml(slot.currentEgg.name)}</h3>
-      <p>${escapeHtml(status.label)}</p>
+      <b class="slot-egg-name">${escapeHtml(slot.currentEgg.name)}</b>
+      <p class="slot-status-text">${escapeHtml(status.label)}</p>
       <div class="home-v2-progress" aria-hidden="true"><i style="--p:${status.percent}%"></i></div>
       ${status.ready ? `
         <button class="home-v2-unlock is-claim" type="button" data-v2-action="claim-hatch" data-slot-id="${slot.id}">

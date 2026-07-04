@@ -1,4 +1,4 @@
-const CACHE_NAME = "dragon-adventure-v32";
+const CACHE_NAME = "dragon-adventure-v33";
 
 const CORE_ASSETS = [
   "./",
@@ -22,6 +22,7 @@ const CORE_ASSETS = [
   "./home-v2.css?v=21",
   "./home-v2.css?v=22",
   "./home-v2.css?v=23",
+  "./home-v2.css?v=24",
   "./app.js",
   "./app.js?v=14",
   "./app.js?v=15",
@@ -36,6 +37,7 @@ const CORE_ASSETS = [
   "./app.js?v=25",
   "./app.js?v=26",
   "./app.js?v=27",
+  "./app.js?v=28",
   "./home-v2-overrides.js",
   "./home-v2-overrides.js?v=1",
   "./manifest.json",
@@ -135,6 +137,11 @@ const CORE_ASSETS = [
   "./assets/ui/mimi-placeholder.png",
   "./assets/ui/hatch-slot-time.png",
   "./assets/ui/hatch-slot-step.png",
+  "./assets/ui/hatch-slot-empty.png",
+  "./assets/ui/hatch-slot-locked.png",
+  "./assets/ui/hatch-progress-bar.png",
+  "./assets/ui/icon-lock.png",
+  "./assets/ui/icon-plus.png",
   "./assets/ui/dragon-shadow.png",
   "./assets/ui/dragon-glow.png",
   "./assets/ui/gacha/gacha-button.png",
