@@ -5164,6 +5164,7 @@ function renderWorldDragonCavePage(index) {
           onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${ASSETS.islands.rest}'}else{this.hidden=true;this.nextElementSibling.hidden=false}"
         >
         <div class="hatch-island-fallback" hidden>孵蛋島嶼</div>
+        ${renderHatchIslandOverview()}
       </section>
       <section class="hatch-machines-section" aria-label="孵化器列表">
         <div class="hatch-machines-title">孵化器列表</div>
@@ -5176,6 +5177,68 @@ function renderWorldDragonCavePage(index) {
       </section>
     </section>
   `;
+}
+
+function getHatchOverviewSlots() {
+  return (state.hatchIsland?.hatchSlots || [])
+    .filter((slot) => slot?.unlocked && slot.currentEgg && slot.status !== "locked")
+    .slice(0, 6);
+}
+
+function renderHatchIslandOverview() {
+  const activeSlots = getHatchOverviewSlots();
+  const count = activeSlots.length;
+  return `
+    <div class="hatch-island-overview count-${count}" data-egg-count="${count}" aria-label="孵蛋總覽">
+      <div class="hatch-nest-base${count === 0 ? " is-empty" : ""}" aria-hidden="true">
+        ${count === 0 ? `<span>空巢</span>` : ""}
+      </div>
+      ${activeSlots.map((slot, index) => renderHatchOverviewEgg(slot, index, count)).join("")}
+    </div>
+  `;
+}
+
+function renderHatchOverviewEgg(slot, index, count) {
+  const status = getHatchSlotStatus(slot);
+  const egg = slot.currentEgg;
+  return `
+    <button
+      class="hatch-overview-egg egg-pos-${index}${status.ready ? " is-ready" : " is-hatching"}"
+      type="button"
+      data-v2-action="focus-hatch-slot"
+      data-slot-id="${slot.id}"
+      style="--egg-order:${index};--egg-count:${count};"
+      aria-label="${escapeHtml(egg.name)} ${status.ready ? "可領取" : "孵化中"}"
+    >
+      ${homeV2Image(homeV2EggImage(egg), egg.name, "龍蛋")}
+      ${status.ready ? `<span class="hatch-ready-spark" aria-hidden="true"></span>` : ""}
+    </button>
+  `;
+}
+
+function updateHatchIslandOverviewDom() {
+  const overview = document.querySelector(".dragonCavePage .hatch-island-overview");
+  if (!overview) return;
+  overview.outerHTML = renderHatchIslandOverview();
+}
+
+function focusHatchSlot(slotId) {
+  const scroller = document.querySelector(".dragonCavePage .hatch-machines-scroll");
+  const slotElement = findHatchSlotElement(slotId);
+  if (!scroller || !slotElement) return;
+  scroller.scrollTo({
+    left: Math.max(0, slotElement.offsetLeft - 18),
+    behavior: "smooth"
+  });
+  slotElement.classList.add("is-focused");
+  window.setTimeout(() => slotElement.classList.remove("is-focused"), 900);
+}
+
+function updateHomeV2HudResources() {
+  const coins = document.querySelector('.home-v2-resource[aria-label="金幣"] b');
+  const diamonds = document.querySelector('.home-v2-resource[aria-label="鑽石"] b');
+  if (coins) coins.textContent = formatNumber(state.coins);
+  if (diamonds) diamonds.textContent = formatNumber(state.diamonds);
 }
 
 function renderHomeV2Slot(slot) {
@@ -5323,6 +5386,10 @@ function handleHomeV2Click(event) {
       claimHatchedDragon(actionButton.dataset.slotId);
       return;
     }
+    if (action === "focus-hatch-slot") {
+      focusHatchSlot(actionButton.dataset.slotId);
+      return;
+    }
     if (action === "select-dragon") {
       setActiveDragon(actionButton.dataset.dragonId);
       return;
@@ -5416,6 +5483,7 @@ function startHatchingEgg(slotId, eggId) {
   saveGame();
   closeEggSelectionModal();
   replaceHatchSlotDom(slot.id);
+  updateHatchIslandOverviewDom();
   showToast(`${egg.name} 已放入孵化器，開始倒數！`);
 }
 
@@ -5439,6 +5507,7 @@ function updateHatchSlotProgress(slotId) {
 
   if (shouldReplace) {
     replaceHatchSlotDom(slotId);
+    updateHatchIslandOverviewDom();
     return;
   }
 
@@ -5487,7 +5556,8 @@ function claimHatchedDragon(slotId) {
   state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
   syncPersistentAliases();
   saveGame();
-  renderHomeV2();
+  replaceHatchSlotDom(slot.id);
+  updateHatchIslandOverviewDom();
   showToast(`孵化成功！獲得 ${dragon.rarity} ${dragon.name}`);
 }
 
@@ -5513,7 +5583,8 @@ function unlockHatchSlot(slotId) {
   });
   syncPersistentAliases();
   saveGame();
-  renderHomeV2();
+  replaceHatchSlotDom(slot.id);
+  updateHomeV2HudResources();
   showToast("孵化器已解鎖！");
 }
 

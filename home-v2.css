@@ -2748,7 +2748,7 @@ body.home-v2-active #toastLayer #toast.is-visible {
   justify-content: center !important;
   margin: 0 0 2px !important;
   overflow: visible !important;
-  pointer-events: none !important;
+  pointer-events: auto !important;
   background: transparent !important;
 }
 
@@ -2759,6 +2759,7 @@ body.home-v2-active #toastLayer #toast.is-visible {
   height: auto !important;
   object-fit: contain !important;
   filter: drop-shadow(0 20px 22px rgba(16, 24, 72, 0.36)) !important;
+  pointer-events: none !important;
 }
 
 .dragonCavePage .hatch-island-fallback {
@@ -2861,5 +2862,216 @@ body.home-v2-active #toastLayer #toast.is-visible {
     flex-basis: 48% !important;
     min-width: 144px !important;
     height: 156px !important;
+  }
+}
+
+/* Hatch island overview eggs: driven by real hatchSlots data. */
+.dragonCavePage .hatch-island-section {
+  isolation: isolate;
+}
+
+.dragonCavePage .hatch-island-overview {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  z-index: 4;
+  width: min(72%, 300px);
+  height: 35%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+.dragonCavePage .hatch-nest-base {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: 58%;
+  height: 36%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(ellipse at center, rgba(255, 248, 181, 0.32), rgba(255, 212, 101, 0.1) 48%, transparent 72%);
+  filter: drop-shadow(0 4px 8px rgba(52, 30, 18, 0.18));
+  pointer-events: none;
+}
+
+.dragonCavePage .hatch-nest-base.is-empty {
+  border: 1px dashed rgba(255, 239, 170, 0.42);
+  background:
+    radial-gradient(ellipse at center, rgba(255, 247, 190, 0.18), rgba(130, 222, 255, 0.1) 48%, transparent 72%);
+}
+
+.dragonCavePage .hatch-nest-base span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  color: rgba(255, 248, 209, 0.82);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-shadow: 0 2px 4px rgba(21, 20, 68, 0.5);
+  transform: translate(-50%, -50%);
+}
+
+.dragonCavePage .hatch-overview-egg {
+  --egg-x: 50%;
+  --egg-y: 56%;
+  position: absolute;
+  left: var(--egg-x);
+  top: var(--egg-y);
+  z-index: calc(10 + var(--egg-order, 0));
+  width: 54px;
+  height: 62px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  filter:
+    drop-shadow(0 8px 8px rgba(30, 18, 68, 0.32))
+    drop-shadow(0 0 9px rgba(255, 241, 157, 0.2));
+  animation: hatchOverviewBreath 3.1s ease-in-out infinite;
+}
+
+.dragonCavePage .hatch-overview-egg img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.dragonCavePage .hatch-overview-egg .home-v2-dragon-fallback {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff8c8;
+  font-size: 1.6rem;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.dragonCavePage .hatch-overview-egg.is-ready {
+  filter:
+    drop-shadow(0 8px 8px rgba(30, 18, 68, 0.32))
+    drop-shadow(0 0 15px rgba(255, 237, 116, 0.86));
+  animation: hatchOverviewReady 1.25s ease-in-out infinite;
+}
+
+.dragonCavePage .hatch-ready-spark {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.92) 0 2px, transparent 3px),
+    radial-gradient(circle at 76% 58%, rgba(255, 241, 113, 0.92) 0 2px, transparent 3px);
+  pointer-events: none;
+}
+
+.dragonCavePage .count-1 .egg-pos-0 {
+  --egg-x: 50%;
+  --egg-y: 56%;
+}
+
+.dragonCavePage .count-2 .egg-pos-0 {
+  --egg-x: 42%;
+  --egg-y: 58%;
+}
+
+.dragonCavePage .count-2 .egg-pos-1 {
+  --egg-x: 58%;
+  --egg-y: 58%;
+}
+
+.dragonCavePage .count-3 .egg-pos-0 {
+  --egg-x: 50%;
+  --egg-y: 43%;
+}
+
+.dragonCavePage .count-3 .egg-pos-1 {
+  --egg-x: 40%;
+  --egg-y: 66%;
+}
+
+.dragonCavePage .count-3 .egg-pos-2 {
+  --egg-x: 60%;
+  --egg-y: 66%;
+}
+
+.dragonCavePage .count-4 .hatch-overview-egg,
+.dragonCavePage .count-5 .hatch-overview-egg,
+.dragonCavePage .count-6 .hatch-overview-egg {
+  width: 46px;
+  height: 54px;
+}
+
+.dragonCavePage .count-4 .egg-pos-0,
+.dragonCavePage .count-5 .egg-pos-0,
+.dragonCavePage .count-6 .egg-pos-0 {
+  --egg-x: 38%;
+  --egg-y: 47%;
+}
+
+.dragonCavePage .count-4 .egg-pos-1,
+.dragonCavePage .count-5 .egg-pos-1,
+.dragonCavePage .count-6 .egg-pos-1 {
+  --egg-x: 62%;
+  --egg-y: 47%;
+}
+
+.dragonCavePage .count-4 .egg-pos-2,
+.dragonCavePage .count-5 .egg-pos-2,
+.dragonCavePage .count-6 .egg-pos-2 {
+  --egg-x: 41%;
+  --egg-y: 69%;
+}
+
+.dragonCavePage .count-4 .egg-pos-3,
+.dragonCavePage .count-5 .egg-pos-3,
+.dragonCavePage .count-6 .egg-pos-3 {
+  --egg-x: 59%;
+  --egg-y: 69%;
+}
+
+.dragonCavePage .count-5 .egg-pos-4,
+.dragonCavePage .count-6 .egg-pos-4 {
+  --egg-x: 50%;
+  --egg-y: 59%;
+}
+
+.dragonCavePage .count-6 .egg-pos-5 {
+  --egg-x: 50%;
+  --egg-y: 78%;
+}
+
+.dragonCavePage .hatch-slot-card.is-focused {
+  border-color: #fff4a0 !important;
+  box-shadow:
+    0 5px 0 rgba(60, 37, 14, 0.55),
+    0 0 22px rgba(255, 235, 128, 0.86) !important;
+}
+
+@keyframes hatchOverviewBreath {
+  0%,
+  100% {
+    translate: 0 -2px;
+    scale: 1;
+  }
+  50% {
+    translate: 0 3px;
+    scale: 1.035;
+  }
+}
+
+@keyframes hatchOverviewReady {
+  0%,
+  100% {
+    translate: 0 -2px;
+    scale: 1.02;
+  }
+  50% {
+    translate: 0 5px;
+    scale: 1.1;
   }
 }
