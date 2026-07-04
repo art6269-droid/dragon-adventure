@@ -1,0 +1,136 @@
+{
+  "backgrounds": {
+    "login": {
+      "path": "assets/backgrounds/bg-login-dragon-adventure.png",
+      "purpose": "Login and opening screen only."
+    },
+    "home": {
+      "path": "assets/backgrounds/bg-home-dragon-island.png",
+      "purpose": "Main game home, rest island, dragon cave, and world pages."
+    }
+  },
+  "login": {
+    "logo": {
+      "path": "assets/ui/logo-dragon-adventure.png",
+      "purpose": "Login screen game logo."
+    },
+    "startButton": {
+      "path": "assets/ui/btn-start-game.png",
+      "purpose": "Login screen start game button image."
+    },
+    "accountIcon": {
+      "path": "assets/icons/icon-account.png",
+      "purpose": "Login bottom account button."
+    },
+    "noticeIcon": {
+      "path": "assets/icons/icon-notice.png",
+      "purpose": "Login bottom notice button."
+    },
+    "settingsIcon": {
+      "path": "assets/icons/icon-settings.png",
+      "purpose": "Login bottom settings button."
+    }
+  },
+  "audio": {
+    "start": {
+      "path": "assets/audio/start.mp3",
+      "purpose": "Login and start screen background music."
+    },
+    "intro": {
+      "path": "assets/audio/intro.mp3",
+      "purpose": "Fallback opening music."
+    },
+    "home": {
+      "path": "assets/audio/home.mp3",
+      "purpose": "Main home world background music."
+    },
+    "sfxStartGame": {
+      "path": "assets/audio/sfx/sfx-start-game.mp3",
+      "purpose": "One-shot sound effect played when the start game button is clicked."
+    }
+  },
+  "islands": {
+    "rest": {
+      "path": "assets/island/island-rest.png",
+      "purpose": "Large rest island art shown as the main scene platform."
+    },
+    "hatch": {
+      "path": "assets/island/island-hatch.png",
+      "purpose": "Reserved hatch island art."
+    }
+  },
+  "restIsland": {
+    "mimiHead": {
+      "path": "assets/characters/mimi-head.png",
+      "purpose": "Mimi head avatar shown only in the bottom guide panel."
+    },
+    "dragonSleep": {
+      "path": "assets/dragons/dragon-rest-sleep.png",
+      "purpose": "Rest island placeholder dragon in sleeping state."
+    },
+    "dragonWalk1": {
+      "path": "assets/dragons/dragon-rest-walk-1.png",
+      "purpose": "Rest island placeholder dragon walking frame 1."
+    },
+    "dragonWalk2": {
+      "path": "assets/dragons/dragon-rest-walk-2.png",
+      "purpose": "Rest island placeholder dragon walking frame 2."
+    },
+    "dragonFly1": {
+      "path": "assets/dragons/dragon-rest-fly-1.png",
+      "purpose": "Rest island placeholder dragon flying frame 1."
+    },
+    "dragonFly2": {
+      "path": "assets/dragons/dragon-rest-fly-2.png",
+      "purpose": "Rest island placeholder dragon flying frame 2."
+    },
+    "dragonShadow": {
+      "path": "assets/ui/dragon-shadow.png",
+      "purpose": "Ground shadow under rest island dragons."
+    },
+    "dragonGlow": {
+      "path": "assets/ui/dragon-glow.png",
+      "purpose": "Soft glow behind rest island dragons."
+    }
+  },
+  "worldNavigation": {
+    "home": {
+      "path": "assets/ui/nav-home.png",
+      "purpose": "Bottom navigation icon for Home."
+    },
+    "dragonCave": {
+      "path": "assets/ui/nav-dragon-cave.png",
+      "purpose": "Bottom navigation icon for Dragon Cave."
+    },
+    "gearShop": {
+      "path": "assets/ui/nav-gear-shop.png",
+      "purpose": "Bottom navigation icon for Equipment Shop."
+    },
+    "itemShop": {
+      "path": "assets/ui/nav-item-shop.png",
+      "purpose": "Bottom navigation icon for Item Shop."
+    },
+    "explore": {
+      "path": "assets/ui/nav-explore.png",
+      "purpose": "Bottom navigation icon for Explore."
+    },
+    "quest": {
+      "path": "assets/ui/nav-quest.png",
+      "purpose": "Bottom navigation icon for Quest."
+    }
+  },
+  "placeholders": {
+    "mimiPlaceholder": {
+      "path": "assets/ui/mimi-placeholder.png",
+      "purpose": "Temporary Mimi placeholder."
+    },
+    "hatchSlotTime": {
+      "path": "assets/ui/hatch-slot-time.png",
+      "purpose": "Temporary time incubator icon."
+    },
+    "hatchSlotStep": {
+      "path": "assets/ui/hatch-slot-step.png",
+      "purpose": "Temporary step incubator icon, reserved for later."
+    }
+  }
+}

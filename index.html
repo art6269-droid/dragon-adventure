@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101a38">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="龍冒險">
+  <title>龍的冒險</title>
+  <link rel="icon" href="assets/icons/icon-192.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css?v=22">
+  <link rel="stylesheet" href="home-v2.css?v=23">
+</head>
+<body>
+  <div class="world-scene" aria-hidden="true">
+    <span class="sun-core"></span>
+    <span class="cloud cloud-1"></span>
+    <span class="cloud cloud-2"></span>
+    <span class="cloud cloud-3"></span>
+    <span class="cloud cloud-4"></span>
+    <span class="sky-island island-1"><i></i></span>
+    <span class="sky-island island-2"><i></i></span>
+    <span class="sky-island island-3"><i></i></span>
+    <span class="crystal crystal-1"></span>
+    <span class="crystal crystal-2"></span>
+    <span class="crystal crystal-3"></span>
+    <span class="treasure-chest"></span>
+    <span class="monster-nest">
+      <b></b>
+      <b></b>
+    </span>
+  </div>
+
+  <section class="start-screen" id="startScreen" aria-label="進入遊戲">
+    <div class="start-panel">
+      <div class="start-visuals" aria-hidden="true">
+        <span class="start-mimi asset-host">
+          <img src="assets/characters/mimi-guide-full.png" alt="" class="asset-image start-mimi-art" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+          <span class="start-mimi-fallback" hidden>咪咪</span>
+        </span>
+        <span class="start-egg asset-host">
+          <img src="assets/eggs/egg-dark-sss.png" alt="" class="asset-image start-egg-art" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+          <span class="start-egg-fallback" hidden>🥚</span>
+        </span>
+      </div>
+      <div class="start-emblem" aria-hidden="true">
+        <span class="start-dragon-mark">龍</span>
+      </div>
+      <p class="eyebrow">DRAGON ADVENTURE</p>
+      <h1>龍的冒險</h1>
+      <p class="start-copy">孵化你的第一顆龍蛋，展開天空島的冒險</p>
+      <button class="start-button" type="button" id="startGameButton">開始遊戲</button>
+      <span class="start-audio-note">Tap to Start</span>
+    </div>
+  </section>
+
+  <section class="login-screen-v2" id="loginScreen" aria-label="登入開場畫面">
+    <div class="login-content login-phone">
+      <h1 class="login-logo-wrap">
+        <img class="login-logo" src="assets/ui/logo-dragon-adventure.png" alt="龍的冒險" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+        <span class="login-logo-fallback" hidden>龍的冒險</span>
+      </h1>
+
+      <div class="login-start-area">
+        <button class="start-button start-game-btn" type="button" id="loginStartGameButton" aria-label="開始遊戲">
+          <img src="assets/ui/btn-start-game.png" alt="開始遊戲" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+          <span class="start-game-btn-fallback" hidden>開始遊戲</span>
+        </button>
+        <div class="tap-text">Tap to Start</div>
+      </div>
+
+      <div class="login-message" id="loginMessage" hidden></div>
+
+      <div class="login-bottom-actions" aria-label="登入畫面功能">
+        <button class="login-action account" type="button" data-login-action="account">
+          <span class="login-action-icon">
+            <img src="assets/icons/icon-account.png" alt="" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+            <i hidden>帳</i>
+          </span>
+          <b>帳號</b>
+        </button>
+        <button class="login-action notice" type="button" data-login-action="notice">
+          <span class="login-action-icon">
+            <img src="assets/icons/icon-notice.png" alt="" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+            <i hidden>告</i>
+          </span>
+          <b>公告</b>
+        </button>
+        <button class="login-action settings" type="button" data-login-action="settings">
+          <span class="login-action-icon">
+            <img src="assets/icons/icon-settings.png" alt="" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+            <i hidden>設</i>
+          </span>
+          <b>設定</b>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="game-shell" id="gameShell">
+    <header class="player-panel" id="playerPanel"></header>
+
+    <section class="top-resources" id="resourceHud" aria-label="玩家資源"></section>
+
+    <aside class="left-dock" aria-label="活動入口">
+      <button class="side-entry hatch-entry quick-tab-button" type="button" data-tab-target="hatch">
+        <span class="mini-egg"></span>
+        <strong>孵蛋中</strong>
+        <em id="hatchMiniProgress">0%</em>
+        <i><b id="hatchMiniBar"></b></i>
+      </button>
+      <button class="side-entry quick-tab-button" type="button" data-tab-target="market">
+        <span class="side-icon">禮</span>
+        <strong>七日禮包</strong>
+      </button>
+      <button class="side-entry quick-tab-button" type="button" data-tab-target="fusion">
+        <span class="side-icon">星</span>
+        <strong>合體活動</strong>
+      </button>
+    </aside>
+
+    <aside class="right-panel" aria-label="地圖與任務">
+      <div class="mini-map">
+        <div class="map-title">
+          <strong id="areaName">雲海浮島 3-7</strong>
+          <div class="map-actions">
+            <button class="audio-button" type="button" id="musicMuteButton" aria-label="音樂靜音切換">🔊</button>
+            <button class="gear-button" type="button" id="resetGameButton" aria-label="設定與測試">設定</button>
+          </div>
+        </div>
+        <label class="volume-control" for="musicVolume">
+          <span>音量</span>
+          <input type="range" id="musicVolume" min="0" max="100" value="60">
+          <b id="musicVolumeValue">60%</b>
+        </label>
+        <div class="music-status" id="musicStatus">音樂待機</div>
+        <div class="map-canvas">
+          <span class="map-node node-a"></span>
+          <span class="map-node node-b"></span>
+          <span class="map-node node-c"></span>
+          <span class="map-route route-a"></span>
+          <span class="map-route route-b"></span>
+        </div>
+      </div>
+      <div class="quest-tracker" id="questTracker"></div>
+    </aside>
+
+    <section class="home-v2-root" id="homeV2Root" aria-label="龍島首頁 V2" hidden></section>
+
+    <main class="game-screen" id="sceneRoot">
+      <section class="tab-panel home-panel is-active" id="tab-home">
+        <div class="home-scene" id="legacyHomeScene">
+          <div class="main-hero" id="heroDragonStage"></div>
+        </div>
+        <button class="mimi-help" id="mimiButton" type="button" aria-label="咪咪提示">
+          <span class="mimi-head mini"></span>
+        </button>
+        <div class="mimi-bubble dialogue-layer" id="mimiBubble">歡迎來到龍島！今天也一起冒險吧。</div>
+        <div class="rarity-tip">
+          <b>C / B / A / S / SS / SSS</b>
+          <span>稀有度越高，龍龍越強大！</span>
+        </div>
+        <div class="home-card-showcase" id="homeCardShowcase" aria-label="目前角色與跟隨寵物"></div>
+      </section>
+
+      <section class="tab-panel game-window eggs-window" id="tab-eggs">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">EGG STORAGE</p>
+            <h2>龍蛋庫存</h2>
+          </div>
+          <button class="primary-button" type="button" id="walkButton">走 100 步</button>
+        </div>
+        <p class="hint-line">龍蛋只能透過探索取得。選一顆蛋，派送到時間型或步數型孵化臺。</p>
+        <div class="egg-management-grid" id="eggInventoryList"></div>
+      </section>
+
+      <section class="tab-panel game-window explore-window" id="tab-explore">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">EXPLORE</p>
+            <h2>探索龍蛋</h2>
+          </div>
+          <strong class="rank-pill">探險卷 <span id="exploreTicketCount">0</span></strong>
+        </div>
+        <p class="hint-line">探索消耗探險卷，取得的是龍蛋，不會直接獲得成龍。</p>
+        <div class="explore-grid" id="exploreList"></div>
+        <div class="result-box" id="exploreResult"></div>
+      </section>
+
+      <section class="tab-panel game-window item-shop-window" id="tab-itemShop">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ITEM SHOP</p>
+            <h2>道具商店</h2>
+          </div>
+        </div>
+        <p class="hint-line">販售探險卷、契約券、恢復道具、食物、技能卷軸與孵化工具；不販售龍蛋。</p>
+        <div class="shop-product-grid" id="itemShopList"></div>
+        <div class="result-box" id="itemShopResult"></div>
+      </section>
+
+      <section class="tab-panel game-window equipment-shop-window" id="tab-equipmentShop">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">EQUIPMENT SHOP</p>
+            <h2>裝備商店</h2>
+          </div>
+        </div>
+        <p class="hint-line">販售寵物裝備與傭兵角色裝備，第一版先做商品卡與購買流程。</p>
+        <div class="shop-product-grid" id="equipmentShopList"></div>
+        <div class="result-box" id="equipmentShopResult"></div>
+      </section>
+
+      <section class="tab-panel game-window guild-window" id="tab-guild">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">GUILD</p>
+            <h2>冒險公會</h2>
+          </div>
+          <strong class="rank-pill">契約券 <span id="mercenaryTicketCount">0</span></strong>
+        </div>
+        <p class="hint-line">使用傭兵契約券召募傭兵角色。這裡抽的是角色，不是龍。</p>
+        <div class="guild-actions" id="guildList"></div>
+        <div class="result-box" id="guildResult"></div>
+      </section>
+
+      <section class="tab-panel game-window stage-window" id="tab-stage">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">STAGE</p>
+            <h2>關卡</h2>
+          </div>
+        </div>
+        <p class="hint-line">選擇章節關卡進入戰鬥推圖。第一版沿用目前打怪戰鬥計算。</p>
+        <div class="stage-list" id="stageList"></div>
+        <div class="result-box battle-log" id="stageResult"></div>
+      </section>
+
+      <section class="tab-panel game-window" id="tab-bag">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">BAG</p>
+            <h2>背包</h2>
+          </div>
+        </div>
+        <div class="bag-grid" id="bagList"></div>
+      </section>
+
+      <section class="tab-panel game-window" id="tab-hatch">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">HATCHERY</p>
+            <h2>孵化龍蛋</h2>
+          </div>
+          <button class="primary-button" type="button" id="legacyWalkButton">走 100 步</button>
+        </div>
+        <div class="hint-line">累積步數或等待時間，任一條件完成就可以孵化。</div>
+        <div class="egg-grid" id="eggList"></div>
+      </section>
+
+      <section class="tab-panel game-window" id="tab-dragons">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">DRAGON LIST</p>
+            <h2>我的龍寵</h2>
+          </div>
+          <div class="food-pouch" id="foodPouch"></div>
+        </div>
+        <div class="dragon-grid" id="dragonList"></div>
+      </section>
+
+      <section class="tab-panel game-window" id="tab-fusion">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">FUSION ALTAR</p>
+            <h2>合體升級</h2>
+          </div>
+        </div>
+        <div class="form-grid">
+          <label>
+            主龍
+            <select id="fusionMainSelect"></select>
+          </label>
+          <label>
+            副龍
+            <select id="fusionSubSelect"></select>
+          </label>
+        </div>
+        <div class="fusion-preview" id="fusionPreview"></div>
+        <button class="primary-button" type="button" id="fusionButton">啟動合體</button>
+        <div class="result-box" id="fusionResult"></div>
+      </section>
+
+      <section class="tab-panel game-window compact-window" id="tab-pve">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ADVENTURE</p>
+            <h2>打怪冒險</h2>
+          </div>
+        </div>
+        <div class="form-grid single">
+          <label>
+            出戰龍
+            <select id="pveDragonSelect"></select>
+          </label>
+        </div>
+        <button class="primary-button" type="button" id="pveBattleButton">前往天空巢穴</button>
+        <div class="result-box battle-log" id="pveResult"></div>
+      </section>
+
+      <section class="tab-panel game-window compact-window" id="tab-pk">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ARENA</p>
+            <h2>模擬 PK</h2>
+          </div>
+          <strong class="rank-pill">排名 <span id="rankScore">0</span></strong>
+        </div>
+        <div class="form-grid single">
+          <label>
+            出戰龍
+            <select id="pkDragonSelect"></select>
+          </label>
+        </div>
+        <button class="primary-button" type="button" id="pkBattleButton">開始挑戰</button>
+        <div class="result-box battle-log" id="pkResult"></div>
+      </section>
+
+      <section class="tab-panel game-window" id="tab-market">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">EGG SHOP</p>
+            <h2>龍蛋商店</h2>
+          </div>
+          <button class="secondary-button" type="button" id="refreshMarketButton">刷新商品</button>
+        </div>
+        <p class="hint-line shop-copy">真正的龍，必須從蛋中孵化。購買龍蛋，開始你的冒險吧！</p>
+        <div class="shop-tabs" role="tablist" aria-label="商店類型">
+          <button class="shop-tab-button is-active" type="button" data-shop-tab="coin">金幣商店</button>
+          <button class="shop-tab-button" type="button" data-shop-tab="diamond">鑽石商店</button>
+        </div>
+        <div class="market-layout egg-shop-layout">
+          <div class="egg-shop-main">
+            <div class="market-grid" id="marketList"></div>
+          </div>
+        </div>
+        <div class="result-box" id="marketResult"></div>
+      </section>
+
+      <section class="tab-panel game-window gacha-window" id="tab-gacha">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">GACHA</p>
+            <h2>星願抽卡</h2>
+          </div>
+          <strong class="rank-pill">碎片 <span id="cardFragmentCount">0</span></strong>
+        </div>
+        <p class="hint-line">抽角色卡與寵物卡，組成你的龍島冒險隊。重複卡會轉成星願碎片。</p>
+        <div class="gacha-actions">
+          <button class="gacha-draw-button" type="button" id="gachaCoinButton"></button>
+          <button class="gacha-draw-button premium" type="button" id="gachaDiamondButton"></button>
+        </div>
+        <div class="gacha-result-stage" id="gachaResult"></div>
+      </section>
+
+      <section class="tab-panel game-window codex-window" id="tab-codex">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">CODEX</p>
+            <h2>卡片圖鑑</h2>
+          </div>
+          <label class="codex-filter">
+            稀有度
+            <select id="codexFilter">
+              <option value="all">全部</option>
+              <option value="C">C</option>
+              <option value="B">B</option>
+              <option value="A">A</option>
+              <option value="S">S</option>
+              <option value="SS">SS</option>
+              <option value="SSS">SSS</option>
+            </select>
+          </label>
+        </div>
+        <div class="codex-layout">
+          <div class="codex-grid" id="codexList"></div>
+          <div class="codex-detail" id="codexDetail"></div>
+        </div>
+      </section>
+    </main>
+
+    <section class="skill-cluster" aria-label="戰鬥操作">
+      <button class="skill-button quick-tab-button" type="button" data-tab-target="pve"><span>龍</span><b>冒險</b></button>
+      <button class="skill-button quick-tab-button" type="button" data-tab-target="pve"><span>斬</span><b>打怪</b></button>
+      <button class="skill-button quick-tab-button" type="button" data-tab-target="pk"><span>PK</span><b>挑戰</b></button>
+      <button class="skill-button ultimate quick-tab-button" type="button" data-tab-target="fusion"><span>合</span><b>合體</b></button>
+    </section>
+
+    <nav class="bottom-nav" id="bottomNav" aria-label="主要功能">
+      <button class="nav-button nav-home-button is-active" type="button" data-tab="home"><span data-nav-icon="navHome">家</span><b>家</b></button>
+      <button class="nav-button" type="button" data-tab="equipmentShop"><span data-nav-icon="navEquipmentShop">裝</span><b>裝備</b></button>
+      <button class="nav-button" type="button" data-tab="itemShop"><span data-nav-icon="navItemShop">袋</span><b>道具</b></button>
+      <button class="nav-button" type="button" data-tab="eggs"><span data-nav-icon="navEggs">蛋</span><b>龍蛋</b></button>
+      <button class="nav-button" type="button" data-tab="explore"><span data-nav-icon="navExplore">探</span><b>探索</b></button>
+      <button class="nav-button" type="button" data-tab="guild"><span data-nav-icon="navGuild">會</span><b>公會</b></button>
+      <button class="nav-button" type="button" data-tab="stage"><span data-nav-icon="navStage">關</span><b>關卡</b></button>
+    </nav>
+
+    <button class="debug-toggle" type="button" id="debugToggle" aria-expanded="false">DEBUG</button>
+    <aside class="debug-panel" id="debugPanel" aria-label="開發者測試面板" hidden>
+      <div class="debug-header">
+        <strong>測試面板</strong>
+        <button class="debug-close" type="button" data-debug-action="toggle">×</button>
+      </div>
+      <div class="debug-actions">
+        <button type="button" data-debug-action="coins">增加金幣</button>
+        <button type="button" data-debug-action="diamonds">增加鑽石</button>
+        <button type="button" data-debug-action="addCommonEgg">普通龍蛋</button>
+        <button type="button" data-debug-action="addDarkEgg">深淵混沌蛋</button>
+        <button type="button" data-debug-action="finishHatchSlots">孵化器完成</button>
+        <button type="button" data-debug-action="clearHatchSlots">清除孵化器</button>
+        <button type="button" data-debug-action="ticketExplore">增加探險卷</button>
+        <button type="button" data-debug-action="ticketMercenary">增加契約券</button>
+        <label>
+          稀有度
+          <select id="debugRaritySelect">
+            <option value="C">C</option>
+            <option value="B">B</option>
+            <option value="A">A</option>
+            <option value="S">S</option>
+            <option value="SS">SS</option>
+            <option value="SSS" selected>SSS</option>
+          </select>
+        </label>
+        <button type="button" data-debug-action="dragon">產生指定龍</button>
+        <button type="button" data-debug-action="clear">清除遊戲存檔</button>
+        <button type="button" data-debug-action="state">顯示目前資料</button>
+        <button type="button" data-debug-action="assets">檢查圖片載入</button>
+      </div>
+      <pre id="debugOutput">{}</pre>
+    </aside>
+
+    <div class="toast-layer" id="toastLayer" aria-live="polite">
+      <div class="toast" id="toast" role="status"></div>
+    </div>
+  </div>
+
+  <script src="app.js?v=27"></script>
+  <script src="home-v2-overrides.js?v=1"></script>
+</body>
+</html>
