@@ -5163,7 +5163,7 @@ function renderWorldDragonCavePage(index) {
           loading="lazy"
           onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${ASSETS.islands.rest}'}else{this.hidden=true;this.nextElementSibling.hidden=false}"
         >
-        <div class="hatch-island-fallback" hidden>孵蛋島嶼</div>
+        <div class="hatch-island-fallback" hidden aria-hidden="true"></div>
         ${renderHatchIslandOverview()}
       </section>
       <section class="hatch-machines-section" aria-label="孵化器列表">

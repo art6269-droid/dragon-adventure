@@ -3075,3 +3075,197 @@ body.home-v2-active #toastLayer #toast.is-visible {
     scale: 1.1;
   }
 }
+
+/* Dragon cave visibility fix: keep the incubator operation list inside the phone viewport. */
+.dragonCavePage.worldPage {
+  gap: 6px !important;
+  padding: 6px 0 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+.dragonCavePage .world-page-title {
+  flex: 0 0 auto !important;
+  margin-bottom: 0 !important;
+}
+
+.dragonCavePage .hatch-island-section {
+  flex: 0 0 clamp(210px, 32vh, 250px) !important;
+  height: clamp(210px, 32vh, 250px) !important;
+  min-height: 210px !important;
+  max-height: 250px !important;
+  margin: 2px 0 4px !important;
+  overflow: visible !important;
+}
+
+.dragonCavePage .hatch-island-art {
+  width: 88% !important;
+  max-width: 360px !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+.dragonCavePage .hatch-island-fallback {
+  display: none !important;
+}
+
+.dragonCavePage .hatch-island-overview {
+  top: 43% !important;
+  width: min(64%, 260px) !important;
+  height: 32% !important;
+}
+
+.dragonCavePage .hatch-overview-egg {
+  width: 46px !important;
+  height: 54px !important;
+}
+
+.dragonCavePage .count-4 .hatch-overview-egg,
+.dragonCavePage .count-5 .hatch-overview-egg,
+.dragonCavePage .count-6 .hatch-overview-egg {
+  width: 40px !important;
+  height: 48px !important;
+}
+
+.dragonCavePage .hatch-machines-section {
+  display: block !important;
+  position: relative !important;
+  flex: 0 0 175px !important;
+  width: 100% !important;
+  height: 175px !important;
+  min-height: 165px !important;
+  padding: 4px 0 6px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  z-index: 5 !important;
+}
+
+.dragonCavePage .hatch-machines-title {
+  height: 24px !important;
+  line-height: 24px !important;
+  margin: 0 auto 3px !important;
+  font-size: 0.8rem !important;
+  text-align: center !important;
+}
+
+.dragonCavePage .hatch-machines-scroll {
+  display: flex !important;
+  height: 139px !important;
+  gap: 12px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x mandatory !important;
+  padding: 0 18px 6px !important;
+  box-sizing: border-box !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.dragonCavePage .hatch-slot-card.home-v2-slot {
+  flex: 0 0 46% !important;
+  min-width: 142px !important;
+  max-width: 180px !important;
+  height: 135px !important;
+  scroll-snap-align: center !important;
+  grid-template-rows: 24px 40px 16px 10px 28px !important;
+  gap: 2px !important;
+  padding: 7px 8px !important;
+  box-sizing: border-box !important;
+}
+
+.dragonCavePage .hatch-slot-card.home-v2-slot header {
+  min-height: 0 !important;
+}
+
+.dragonCavePage .hatch-slot-card.home-v2-slot h3 {
+  font-size: 0.72rem !important;
+}
+
+.dragonCavePage .hatch-slot-card .home-v2-slot-visual {
+  min-height: 0 !important;
+  height: 40px !important;
+  margin: 0 !important;
+}
+
+.dragonCavePage .hatch-slot-card .home-v2-slot-visual img,
+.dragonCavePage .hatch-slot-card .home-v2-slot-visual .asset-fallback {
+  width: 42px !important;
+  height: 42px !important;
+  max-width: 42px !important;
+  max-height: 42px !important;
+  object-fit: contain !important;
+}
+
+.dragonCavePage .hatch-slot-card.home-v2-slot p,
+.dragonCavePage .hatch-slot-card .slot-status-text,
+.dragonCavePage .hatch-slot-card .slot-egg-name {
+  font-size: 0.66rem !important;
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.dragonCavePage .hatch-slot-card .home-v2-progress {
+  height: 8px !important;
+  margin: 0 !important;
+}
+
+.dragonCavePage .hatch-slot-card.is-ready .home-v2-progress {
+  display: none !important;
+}
+
+.dragonCavePage .hatch-slot-card .home-v2-unlock {
+  min-height: 26px !important;
+  height: 26px !important;
+  padding: 0 8px !important;
+  font-size: 0.66rem !important;
+  align-self: end !important;
+}
+
+.dragonCavePage .mimi-dialog-section {
+  flex: 0 0 76px !important;
+  height: 76px !important;
+  margin-top: 2px !important;
+}
+
+.dragonCavePage .mimi-dialog-text {
+  font-size: 0.73rem !important;
+  line-height: 1.35 !important;
+}
+
+@media (max-width: 390px) {
+  .dragonCavePage.worldPage {
+    gap: 4px !important;
+  }
+
+  .dragonCavePage .hatch-island-section {
+    flex-basis: clamp(205px, 30vh, 236px) !important;
+    height: clamp(205px, 30vh, 236px) !important;
+    min-height: 205px !important;
+    max-height: 236px !important;
+  }
+
+  .dragonCavePage .hatch-island-art {
+    width: 84% !important;
+  }
+
+  .dragonCavePage .hatch-machines-section {
+    flex-basis: 170px !important;
+    height: 170px !important;
+  }
+
+  .dragonCavePage .hatch-machines-scroll {
+    height: 134px !important;
+  }
+
+  .dragonCavePage .hatch-slot-card.home-v2-slot {
+    flex-basis: 48% !important;
+    min-width: 136px !important;
+    height: 132px !important;
+  }
+
+  .dragonCavePage .mimi-dialog-section {
+    flex-basis: 72px !important;
+    height: 72px !important;
+  }
+}
