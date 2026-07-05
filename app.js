@@ -5385,7 +5385,7 @@ function handleHomeV2Click(event) {
       return;
     }
     if (action === "open-egg-modal") {
-      openEggSelectionModal(actionButton.dataset.slotId);
+      openEggPicker(actionButton.dataset.slotId);
       return;
     }
     if (action === "close-egg-modal") {
@@ -5449,6 +5449,10 @@ function openEggSelectionModal(slotId) {
   }
   eggSelectionSlotId = slotId;
   mountEggSelectionModal();
+}
+
+function openEggPicker(slotId) {
+  openEggSelectionModal(slotId);
 }
 
 function closeEggSelectionModal() {
@@ -5962,4 +5966,212 @@ function renderWorldHomePage(index) {
       </div>
     </section>
   `;
+}
+
+// Dragon Cave rebuild: this final definition replaces the older prototype
+// markup so the page uses one island overview and one horizontal card scroller.
+function renderWorldDragonCavePage(index) {
+  const slots = (state.hatchIsland?.hatchSlots || createDefaultHatchSlots()).slice(0, 6);
+
+  return `
+    <section class="worldPage dragonCavePage" data-world-index="${index}" aria-label="龍窟">
+      <div class="dragon-cave-page">
+        <section class="cave-title-panel">
+          <h1>龍窟</h1>
+          <p>管理龍蛋與孵化器</p>
+        </section>
+
+        <section class="hatch-island-section" aria-label="孵蛋島總覽">
+          <img
+            class="hatch-island-art"
+            src="${ASSETS.islands.hatch}"
+            alt="孵蛋島"
+            decoding="async"
+            loading="lazy"
+            onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${ASSETS.islands.rest}'}else{this.hidden=true}"
+          >
+          ${renderDragonCaveNestLayer()}
+          ${renderDragonCaveStatus()}
+        </section>
+
+        <section class="hatch-machines-section" aria-label="孵化器列表">
+          <div class="section-title">孵化器列表</div>
+          <div class="hatch-machines-scroll">
+            ${slots.map(renderHomeV2Slot).join("")}
+          </div>
+          <div class="hatch-dots" aria-hidden="true">
+            ${slots.map((_, dotIndex) => `<span class="${dotIndex === 0 ? "is-active" : ""}"></span>`).join("")}
+          </div>
+        </section>
+      </div>
+    </section>
+  `;
+}
+
+function getDragonCaveActiveSlots() {
+  return (state.hatchIsland?.hatchSlots || [])
+    .filter((slot) => {
+      const egg = slot?.currentEgg || slot?.egg;
+      if (!slot?.unlocked || !egg) return false;
+      const status = getHatchSlotStatus(slot);
+      return status.state === "hatching" || status.state === "ready";
+    })
+    .slice(0, 6);
+}
+
+function renderDragonCaveNestLayer() {
+  const activeSlots = getDragonCaveActiveSlots();
+  const featuredEgg = activeSlots[0]?.currentEgg || activeSlots[0]?.egg || null;
+
+  return `
+    <div class="nest-layer">
+      <img
+        class="nest-art"
+        src="${ASSETS.islands.nest}"
+        alt=""
+        decoding="async"
+        loading="lazy"
+        onerror="this.hidden=true;this.nextElementSibling.hidden=false"
+      >
+      <span class="nest-art-placeholder" hidden aria-hidden="true"></span>
+      ${featuredEgg ? `
+        <img
+          class="island-egg-preview"
+          src="${homeV2EggImage(featuredEgg)}"
+          alt="${escapeHtml(featuredEgg.name || "孵化中的蛋")}"
+          decoding="async"
+          loading="lazy"
+          onerror="this.hidden=true;this.nextElementSibling.hidden=false"
+        >
+        <span class="island-egg-placeholder" hidden aria-hidden="true"></span>
+      ` : ""}
+    </div>
+  `;
+}
+
+function renderDragonCaveStatus() {
+  const count = getDragonCaveActiveSlots().length;
+  return `<div class="hatch-island-status">目前孵化中：${count}</div>`;
+}
+
+function updateHatchIslandOverviewDom() {
+  const section = document.querySelector(".dragonCavePage .hatch-island-section");
+  if (!section) return;
+
+  const nestLayer = section.querySelector(".nest-layer");
+  if (nestLayer) nestLayer.outerHTML = renderDragonCaveNestLayer();
+
+  const status = section.querySelector(".hatch-island-status");
+  if (status) status.outerHTML = renderDragonCaveStatus();
+}
+
+function renderHomeV2Slot(slot) {
+  const status = getHatchSlotStatus(slot);
+  const slotNumber = escapeHtml(slot.id?.replace("slot-", "") || "");
+  const slotTitle = `孵化器 ${slotNumber}`;
+
+  if (!slot.unlocked || status.state === "locked") {
+    return `
+      <article class="hatch-slot-card cave-slot-card is-locked" data-slot-id="${slot.id}">
+        <header>
+          <h3>${slotTitle}</h3>
+        </header>
+        <div class="cave-slot-visual" aria-hidden="true">
+          <span class="slot-lock-icon">🔒</span>
+        </div>
+        <p class="slot-state">使用 ${formatNumber(slot.unlockCostDiamonds || 0)} 鑽石解鎖</p>
+        <button class="cave-slot-button" type="button" data-v2-action="unlock-slot" data-slot-id="${slot.id}">
+          解鎖
+        </button>
+      </article>
+    `;
+  }
+
+  if (!slot.currentEgg || status.state === "empty") {
+    return `
+      <article class="hatch-slot-card cave-slot-card is-empty" data-slot-id="${slot.id}">
+        <header>
+          <h3>${slotTitle}</h3>
+        </header>
+        <button
+          class="cave-slot-visual slot-plus-button"
+          type="button"
+          data-v2-action="open-egg-modal"
+          data-slot-id="${slot.id}"
+          aria-label="放入龍蛋"
+        >
+          <span class="slot-plus-icon">+</span>
+        </button>
+        <p class="slot-state">點擊放入龍蛋</p>
+        <button class="cave-slot-button" type="button" data-v2-action="open-egg-modal" data-slot-id="${slot.id}">
+          放入龍蛋
+        </button>
+      </article>
+    `;
+  }
+
+  return `
+    <article class="hatch-slot-card cave-slot-card is-hatching${status.ready ? " is-ready" : ""}" data-slot-id="${slot.id}">
+      <header>
+        <h3>${slotTitle}</h3>
+      </header>
+      <div class="cave-slot-visual" aria-hidden="true">
+        <img
+          class="slot-egg-image"
+          src="${homeV2EggImage(slot.currentEgg)}"
+          alt=""
+          decoding="async"
+          loading="lazy"
+          onerror="this.hidden=true;this.nextElementSibling.hidden=false"
+        >
+        <span class="slot-egg-placeholder" hidden></span>
+      </div>
+      <b class="slot-egg-name">${escapeHtml(slot.currentEgg.name || "孵化中的蛋")}</b>
+      <p class="slot-state">${status.ready ? "可領取" : status.label}</p>
+      ${status.ready ? `
+        <button class="cave-slot-button is-claim" type="button" data-v2-action="claim-hatch" data-slot-id="${slot.id}">
+          領取龍
+        </button>
+      ` : `
+        <div class="slot-progress" aria-hidden="true">
+          <i class="slot-progress-fill" style="--p:${status.percent}%"></i>
+        </div>
+      `}
+    </article>
+  `;
+}
+
+function replaceHatchSlotDom(slotId) {
+  const slot = findHatchSlot(slotId);
+  const slotElement = findHatchSlotElement(slotId);
+  if (!slot || !slotElement) return;
+  slotElement.outerHTML = renderHomeV2Slot(slot);
+}
+
+function updateHatchSlotProgress(slotId) {
+  const slot = findHatchSlot(slotId);
+  const slotElement = findHatchSlotElement(slotId);
+  if (!slot || !slotElement) return;
+
+  const status = getHatchSlotStatus(slot);
+  const shouldReplace =
+    status.ready !== slotElement.classList.contains("is-ready") ||
+    status.state === "empty" ||
+    status.state === "locked";
+
+  if (shouldReplace) {
+    replaceHatchSlotDom(slotId);
+    updateHatchIslandOverviewDom();
+    return;
+  }
+
+  const statusText = slotElement.querySelector(".slot-state");
+  const progressBar = slotElement.querySelector(".slot-progress-fill");
+  if (statusText) statusText.textContent = status.label;
+  if (progressBar) progressBar.style.setProperty("--p", `${status.percent}%`);
+}
+
+function findHatchSlotElement(slotId) {
+  return Array.from(document.querySelectorAll(".hatch-slot-card[data-slot-id]"))
+    .find((element) => element.dataset.slotId === slotId) || null;
 }

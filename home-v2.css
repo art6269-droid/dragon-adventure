@@ -3393,3 +3393,453 @@ body.home-v2-active #toastLayer #toast.is-visible {
 .dragonCavePage .hatch-slot-card .hatch-slot-plus-button:active {
   transform: scale(0.94);
 }
+
+/* Dragon Cave rebuilt page --------------------------------------------------
+   This block intentionally styles the new dragon-cave-page structure instead
+   of the old prototype elements. */
+.dragonCavePage.worldPage {
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.dragonCavePage .dragon-cave-page {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 8px 0 0;
+}
+
+.dragonCavePage .cave-title-panel {
+  flex: 0 0 auto;
+  width: 76%;
+  margin: 0 auto 2px;
+  padding: 9px 14px 10px;
+  border: 2px solid rgba(255, 231, 154, 0.82);
+  border-radius: 18px;
+  color: #fff6cc;
+  text-align: center;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 46%),
+    linear-gradient(180deg, rgba(31, 54, 122, 0.94), rgba(13, 19, 64, 0.92));
+  box-shadow:
+    0 4px 0 rgba(68, 42, 13, 0.5),
+    0 0 16px rgba(142, 190, 255, 0.2);
+}
+
+.dragonCavePage .cave-title-panel h1 {
+  margin: 0;
+  font-size: 1.48rem;
+  font-weight: 950;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.dragonCavePage .cave-title-panel p {
+  margin: 5px 0 0;
+  font-size: 0.72rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.dragonCavePage .dragon-cave-page .hatch-island-section {
+  position: relative !important;
+  flex: 0 0 clamp(222px, 34vh, 264px) !important;
+  width: 100% !important;
+  height: clamp(222px, 34vh, 264px) !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+  background: transparent !important;
+}
+
+.dragonCavePage .dragon-cave-page .hatch-island-art {
+  display: block !important;
+  width: 92% !important;
+  max-width: 390px !important;
+  max-height: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 16px 18px rgba(18, 22, 69, 0.34)) !important;
+  animation: none !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+.dragonCavePage .nest-layer {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 90px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.dragonCavePage .nest-art,
+.dragonCavePage .nest-art-placeholder {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 1;
+  width: 110px;
+  height: auto;
+  transform: translateX(-50%);
+  object-fit: contain;
+}
+
+.dragonCavePage .nest-art-placeholder {
+  display: block;
+  height: 42px;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at center, rgba(255, 226, 142, 0.3) 0 22%, transparent 24%),
+    radial-gradient(ellipse at center, #8b5a2b 0%, #5c3519 70%);
+  box-shadow: inset 0 4px 8px rgba(255, 255, 255, 0.25);
+}
+
+.dragonCavePage .nest-art-placeholder[hidden],
+.dragonCavePage .island-egg-placeholder[hidden],
+.dragonCavePage .slot-egg-placeholder[hidden] {
+  display: none !important;
+}
+
+.dragonCavePage .island-egg-preview,
+.dragonCavePage .island-egg-placeholder {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  z-index: 2;
+  width: 58px;
+  height: auto;
+  transform: translateX(-50%);
+  object-fit: contain;
+  filter: drop-shadow(0 7px 7px rgba(32, 19, 72, 0.28));
+  animation: none !important;
+}
+
+.dragonCavePage .island-egg-placeholder {
+  display: block;
+  height: 66px;
+  border-radius: 50% 50% 46% 46%;
+  background:
+    radial-gradient(circle at 34% 22%, rgba(255, 255, 255, 0.86) 0 7px, transparent 8px),
+    linear-gradient(160deg, #fff0ce, #b98cff 58%, #56327a);
+}
+
+.dragonCavePage .dragon-cave-page .hatch-island-status {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  z-index: 12;
+  min-width: 124px;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 231, 154, 0.72);
+  border-radius: 999px;
+  color: #fff7c7;
+  background: rgba(21, 29, 78, 0.72);
+  box-shadow: 0 2px 0 rgba(54, 33, 13, 0.34);
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.42);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.dragonCavePage .dragon-cave-page .hatch-machines-section {
+  position: relative !important;
+  flex: 0 0 185px !important;
+  width: 100% !important;
+  height: 185px !important;
+  min-height: 0 !important;
+  display: block !important;
+  overflow: hidden !important;
+  padding: 4px 0 8px !important;
+  box-sizing: border-box !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.dragonCavePage .section-title {
+  height: 22px;
+  line-height: 22px;
+  text-align: center;
+  color: #fff4b8;
+  font-size: 0.82rem;
+  font-weight: 950;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.45);
+}
+
+.dragonCavePage .dragon-cave-page .hatch-machines-scroll {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  gap: 12px !important;
+  height: 153px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x mandatory !important;
+  scrollbar-width: none !important;
+  padding: 0 18px 8px !important;
+  box-sizing: border-box !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x !important;
+  overscroll-behavior-x: contain !important;
+}
+
+.dragonCavePage .dragon-cave-page .hatch-machines-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.dragonCavePage .dragon-cave-page .hatch-slot-card {
+  position: relative !important;
+  inset: auto !important;
+  flex: 0 0 44% !important;
+  min-width: 140px !important;
+  max-width: 176px !important;
+  height: 145px !important;
+  display: grid !important;
+  grid-template-rows: 21px 38px 15px 17px 24px !important;
+  gap: 2px !important;
+  padding: 7px 8px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  scroll-snap-align: center !important;
+  border: 2px solid rgba(255, 229, 148, 0.82) !important;
+  border-radius: 18px !important;
+  color: #fff8d9 !important;
+  text-align: center !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(39, 58, 130, 0.92), rgba(22, 28, 78, 0.94)) !important;
+  box-shadow:
+    0 5px 0 rgba(60, 37, 14, 0.55),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
+  animation: none !important;
+}
+
+.dragonCavePage .dragon-cave-page .hatch-slot-card.is-locked {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 38%),
+    linear-gradient(180deg, rgba(58, 59, 98, 0.92), rgba(31, 31, 68, 0.94)) !important;
+}
+
+.dragonCavePage .dragon-cave-page .hatch-slot-card header {
+  display: grid;
+  align-items: center;
+  min-width: 0;
+}
+
+.dragonCavePage .dragon-cave-page .hatch-slot-card h3 {
+  margin: 0;
+  overflow: hidden;
+  color: #ffeaa4;
+  font-size: 0.76rem;
+  font-weight: 950;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dragonCavePage .cave-slot-visual {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 38px;
+  min-height: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+}
+
+.dragonCavePage button.cave-slot-visual {
+  cursor: pointer;
+}
+
+.dragonCavePage button.cave-slot-visual:active {
+  transform: scale(0.95);
+}
+
+.dragonCavePage .slot-plus-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(255, 236, 160, 0.88);
+  border-radius: 50%;
+  color: #5f3b11;
+  background: linear-gradient(180deg, #fff4a8, #ffb74b);
+  box-shadow: 0 3px 0 rgba(68, 40, 14, 0.5);
+  font-size: 1.35rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.dragonCavePage .slot-lock-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #f5e5ca;
+  background: rgba(12, 17, 52, 0.42);
+  font-size: 1.4rem;
+}
+
+.dragonCavePage .slot-egg-image,
+.dragonCavePage .slot-egg-placeholder {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.dragonCavePage .slot-egg-placeholder {
+  display: block;
+  border-radius: 50% 50% 46% 46%;
+  background:
+    radial-gradient(circle at 34% 22%, rgba(255, 255, 255, 0.86) 0 5px, transparent 6px),
+    linear-gradient(160deg, #fff0ce, #b98cff 58%, #56327a);
+}
+
+.dragonCavePage .slot-egg-name,
+.dragonCavePage .slot-state {
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.15;
+}
+
+.dragonCavePage .slot-egg-name {
+  color: rgba(255, 255, 255, 0.96);
+  font-size: 0.66rem;
+  font-weight: 950;
+}
+
+.dragonCavePage .slot-state {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.62rem;
+  font-weight: 900;
+}
+
+.dragonCavePage .slot-progress {
+  width: 100%;
+  height: 9px;
+  margin-top: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 238, 171, 0.52);
+  border-radius: 999px;
+  background: rgba(14, 15, 48, 0.58);
+}
+
+.dragonCavePage .slot-progress-fill {
+  display: block;
+  width: var(--p, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #50f0ff, #fff28b);
+  box-shadow: 0 0 8px rgba(105, 241, 255, 0.72);
+}
+
+.dragonCavePage .cave-slot-button {
+  align-self: end;
+  width: 100%;
+  min-height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 13px;
+  color: #4d2b09;
+  background: linear-gradient(180deg, #fff0a5, #ffb44d);
+  box-shadow: 0 3px 0 rgba(71, 42, 13, 0.55);
+  font-size: 0.68rem;
+  font-weight: 950;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dragonCavePage .cave-slot-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(71, 42, 13, 0.55);
+}
+
+.dragonCavePage .cave-slot-button.is-claim {
+  background: linear-gradient(180deg, #fff6b8, #ffd15a);
+}
+
+.dragonCavePage .hatch-dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  height: 8px;
+  margin-top: 0;
+  pointer-events: none;
+}
+
+.dragonCavePage .hatch-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.dragonCavePage .hatch-dots span.is-active {
+  background: #ffe36b;
+  box-shadow: 0 0 8px rgba(255, 229, 97, 0.8);
+}
+
+@media (max-width: 390px) {
+  .dragonCavePage .dragon-cave-page {
+    gap: 5px;
+    padding-top: 6px;
+  }
+
+  .dragonCavePage .cave-title-panel {
+    padding: 8px 12px 9px;
+  }
+
+  .dragonCavePage .cave-title-panel h1 {
+    font-size: 1.34rem;
+  }
+
+  .dragonCavePage .dragon-cave-page .hatch-island-section {
+    flex-basis: clamp(210px, 31vh, 244px) !important;
+    height: clamp(210px, 31vh, 244px) !important;
+  }
+
+  .dragonCavePage .dragon-cave-page .hatch-island-art {
+    width: 88% !important;
+  }
+
+  .dragonCavePage .dragon-cave-page .hatch-machines-section {
+    flex-basis: 178px !important;
+    height: 178px !important;
+  }
+
+  .dragonCavePage .dragon-cave-page .hatch-machines-scroll {
+    height: 148px !important;
+  }
+
+  .dragonCavePage .dragon-cave-page .hatch-slot-card {
+    flex-basis: 47% !important;
+    min-width: 136px !important;
+    height: 140px !important;
+  }
+}
