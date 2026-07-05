@@ -57,6 +57,10 @@
     "hatch": {
       "path": "assets/island/island-hatch.png",
       "purpose": "Reserved hatch island art."
+    },
+    "nestTemp": {
+      "path": "assets/island/nest-temp.png",
+      "purpose": "Temporary nest art for the Dragon Cave hatch island overview."
     }
   },
   "restIsland": {

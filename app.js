@@ -380,7 +380,8 @@ const ASSETS = {
   },
   islands: {
     rest: "assets/island/island-rest.png",
-    hatch: "assets/island/island-hatch.png"
+    hatch: "assets/island/island-hatch.png",
+    nest: "assets/island/nest-temp.png"
   },
   characters: {
     mimiFull: "assets/characters/mimi-guide-full.png",
@@ -5181,37 +5182,44 @@ function renderWorldDragonCavePage(index) {
 
 function getHatchOverviewSlots() {
   return (state.hatchIsland?.hatchSlots || [])
-    .filter((slot) => slot?.unlocked && slot.currentEgg && slot.status !== "locked")
+    .filter((slot) => slot?.unlocked && slot.currentEgg && getHatchSlotStatus(slot).state === "hatching")
     .slice(0, 6);
 }
 
 function renderHatchIslandOverview() {
   const activeSlots = getHatchOverviewSlots();
   const count = activeSlots.length;
+  const featuredEgg = activeSlots[0]?.currentEgg || null;
   return `
     <div class="hatch-island-overview count-${count}" data-egg-count="${count}" aria-label="孵蛋總覽">
       <div class="hatch-nest-base${count === 0 ? " is-empty" : ""}" aria-hidden="true">
-        ${count === 0 ? `<span>空巢</span>` : ""}
+        <img
+          class="hatch-nest-art"
+          src="${ASSETS.islands.nest}"
+          alt=""
+          decoding="async"
+          loading="lazy"
+          onerror="this.hidden=true;this.nextElementSibling.hidden=false"
+        >
+        <span class="hatch-nest-fallback" hidden></span>
       </div>
-      ${activeSlots.map((slot, index) => renderHatchOverviewEgg(slot, index, count)).join("")}
+      ${featuredEgg ? renderHatchOverviewEgg(featuredEgg, activeSlots[0].id) : ""}
+      <div class="hatch-island-status">目前孵化中：${count}</div>
     </div>
   `;
 }
 
-function renderHatchOverviewEgg(slot, index, count) {
-  const status = getHatchSlotStatus(slot);
-  const egg = slot.currentEgg;
+function renderHatchOverviewEgg(egg, slotId) {
   return `
     <button
-      class="hatch-overview-egg egg-pos-${index}${status.ready ? " is-ready" : " is-hatching"}"
+      class="hatch-overview-egg is-hatching"
       type="button"
       data-v2-action="focus-hatch-slot"
-      data-slot-id="${slot.id}"
-      style="--egg-order:${index};--egg-count:${count};"
-      aria-label="${escapeHtml(egg.name)} ${status.ready ? "可領取" : "孵化中"}"
+      data-slot-id="${slotId}"
+      aria-label="${escapeHtml(egg.name)} 孵化中"
     >
-      ${homeV2Image(homeV2EggImage(egg), egg.name, "龍蛋")}
-      ${status.ready ? `<span class="hatch-ready-spark" aria-hidden="true"></span>` : ""}
+      <img src="${homeV2EggImage(egg)}" alt="${escapeHtml(egg.name)}" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+      <span class="hatch-featured-egg-fallback" hidden aria-hidden="true"></span>
     </button>
   `;
 }
@@ -5269,9 +5277,15 @@ function renderHomeV2Slot(slot) {
           <span class="home-v2-slot-type">時間孵化器</span>
           <h3>${escapeHtml(slot.id?.replace("slot-", "孵化器 ") || "孵化器")}</h3>
         </header>
-        <div class="home-v2-slot-visual asset-host">
+        <button
+          class="home-v2-slot-visual hatch-slot-plus-button asset-host"
+          type="button"
+          data-v2-action="open-egg-modal"
+          data-slot-id="${slot.id}"
+          aria-label="加入龍蛋"
+        >
           ${homeV2Image(ASSETS.ui.hatchSlotEmpty, "空蛋槽", "+")}
-        </div>
+        </button>
         <p class="slot-status-text">點擊放入龍蛋</p>
         <button class="home-v2-unlock" type="button" data-v2-action="open-egg-modal" data-slot-id="${slot.id}">
           放入龍蛋
@@ -5287,7 +5301,7 @@ function renderHomeV2Slot(slot) {
         <h3>${escapeHtml(slot.id?.replace("slot-", "孵化器 ") || "孵化器")}</h3>
       </header>
       <div class="home-v2-slot-visual">
-        ${homeV2Image(homeV2EggImage(slot.currentEgg), slot.currentEgg.name, "龍蛋")}
+        ${homeV2Image(homeV2EggImage(slot.currentEgg), slot.currentEgg.name, "🥚")}
       </div>
       <b class="slot-egg-name">${escapeHtml(slot.currentEgg.name)}</b>
       <p class="slot-status-text">${escapeHtml(status.label)}</p>
@@ -5316,7 +5330,7 @@ function renderEggSelectionModal() {
           ${eggs.length > 0 ? eggs.map((egg) => `
             <article class="egg-choice-card">
               <div class="egg-choice-art">
-                ${homeV2Image(homeV2EggImage(egg), egg.name, "龍蛋")}
+                ${homeV2Image(homeV2EggImage(egg), egg.name, "🥚")}
               </div>
               <div class="egg-choice-info">
                 <b>${escapeHtml(egg.name)}</b>

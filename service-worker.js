@@ -1,4 +1,4 @@
-const CACHE_NAME = "dragon-adventure-v36";
+const CACHE_NAME = "dragon-adventure-v37";
 
 const CORE_ASSETS = [
   "./",
@@ -26,6 +26,7 @@ const CORE_ASSETS = [
   "./home-v2.css?v=25",
   "./home-v2.css?v=26",
   "./home-v2.css?v=27",
+  "./home-v2.css?v=28",
   "./app.js",
   "./app.js?v=14",
   "./app.js?v=15",
@@ -44,6 +45,7 @@ const CORE_ASSETS = [
   "./app.js?v=29",
   "./app.js?v=30",
   "./app.js?v=31",
+  "./app.js?v=32",
   "./home-v2-overrides.js",
   "./home-v2-overrides.js?v=1",
   "./manifest.json",
@@ -87,6 +89,7 @@ const CORE_ASSETS = [
   "./assets/islands/island-hatch.png",
   "./assets/island/island-rest.png",
   "./assets/island/island-hatch.png",
+  "./assets/island/nest-temp.png",
   "./assets/characters/mimi-guide-full.png",
   "./assets/characters/mimi-head.png",
   "./assets/characters/mimi-avatar.png",
