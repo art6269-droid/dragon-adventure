@@ -6175,3 +6175,39 @@ function findHatchSlotElement(slotId) {
   return Array.from(document.querySelectorAll(".hatch-slot-card[data-slot-id]"))
     .find((element) => element.dataset.slotId === slotId) || null;
 }
+
+// Final rest-island placement tuning. This override keeps the current
+// worldPager intact while giving dragons room to stand on the enlarged island.
+function renderHomeV2Dragon(dragon, index) {
+  const positions = [
+    { x: 25, y: 58, s: 0.9 },
+    { x: 50, y: 51, s: 0.98 },
+    { x: 72, y: 59, s: 0.84 },
+    { x: 36, y: 70, s: 0.72 },
+    { x: 64, y: 70, s: 0.7 }
+  ];
+  const pos = positions[index % positions.length];
+  const rarity = String(dragon.rarity || "C");
+  const image = ASSETS.dragons[rarity.toLowerCase()] || ASSETS.dragons.c;
+  const rarityClass = `is-rarity-${rarity.toLowerCase()}`;
+  return `
+    <button
+      class="home-v2-dragon ${rarityClass}"
+      type="button"
+      data-v2-action="select-dragon"
+      data-dragon-id="${dragon.id}"
+      style="--x:${pos.x}%;--y:${pos.y}%;--s:${pos.s};--idle-delay:${index * -0.45}s;"
+      aria-label="${escapeHtml(dragon.name || "龍夥伴")}"
+    >
+      <span class="dragon-ground-shadow" aria-hidden="true"></span>
+      <span class="dragon-aura" aria-hidden="true"></span>
+      <span class="dragon-portrait">
+        ${homeV2Image(image, dragon.name || "龍夥伴", dragon.element || "龍")}
+      </span>
+      <span class="dragon-nameplate">
+        <b>${escapeHtml(dragon.name || "龍夥伴")}</b>
+        <span><i>${rarity}</i>${escapeHtml(dragon.element || "未知")}</span>
+      </span>
+    </button>
+  `;
+}
