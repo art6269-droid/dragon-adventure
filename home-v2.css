@@ -3195,32 +3195,41 @@ body.home-v2-active #toastLayer #toast.is-visible {
   overflow: hidden;
   border-radius: 18px;
   border: 2px solid rgba(255, 220, 126, 0.82);
-  background:
-    radial-gradient(circle at 74% 22%, rgba(255, 255, 255, 0.22), transparent 22%),
-    linear-gradient(145deg, #17366f, #102455);
+  background-color: #102455;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: #fff;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
 }
 
+.explore-area-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--explore-card-overlay, linear-gradient(90deg, rgba(8, 18, 50, 0.78), rgba(8, 18, 50, 0.48), rgba(8, 18, 50, 0.24)));
+}
+
+.explore-area-card > * {
+  position: relative;
+  z-index: 1;
+}
+
 .explore-area-card.explore-volcano {
-  background:
-    radial-gradient(circle at 76% 24%, rgba(255, 224, 120, 0.24), transparent 24%),
-    linear-gradient(145deg, #6b1f1c, #d5592c 48%, #1a254d);
+  --explore-card-overlay: linear-gradient(90deg, rgba(80, 10, 0, 0.82), rgba(120, 30, 0, 0.5), rgba(255, 90, 20, 0.16));
 }
 
 .explore-area-card.explore-ocean {
-  background:
-    radial-gradient(circle at 74% 22%, rgba(185, 248, 255, 0.3), transparent 24%),
-    linear-gradient(145deg, #10416f, #18a9cf 50%, #112958);
+  --explore-card-overlay: linear-gradient(90deg, rgba(0, 35, 90, 0.82), rgba(0, 90, 130, 0.5), rgba(40, 200, 255, 0.16));
 }
 
 .explore-area-card.explore-forest {
   grid-column: 1 / -1;
   width: calc(50% - 6px);
   justify-self: center;
-  background:
-    radial-gradient(circle at 76% 24%, rgba(232, 255, 172, 0.26), transparent 24%),
-    linear-gradient(145deg, #1a5635, #71a948 52%, #14315a);
+  --explore-card-overlay: linear-gradient(90deg, rgba(10, 70, 25, 0.82), rgba(40, 110, 40, 0.5), rgba(120, 220, 90, 0.16));
 }
 
 .explore-card-art {

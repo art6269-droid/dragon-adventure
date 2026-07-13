@@ -478,8 +478,11 @@ const ASSETS = {
   },
   explore: {
     volcano: "assets/explore/explore-volcano.png",
+    volcanoBg: "assets/explore/explore-volcano-bg.png",
     ocean: "assets/explore/explore-ocean.png",
+    oceanBg: "assets/explore/explore-ocean-bg.png",
     forest: "assets/explore/explore-forest.png",
+    forestBg: "assets/explore/explore-forest-bg.png",
     rare: "assets/explore/explore-rare.png",
     revealBg: "assets/explore/explore-reveal-bg.png",
     ticket: "assets/explore/explore-ticket.png",
@@ -910,7 +913,8 @@ const EXPLORE_AREAS = [
     name: "火山",
     mainElement: "fire",
     description: "偏火屬性龍蛋",
-    image: ASSETS.explore.volcano,
+    icon: ASSETS.explore.volcano,
+    bg: ASSETS.explore.volcanoBg,
     ticketCost: 1
   },
   {
@@ -918,7 +922,8 @@ const EXPLORE_AREAS = [
     name: "海洋",
     mainElement: "water",
     description: "偏水屬性龍蛋",
-    image: ASSETS.explore.ocean,
+    icon: ASSETS.explore.ocean,
+    bg: ASSETS.explore.oceanBg,
     ticketCost: 1
   },
   {
@@ -926,7 +931,8 @@ const EXPLORE_AREAS = [
     name: "森林",
     mainElement: "wood",
     description: "偏木屬性龍蛋",
-    image: ASSETS.explore.forest,
+    icon: ASSETS.explore.forest,
+    bg: ASSETS.explore.forestBg,
     ticketCost: 1
   }
 ];
@@ -3394,9 +3400,9 @@ function renderWorldExplorePage(index) {
         ${renderExploreMissionStrip()}
         <div class="explore-area-grid">
           ${EXPLORE_AREAS.map((area) => `
-            <article class="explore-area-card explore-${area.id}" aria-label="${escapeHtml(area.name)}">
+            <article class="explore-area-card explore-${area.id}" aria-label="${escapeHtml(area.name)}" style="background-image:url('${escapeHtml(area.bg)}')">
               <div class="explore-card-icon" aria-hidden="true">
-                <img src="${area.image}" alt="" onerror="this.hidden=true">
+                <img src="${area.icon}" alt="" onerror="this.hidden=true">
                 <span>${escapeHtml(dragonElementText(area.mainElement))}</span>
               </div>
               <div class="explore-card-content">
@@ -7365,7 +7371,7 @@ function renderWorldExplorePage(index) {
         ${renderExploreMissionStrip()}
         <div class="explore-area-grid">
           ${EXPLORE_AREAS.map((area) => `
-            <article class="explore-area-card explore-${area.id}" aria-label="${escapeHtml(area.name)}">
+            <article class="explore-area-card explore-${area.id}" aria-label="${escapeHtml(area.name)}" style="background-image:url('${escapeHtml(area.bg)}')">
               <div class="explore-card-content">
                 <h2>${escapeHtml(area.name)}</h2>
                 <p>${escapeHtml(area.description)}</p>
@@ -9252,9 +9258,9 @@ function renderWorldExplorePage(index) {
         ${renderExploreMissionStrip()}
         <div class="explore-area-grid">
           ${EXPLORE_AREAS.map((area) => `
-            <article class="explore-area-card explore-${area.id}" aria-label="${escapeHtml(area.name)}">
+            <article class="explore-area-card explore-${area.id}" aria-label="${escapeHtml(area.name)}" style="background-image:url('${escapeHtml(area.bg)}')">
               <div class="explore-card-icon" aria-hidden="true">
-                <img src="${area.image}" alt="" onerror="this.hidden=true">
+                <img src="${area.icon}" alt="" onerror="this.hidden=true">
                 <span>${escapeHtml(dragonElementText(area.mainElement))}</span>
               </div>
               <div class="explore-card-content">

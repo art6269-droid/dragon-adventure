@@ -1,4 +1,4 @@
-const CACHE_NAME = "dragon-adventure-v62";
+const CACHE_NAME = "dragon-adventure-v63";
 
 const CORE_ASSETS = [
   "./",
@@ -45,6 +45,7 @@ const CORE_ASSETS = [
   "./home-v2.css?v=44",
   "./home-v2.css?v=45",
   "./home-v2.css?v=46",
+  "./home-v2.css?v=47",
   "./app.js",
   "./app.js?v=14",
   "./app.js?v=15",
@@ -88,6 +89,7 @@ const CORE_ASSETS = [
   "./app.js?v=54",
   "./app.js?v=55",
   "./app.js?v=56",
+  "./app.js?v=57",
   "./home-v2-overrides.js",
   "./home-v2-overrides.js?v=1",
   "./home-v2-overrides.js?v=2",
@@ -131,8 +133,11 @@ const CORE_ASSETS = [
   "./assets/tutorial/tutorial-panel.png",
   "./assets/tutorial/tutorial-step-badge.png",
   "./assets/explore/explore-volcano.png",
+  "./assets/explore/explore-volcano-bg.png",
   "./assets/explore/explore-ocean.png",
+  "./assets/explore/explore-ocean-bg.png",
   "./assets/explore/explore-forest.png",
+  "./assets/explore/explore-forest-bg.png",
   "./assets/explore/explore-rare.png",
   "./assets/explore/explore-reveal-bg.png",
   "./assets/explore/explore-ticket.png",
