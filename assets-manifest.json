@@ -97,10 +97,39 @@
       "purpose": "Soft glow behind rest island dragons."
     }
   },
+  "dragonGrowthAssets": {
+    "fallback": {
+      "path": "assets/dragons/placeholder-dragon.png",
+      "purpose": "Fallback image used when a dragon action asset is missing."
+    },
+    "matrix": {
+      "pathPattern": "assets/dragons/{element}/{stage}/{action}.png",
+      "elements": ["fire", "water", "wood", "light", "dark"],
+      "stages": ["baby", "middle", "adult", "evolve"],
+      "actions": ["idle", "sleep", "walk", "fly", "eat", "train", "attack"],
+      "totalFiles": 140,
+      "purpose": "Replaceable dragon growth and action placeholder assets for rest island, team, and future battle views."
+    },
+    "avatars": {
+      "pathPattern": "assets/dragons/{element}/{stage}/avatar.png",
+      "fallbackOrder": ["avatar.png", "idle.png", "assets/dragons/placeholder-dragon.png"],
+      "purpose": "Independent dragon portrait assets for dragon detail panels and status panels."
+    },
+    "examples": [
+      "assets/dragons/fire/baby/idle.png",
+      "assets/dragons/fire/baby/avatar.png",
+      "assets/dragons/water/middle/fly.png",
+      "assets/dragons/dark/evolve/attack.png"
+    ]
+  },
   "worldNavigation": {
     "home": {
       "path": "assets/ui/nav-home.png",
       "purpose": "Bottom navigation icon for Home."
+    },
+    "dragonHouse": {
+      "path": "assets/ui/icon-dragon-house.png",
+      "purpose": "Bottom navigation icon for Dragon House / full dragon storage management."
     },
     "dragonCave": {
       "path": "assets/ui/nav-dragon-cave.png",
@@ -121,6 +150,72 @@
     "quest": {
       "path": "assets/ui/nav-quest.png",
       "purpose": "Bottom navigation icon for Quest."
+    }
+  },
+  "tutorial": {
+    "bgDark": {
+      "path": "assets/tutorial/tutorial-bg-dark.png",
+      "purpose": "Dark full-screen beginner tutorial background."
+    },
+    "panel": {
+      "path": "assets/tutorial/tutorial-panel.png",
+      "purpose": "Beginner tutorial panel placeholder."
+    },
+    "stepBadge": {
+      "path": "assets/tutorial/tutorial-step-badge.png",
+      "purpose": "Beginner tutorial step badge placeholder."
+    }
+  },
+  "explore": {
+    "volcano": {
+      "path": "assets/explore/explore-volcano.png",
+      "purpose": "Explore area card art for Volcano."
+    },
+    "ocean": {
+      "path": "assets/explore/explore-ocean.png",
+      "purpose": "Explore area card art for Ocean."
+    },
+    "forest": {
+      "path": "assets/explore/explore-forest.png",
+      "purpose": "Explore area card art for Forest."
+    },
+    "rare": {
+      "path": "assets/explore/explore-rare.png",
+      "purpose": "Explore area card art for Rare Aura."
+    },
+    "ticket": {
+      "path": "assets/explore/explore-ticket.png",
+      "purpose": "Explore ticket icon."
+    },
+    "revealBg": {
+      "path": "assets/explore/explore-reveal-bg.png",
+      "purpose": "Egg reveal overlay background."
+    },
+    "glowEffect": {
+      "path": "assets/explore/explore-glow-effect.png",
+      "purpose": "Egg reveal glow effect placeholder."
+    }
+  },
+  "tasks": {
+    "banner": {
+      "path": "assets/tasks/task-banner.png",
+      "purpose": "Mission page banner placeholder."
+    },
+    "rewardCoin": {
+      "path": "assets/tasks/task-reward-coin.png",
+      "purpose": "Mission coin reward icon."
+    },
+    "rewardGem": {
+      "path": "assets/tasks/task-reward-gem.png",
+      "purpose": "Mission gem reward icon."
+    },
+    "rewardTicket": {
+      "path": "assets/tasks/task-reward-ticket.png",
+      "purpose": "Mission explore ticket reward icon."
+    },
+    "rewardBag": {
+      "path": "assets/tasks/task-reward-bag.png",
+      "purpose": "Mission mystery bag reward icon."
     }
   },
   "placeholders": {
@@ -155,6 +250,22 @@
     "iconPlus": {
       "path": "assets/ui/icon-plus.png",
       "purpose": "Temporary plus icon for empty hatch slots."
+    },
+    "dragonHouseSearch": {
+      "path": "assets/ui/icon-dragon-search.png",
+      "purpose": "Dragon House search field icon."
+    },
+    "dragonHouseFilter": {
+      "path": "assets/ui/icon-dragon-filter.png",
+      "purpose": "Dragon House filter icon placeholder."
+    },
+    "dragonHouseEmptySlot": {
+      "path": "assets/ui/icon-dragon-empty-slot.png",
+      "purpose": "Empty owned-capacity slot shown in Dragon House grid."
+    },
+    "dragonHouseLockedSlot": {
+      "path": "assets/ui/icon-dragon-locked-slot.png",
+      "purpose": "Reserved locked Dragon House slot placeholder."
     }
   }
 }

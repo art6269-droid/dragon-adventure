@@ -441,6 +441,7 @@ const ASSETS = {
     navExplore: "assets/icons/nav-explore.png",
     navGuild: "assets/icons/nav-guild.png",
     navStage: "assets/icons/nav-stage.png",
+    navDragonHouse: "assets/ui/icon-dragon-house.png",
     navQuest: "assets/ui/nav-quest.png"
   },
   items: {
@@ -469,6 +470,27 @@ const ASSETS = {
     rarityFrame: "assets/effects/fx-rarity-frame.png",
     rainbowLegend: "assets/effects/fx-rainbow-legend.png",
     hitBurst: "assets/effects/fx-hit-burst.png"
+  },
+  tutorial: {
+    bgDark: "assets/tutorial/tutorial-bg-dark.png",
+    panel: "assets/tutorial/tutorial-panel.png",
+    stepBadge: "assets/tutorial/tutorial-step-badge.png"
+  },
+  explore: {
+    volcano: "assets/explore/explore-volcano.png",
+    ocean: "assets/explore/explore-ocean.png",
+    forest: "assets/explore/explore-forest.png",
+    rare: "assets/explore/explore-rare.png",
+    revealBg: "assets/explore/explore-reveal-bg.png",
+    ticket: "assets/explore/explore-ticket.png",
+    glow: "assets/explore/explore-glow-effect.png"
+  },
+  tasks: {
+    banner: "assets/tasks/task-banner.png",
+    rewardCoin: "assets/tasks/task-reward-coin.png",
+    rewardGem: "assets/tasks/task-reward-gem.png",
+    rewardTicket: "assets/tasks/task-reward-ticket.png",
+    rewardBag: "assets/tasks/task-reward-bag.png"
   },
   cards: {
     characters: {
@@ -521,6 +543,11 @@ const ASSETS = {
     hatchProgressBar: "assets/ui/hatch-progress-bar.png",
     iconLock: "assets/ui/icon-lock.png",
     iconPlus: "assets/ui/icon-plus.png",
+    iconDragonHouse: "assets/ui/icon-dragon-house.png",
+    iconDragonSearch: "assets/ui/icon-dragon-search.png",
+    iconDragonFilter: "assets/ui/icon-dragon-filter.png",
+    iconDragonEmptySlot: "assets/ui/icon-dragon-empty-slot.png",
+    iconDragonLockedSlot: "assets/ui/icon-dragon-locked-slot.png",
     navHome: "assets/ui/nav-home.png",
     navDragonCave: "assets/ui/nav-dragon-cave.png",
     navGearShop: "assets/ui/nav-gear-shop.png",
@@ -583,6 +610,7 @@ const assetSources = {
   dragonShadow: assetPathList(ASSETS.ui.dragonShadow),
   dragonGlow: assetPathList(ASSETS.ui.dragonGlow),
   navHome: assetPathList(ASSETS.ui.navHome, ASSETS.icons.navHome, ASSETS.icons.home),
+  navDragonHouse: assetPathList(ASSETS.ui.iconDragonHouse, ASSETS.icons.navDragonHouse, ASSETS.icons.dragon),
   navDragonCave: assetPathList(ASSETS.ui.navDragonCave, ASSETS.icons.navDragonCave, ASSETS.icons.navEggs, ASSETS.icons.egg),
   navEquipmentShop: assetPathList(ASSETS.ui.navGearShop, ASSETS.icons.navEquipmentShop, ASSETS.icons.shop),
   navItemShop: assetPathList(ASSETS.ui.navItemShop, ASSETS.icons.navItemShop, ASSETS.icons.bag),
@@ -590,7 +618,12 @@ const assetSources = {
   navExplore: assetPathList(ASSETS.ui.navExplore, ASSETS.icons.navExplore, ASSETS.icons.adventure),
   navGuild: assetPathList(ASSETS.icons.navGuild, ASSETS.icons.dragon),
   navStage: assetPathList(ASSETS.icons.navStage, ASSETS.icons.pk),
-  navQuest: assetPathList(ASSETS.ui.navQuest, ASSETS.icons.navQuest, ASSETS.icons.egg)
+  navQuest: assetPathList(ASSETS.ui.navQuest, ASSETS.icons.navQuest, ASSETS.icons.egg),
+  dragonHouseIcon: assetPathList(ASSETS.ui.iconDragonHouse, ASSETS.icons.dragon),
+  dragonSearchIcon: assetPathList(ASSETS.ui.iconDragonSearch),
+  dragonFilterIcon: assetPathList(ASSETS.ui.iconDragonFilter),
+  dragonEmptySlotIcon: assetPathList(ASSETS.ui.iconDragonEmptySlot),
+  dragonLockedSlotIcon: assetPathList(ASSETS.ui.iconDragonLockedSlot)
 };
 
 const characterCardCatalog = [
@@ -787,6 +820,191 @@ const HATCH_EGG_DEFINITIONS = {
   }
 };
 
+const DRAGON_GROWTH_ELEMENTS = ["fire", "water", "wood", "light", "dark"];
+const DRAGON_GROWTH_STAGES = ["baby", "middle", "adult", "evolve"];
+const DRAGON_ACTIONS = ["idle", "sleep", "walk", "fly", "eat", "train", "attack", "angry"];
+const REST_RANDOM_ACTIONS = ["idle", "sleep", "walk", "fly"];
+const REST_ISLAND_BOUNDS = { minX: 15, maxX: 85, minY: 35, maxY: 72 };
+const REST_ISLAND_MAX_DRAGONS = 6;
+const REST_INITIAL_POSITIONS = [
+  { x: 24, y: 63, s: 0.94 },
+  { x: 50, y: 57, s: 1.02 },
+  { x: 73, y: 64, s: 0.88 },
+  { x: 35, y: 75, s: 0.76 },
+  { x: 64, y: 75, s: 0.74 }
+];
+const BATTLE_TEAM_LIMIT = 3;
+const DRAGON_FALLBACK_ASSET = "assets/dragons/placeholder-dragon.png";
+const DRAGON_HOUSE_DEFAULT = {
+  baseRows: 5,
+  columns: 5,
+  purchasedUpgrades: 0,
+  maxUpgrades: 10
+};
+const DRAGON_HOUSE_LEVEL_FILTERS = {
+  all: () => true,
+  "1-9": (level) => level >= 1 && level <= 9,
+  "10-19": (level) => level >= 10 && level <= 19,
+  "20-39": (level) => level >= 20 && level <= 39,
+  "40+": (level) => level >= 40
+};
+const EGG_RARITY_RATES = [
+  { rarity: "C", rate: 45 },
+  { rarity: "B", rate: 28 },
+  { rarity: "A", rate: 15 },
+  { rarity: "S", rate: 7 },
+  { rarity: "SS", rate: 4 },
+  { rarity: "SSS", rate: 1 }
+];
+const TUTORIAL_STEPS = [
+  {
+    title: "歡迎來到《龍的冒險》！",
+    body: "我是 Mimi，接下來我會陪你一起認識這座充滿驚喜的龍之世界！"
+  },
+  {
+    title: "這裡是龍之島，也就是休息島。",
+    body: "只要龍蛋成功孵化，龍寶寶就會回到這裡休息、活動，這裡就是牠們的家。"
+  },
+  {
+    title: "想得到龍蛋嗎？當然要先去探險啦！",
+    body: "我先送你 3 張「探險券」，接下來就要靠你自己努力囉！",
+    grantExploreTickets: 3
+  },
+  {
+    title: "請點擊下方的「探險」。",
+    body: "你可以前往火山、海洋或森林探索龍蛋。偶爾，也可能遇見稀有的光屬性或暗屬性龍蛋喔！",
+    navTarget: "explore"
+  },
+  {
+    title: "恭喜你！你已經成功取得龍蛋了。",
+    body: "接下來準備把牠帶回來孵化吧！"
+  },
+  {
+    title: "現在請回到「孵蛋島」。",
+    body: "把剛剛拿到的龍蛋放進孵化器中。",
+    navTarget: "dragonCave"
+  },
+  {
+    title: "孵出來啦！",
+    body: "接下來請好好照顧你的龍寶寶，陪伴牠長大，直到牠可以出戰冒險！"
+  }
+];
+const BEGINNER_MISSION_DEFS = [
+  { id: "getEgg", title: "取得龍蛋", target: 1, reward: { coins: 200 } },
+  { id: "goHatchIsland", title: "回到孵蛋島", target: 1, reward: { diamonds: 10 } },
+  { id: "putInIncubator", title: "放入孵化器", target: 1, reward: { ticketsExplore: 1 } },
+  { id: "finishHatch", title: "完成孵化", target: 1, reward: { coins: 300 } },
+  { id: "feedOnce", title: "餵食 1 次", target: 1, reward: { diamonds: 10 } },
+  { id: "trainOnce", title: "訓練 1 次", target: 1, reward: { ticketsExplore: 1 } },
+  { id: "growBattleReady", title: "成長至可出戰", target: 1, reward: { items: { mysteryBag: 1 } } }
+];
+const BEGINNER_FINAL_REWARD = {
+  coins: 1000,
+  diamonds: 50,
+  ticketsExplore: 5,
+  items: { mysteryBag: 1 }
+};
+const EXPLORE_AREAS = [
+  {
+    id: "volcano",
+    name: "火山",
+    mainElement: "fire",
+    description: "偏火屬性龍蛋",
+    image: ASSETS.explore.volcano,
+    ticketCost: 1
+  },
+  {
+    id: "ocean",
+    name: "海洋",
+    mainElement: "water",
+    description: "偏水屬性龍蛋",
+    image: ASSETS.explore.ocean,
+    ticketCost: 1
+  },
+  {
+    id: "forest",
+    name: "森林",
+    mainElement: "wood",
+    description: "偏木屬性龍蛋",
+    image: ASSETS.explore.forest,
+    ticketCost: 1
+  }
+];
+const dragonElementLabels = {
+  fire: "火",
+  water: "水",
+  wood: "木",
+  light: "光",
+  dark: "暗",
+  火: "火",
+  水: "水",
+  木: "木",
+  光: "光",
+  暗: "暗"
+};
+const dragonStageLabels = {
+  baby: "幼龍",
+  middle: "中階",
+  adult: "成龍",
+  evolve: "進化"
+};
+const dragonElementToGrowthKey = {
+  fire: "fire",
+  water: "water",
+  wood: "wood",
+  grass: "wood",
+  light: "light",
+  dark: "dark",
+  火: "fire",
+  水: "water",
+  木: "wood",
+  風: "wood",
+  雷: "light",
+  土: "wood",
+  光: "light",
+  暗: "dark"
+};
+const growthDragonNames = {
+  fire: "赤焰",
+  water: "藍潮",
+  wood: "翠森",
+  light: "晨光",
+  dark: "深淵"
+};
+const growthStageLevel = {
+  baby: 1,
+  middle: 10,
+  adult: 22,
+  evolve: 40
+};
+const growthStageRarity = {
+  baby: "C",
+  middle: "B",
+  adult: "A",
+  evolve: "S"
+};
+Object.assign(elementClass, {
+  fire: "fire",
+  water: "water",
+  wood: "grass",
+  light: "light",
+  dark: "dark"
+});
+Object.assign(elementPalettes, {
+  fire: elementPalettes.火,
+  water: elementPalettes.水,
+  wood: elementPalettes.木,
+  light: elementPalettes.光,
+  dark: elementPalettes.暗
+});
+Object.assign(elementNames, {
+  fire: elementNames.火,
+  water: elementNames.水,
+  wood: elementNames.木,
+  light: elementNames.光,
+  dark: elementNames.暗
+});
+
 let state = loadGame();
 let activeTab = "home";
 let activeShopTab = "coin";
@@ -798,9 +1016,19 @@ let startGameTransitioning = false;
 let audioManager;
 let eggSelectionSlotId = null;
 let hatchTimerId = null;
+let restDragonBehaviorTimer = null;
+let selectedRestDragonId = state?.selectedRestDragonId || null;
+let lastClickedDragonId = null;
+let dragonClickCount = 0;
+let lastDragonClickTime = 0;
+let restDragonDragState = null;
+let restDragonSuppressClickUntil = 0;
+let restDragonSuppressClickId = null;
+let currentGachaResult = null;
 let currentWorldPage = 0;
 let lastWorldScrollDebugAt = 0;
 let lastWorldScrollDebugPage = -1;
+let dragonHouseFilters = { search: "", element: "all", level: "all", rarity: "all" };
 const homeV2Drag = {
   active: false,
   target: null,
@@ -1119,11 +1347,12 @@ function initialize() {
   window.setInterval(() => {
     renderHatchMini();
     renderQuestTracker();
-    if (activeTab === "home") renderHomeScene();
+    if (activeTab === "home" && !isHomeV2Visible()) renderHomeScene();
     if (activeTab === "eggs") renderEggInventory();
     if (activeTab === "hatch") renderEggs();
   }, 5000);
   startHatchTimer();
+  startRestDragonBehaviorLoop();
 }
 
 function attachAudioUnlockEvents() {
@@ -1218,6 +1447,11 @@ function attachEvents() {
   els.debugToggle.addEventListener("click", toggleDebugPanel);
   els.debugPanel.addEventListener("click", handleDebugAction);
   if (els.homeV2Root) {
+    els.homeV2Root.addEventListener("pointerdown", handleHomeV2DragonPointerShield, true);
+    els.homeV2Root.addEventListener("pointermove", handleHomeV2DragonDragMove, true);
+    els.homeV2Root.addEventListener("pointerup", handleHomeV2DragonDragEnd, true);
+    els.homeV2Root.addEventListener("pointercancel", handleHomeV2DragonDragEnd, true);
+    els.homeV2Root.addEventListener("click", handleHomeV2DragonDirectClick, true);
     els.homeV2Root.addEventListener("click", handleHomeV2Click);
     els.homeV2Root.addEventListener("scroll", handleHomeV2Scroll, true);
     els.homeV2Root.addEventListener("pointerdown", handleHomeV2PointerDown);
@@ -1247,6 +1481,14 @@ function loadGame() {
   }
 }
 
+function normalizeTutorial(tutorial = {}) {
+  return {
+    started: tutorial?.started !== false,
+    firstDrawUnlocked: Boolean(tutorial?.firstDrawUnlocked),
+    firstDrawUsed: Boolean(tutorial?.firstDrawUsed)
+  };
+}
+
 function createNewState() {
   const starterEggs = createStarterEggInventory();
   const starterHatchSlots = createDefaultHatchSlots();
@@ -1261,7 +1503,7 @@ function createNewState() {
     inventory: {
       items: {},
       equipment: [],
-      ticketsExplore: 3,
+      ticketsExplore: 0,
       ticketsMercenary: 2
     },
     homeIsland: { restDragons: [] },
@@ -1270,6 +1512,14 @@ function createNewState() {
     eggInventory: starterEggs,
     eggs: starterEggs,
     dragons: [],
+    soldDragonIds: [],
+    dragonHouse: normalizeDragonHouse(),
+    battleTeam: [],
+    tutorialSeen: false,
+    tutorialStep: 0,
+    beginnerQuestStarted: true,
+    missions: normalizeMissions(),
+    tutorial: normalizeTutorial({ tutorialSeen: false, step: 0, beginnerQuestStarted: true }),
     characterCards: initializeCardCollection(characterCardCatalog, ["char_flame_knight"], "char_flame_knight"),
     petCards: initializeCardCollection(petCardCatalog, ["pet_fire_wisp"], "pet_fire_wisp"),
     selectedCharacterId: "char_flame_knight",
@@ -1278,6 +1528,7 @@ function createNewState() {
     lastGachaResult: null,
     market: generateShopEggs(),
     activeDragonId: null,
+    selectedRestDragonId: null,
     pkScore: 1000,
     totalHatched: 0,
     highestRarity: "-"
@@ -1299,7 +1550,22 @@ function ensureValidState() {
     : createStarterEggInventory();
   state.eggs = state.eggInventory;
   state.dragons = Array.isArray(state.dragons) ? state.dragons.map(normalizeDragon) : [];
+  state.soldDragonIds = Array.isArray(state.soldDragonIds) ? state.soldDragonIds.filter(Boolean) : [];
+  state.dragonHouse = normalizeDragonHouse(state.dragonHouse);
+  state.battleTeam = normalizeBattleTeam(state.battleTeam, state.dragons);
+  syncDragonTeamFlags();
+  const savedRestDragonIds = Array.isArray(state.homeIsland?.restDragons)
+    ? new Set(state.homeIsland.restDragons.slice(0, REST_ISLAND_MAX_DRAGONS))
+    : new Set();
+  if (savedRestDragonIds.size > 0) {
+    state.dragons.forEach((dragon) => {
+      if (savedRestDragonIds.has(dragon.id) && !dragon.isInTeam && !dragon.sold) {
+        dragon.isOnRestIsland = true;
+      }
+    });
+  }
   state.inventory = normalizeInventory(state.inventory, defaults.inventory);
+  state.tutorial = normalizeTutorial(state.tutorial);
   state.hatchIsland = normalizeHatchIsland(state.hatchIsland || { hatchSlots: state.hatchSlots }, defaults.hatchIsland);
   state.hatchSlots = state.hatchIsland.hatchSlots;
   updateHatchSlots({ render: false, save: false });
@@ -1324,7 +1590,7 @@ function ensureValidState() {
   state.lastGachaResult = state.lastGachaResult && typeof state.lastGachaResult === "object" ? state.lastGachaResult : null;
   state.market = generateShopEggs();
   state.pkScore = normalizedNonNegative(state.pkScore, defaults.pkScore);
-  state.totalHatched = normalizedNonNegative(state.totalHatched, state.dragons.length);
+  state.totalHatched = normalizedNonNegative(state.totalHatched, defaults.totalHatched);
 
   if (!state.activeDragonId && state.dragons.length > 0) {
     state.activeDragonId = state.dragons[0].id;
@@ -1332,6 +1598,14 @@ function ensureValidState() {
   if (state.activeDragonId && !state.dragons.some((dragon) => dragon.id === state.activeDragonId)) {
     state.activeDragonId = state.dragons[0]?.id ?? null;
   }
+  if (state.selectedRestDragonId && !state.dragons.some((dragon) => (
+    dragon.id === state.selectedRestDragonId &&
+    dragon.isOnRestIsland === true &&
+    !dragon.isInTeam
+  ))) {
+    state.selectedRestDragonId = null;
+  }
+  selectedRestDragonId = state.selectedRestDragonId || null;
 
   if (!rarities.includes(state.highestRarity)) {
     state.highestRarity = getHighestRarityFromCollection();
@@ -1342,8 +1616,22 @@ function ensureValidState() {
 
 function normalizeDragon(dragon) {
   const rarity = rarities.includes(dragon?.rarity) ? dragon.rarity : "C";
-  const element = elements.includes(dragon?.element) ? dragon.element : randomItem(elements);
-  const fallback = createDragon(rarity, element);
+  const element = normalizeDragonElement(dragon?.element);
+  const stage = normalizeDragonStage(dragon?.stage, dragon?.level);
+  const fallback = createDragon(rarity, dragonElementLabels[element] || "火");
+  const level = positiveNumber(dragon?.level, growthStageLevel[stage] || 1);
+  const power = positiveNumber(
+    dragon?.power,
+    Math.round((rarityPower[rarity] || 1) * 10 + level * 2)
+  );
+  const assetBase = normalizeDragonAssetBase(dragon?.assetBase, element, stage);
+  const angryUntil = dragon?.angryUntil ? Number(dragon.angryUntil) : null;
+  const isAngry = Boolean(dragon?.isAngry && angryUntil && angryUntil > Date.now());
+  const lockActionUntil = dragon?.lockActionUntil ? Number(dragon.lockActionUntil) : null;
+  const savedAction = DRAGON_ACTIONS.includes(dragon?.currentAction) ? dragon.currentAction : "idle";
+  const currentAction = isAngry ? "angry" : (["attack", "angry"].includes(savedAction) ? "idle" : savedAction);
+  const isInTeam = Boolean(dragon?.isInTeam);
+  const isOnRestIsland = typeof dragon?.isOnRestIsland === "boolean" ? dragon.isOnRestIsland : false;
 
   return {
     ...fallback,
@@ -1352,14 +1640,224 @@ function normalizeDragon(dragon) {
     name: String(dragon?.name || fallback.name),
     rarity,
     element,
+    stage,
     hp: positiveNumber(dragon?.hp, fallback.hp),
     attack: positiveNumber(dragon?.attack, fallback.attack),
     defense: positiveNumber(dragon?.defense, fallback.defense),
     speed: positiveNumber(dragon?.speed, fallback.speed),
-    level: positiveNumber(dragon?.level, 1),
+    level,
     hunger: clamp(positiveNumber(dragon?.hunger, 80), 0, 100),
-    exp: Math.max(0, Number(dragon?.exp) || 0)
+    mood: clamp(positiveNumber(dragon?.mood, 80), 0, 100),
+    exp: Math.max(0, Number(dragon?.exp) || 0),
+    power,
+    isInTeam,
+    isOnRestIsland,
+    currentAction,
+    assetBase,
+    avatarAsset: String(dragon?.avatarAsset || "").startsWith(assetBase)
+      ? String(dragon.avatarAsset)
+      : `${assetBase}avatar.png`,
+    costumeId: dragon?.costumeId || null,
+    skinId: dragon?.skinId || null,
+    isAngry,
+    angryUntil: isAngry ? angryUntil : null,
+    lockActionUntil: lockActionUntil && lockActionUntil > Date.now() ? lockActionUntil : null,
+    lockPositionUntil: dragon?.lockPositionUntil && Number(dragon.lockPositionUntil) > Date.now()
+      ? Number(dragon.lockPositionUntil)
+      : null,
+    isDragging: false,
+    lastInteractedAt: dragon?.lastInteractedAt || null,
+    restX: finiteRestCoordinate(dragon?.restX),
+    restY: finiteRestCoordinate(dragon?.restY),
+    targetRestX: finiteRestCoordinate(dragon?.targetRestX),
+    targetRestY: finiteRestCoordinate(dragon?.targetRestY),
+    restScale: Number.isFinite(Number(dragon?.restScale)) ? Number(dragon.restScale) : null,
+    image: getDragonAsset({
+      element,
+      stage,
+      currentAction,
+      assetBase
+    })
   };
+}
+
+function createStarterGrowthDragons() {
+  return DRAGON_GROWTH_ELEMENTS.flatMap((elementKey) => (
+    DRAGON_GROWTH_STAGES.map((stage) => {
+      const id = `${elementKey}_${stage}_001`;
+      const level = growthStageLevel[stage] || 1;
+      const rarity = growthStageRarity[stage] || "C";
+      return {
+        id,
+        name: `${growthDragonNames[elementKey]}${dragonStageLabels[stage]}`,
+        element: elementKey,
+        rarity,
+        stage,
+        level,
+        exp: level * 10,
+        power: Math.round((rarityPower[rarity] || 1) * 12 + level * 3),
+        hp: Math.round(88 * (rarityPower[rarity] || 1) + level * 4),
+        attack: Math.round(24 * (rarityPower[rarity] || 1) + level * 2),
+        defense: Math.round(18 * (rarityPower[rarity] || 1) + level * 1.5),
+        speed: Math.round(14 * (rarityPower[rarity] || 1) + level),
+        hunger: 80,
+        mood: 90,
+        isInTeam: false,
+        currentAction: "idle",
+        assetBase: `assets/dragons/${elementKey}/${stage}/`,
+        avatarAsset: `assets/dragons/${elementKey}/${stage}/avatar.png`,
+        costumeId: null,
+        skinId: null,
+        isAngry: false,
+        angryUntil: null,
+        lockActionUntil: null,
+        lastInteractedAt: null
+      };
+    })
+  ));
+}
+
+function ensureStarterGrowthDragonData(dragons, excludedIds = []) {
+  const list = Array.isArray(dragons) ? [...dragons] : [];
+  const existingIds = new Set(list.map((dragon) => dragon.id));
+  const blockedIds = new Set(Array.isArray(excludedIds) ? excludedIds : []);
+  createStarterGrowthDragons().forEach((starterDragon) => {
+    if (blockedIds.has(starterDragon.id)) return;
+    if (!existingIds.has(starterDragon.id)) {
+      list.push(normalizeDragon(starterDragon));
+      existingIds.add(starterDragon.id);
+    }
+  });
+  return list;
+}
+
+function normalizeDragonElement(element) {
+  const key = dragonElementToGrowthKey[element] || dragonElementToGrowthKey[String(element || "").toLowerCase()];
+  return key || randomItem(DRAGON_GROWTH_ELEMENTS);
+}
+
+function normalizeDragonStage(stage, level = 1) {
+  if (DRAGON_GROWTH_STAGES.includes(stage)) return stage;
+  const numericLevel = positiveNumber(level, 1);
+  if (numericLevel >= 40) return "evolve";
+  if (numericLevel >= 20) return "adult";
+  if (numericLevel >= 10) return "middle";
+  return "baby";
+}
+
+function normalizeDragonAssetBase(assetBase, element, stage) {
+  return `assets/dragons/${normalizeDragonElement(element)}/${normalizeDragonStage(stage)}/`;
+}
+
+function getDragonAsset(dragon, action = null) {
+  const element = normalizeDragonElement(dragon?.element);
+  const stage = normalizeDragonStage(dragon?.stage, dragon?.level);
+  const base = normalizeDragonAssetBase(dragon?.assetBase, element, stage);
+  const selectedAction = DRAGON_ACTIONS.includes(action || dragon?.currentAction)
+    ? (action || dragon.currentAction)
+    : "idle";
+  return `${base}${selectedAction}.png`;
+}
+
+function getDragonAvatarAsset(dragon) {
+  const element = normalizeDragonElement(dragon?.element);
+  const stage = normalizeDragonStage(dragon?.stage, dragon?.level);
+  return `assets/dragons/${element}/${stage}/avatar.png`;
+}
+
+function finiteRestCoordinate(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function hashDragonPositionSeed(value) {
+  return String(value || "")
+    .split("")
+    .reduce((total, char) => ((total * 31) + char.charCodeAt(0)) % 9973, 17);
+}
+
+function getDefaultRestDragonPosition(dragon, index = 0) {
+  if (REST_INITIAL_POSITIONS[index]) return REST_INITIAL_POSITIONS[index];
+  const seed = hashDragonPositionSeed(dragon?.id || dragon?.name || index);
+  return {
+    x: REST_ISLAND_BOUNDS.minX + (seed % (REST_ISLAND_BOUNDS.maxX - REST_ISLAND_BOUNDS.minX)),
+    y: REST_ISLAND_BOUNDS.minY + ((Math.floor(seed / 7)) % (REST_ISLAND_BOUNDS.maxY - REST_ISLAND_BOUNDS.minY)),
+    s: 0.78
+  };
+}
+
+function clampRestDragonPosition(x, y) {
+  return {
+    x: clamp(Number(x), REST_ISLAND_BOUNDS.minX, REST_ISLAND_BOUNDS.maxX),
+    y: clamp(Number(y), REST_ISLAND_BOUNDS.minY, REST_ISLAND_BOUNDS.maxY)
+  };
+}
+
+function ensureRestDragonPosition(dragon, index = 0) {
+  if (!dragon) return false;
+  const fallback = getDefaultRestDragonPosition(dragon, index);
+  const currentX = finiteRestCoordinate(dragon?.restX);
+  const currentY = finiteRestCoordinate(dragon?.restY);
+  const next = currentX == null || currentY == null
+    ? clampRestDragonPosition(fallback.x, fallback.y)
+    : clampRestDragonPosition(currentX, currentY);
+  const changed = dragon.restX !== next.x || dragon.restY !== next.y;
+  dragon.restX = next.x;
+  dragon.restY = next.y;
+  dragon.restScale = Number.isFinite(Number(dragon.restScale)) ? Number(dragon.restScale) : fallback.s;
+  return changed;
+}
+
+function isRestDragonPositionLocked(dragon, now = Date.now()) {
+  return Boolean(
+    dragon?.isDragging ||
+    (dragon?.lockPositionUntil && Number(dragon.lockPositionUntil) > now)
+  );
+}
+
+function isHomeV2Visible() {
+  return Boolean(
+    els?.homeV2Root &&
+    !els.homeV2Root.hidden &&
+    document.body.classList.contains("home-v2-active")
+  );
+}
+
+function normalizeBattleTeam(team, dragons) {
+  const validDragonIds = new Set((dragons || []).map((dragon) => dragon.id));
+  const fromTeam = Array.isArray(team) ? team : [];
+  const fromDragonFlags = (dragons || []).filter((dragon) => dragon.isInTeam).map((dragon) => dragon.id);
+  return [...fromTeam, ...fromDragonFlags]
+    .filter((id, index, list) => validDragonIds.has(id) && list.indexOf(id) === index)
+    .slice(0, BATTLE_TEAM_LIMIT);
+}
+
+function syncDragonTeamFlags() {
+  const teamSet = new Set(Array.isArray(state.battleTeam) ? state.battleTeam : []);
+  state.dragons.forEach((dragon) => {
+    dragon.isInTeam = teamSet.has(dragon.id);
+  });
+}
+
+function getRestIslandDragonCandidates() {
+  return (state.dragons || [])
+    .filter((dragon) => dragon?.isOnRestIsland === true && !dragon.sold && !dragon.isInTeam);
+}
+
+function getRestIslandDragons() {
+  return getRestIslandDragonCandidates().slice(0, REST_ISLAND_MAX_DRAGONS);
+}
+
+function isRestIslandFull() {
+  return getRestIslandDragonCandidates().length >= REST_ISLAND_MAX_DRAGONS;
+}
+
+function dragonElementText(element) {
+  return dragonElementLabels[element] || dragonElementLabels[normalizeDragonElement(element)] || "未知";
+}
+
+function dragonStageText(stage) {
+  return dragonStageLabels[stage] || "幼龍";
 }
 
 function normalizeEgg(egg) {
@@ -1414,17 +1912,80 @@ function normalizeInventoryEgg(egg) {
     : inferInventoryEggType(egg);
   const definition = HATCH_EGG_DEFINITIONS[type] || HATCH_EGG_DEFINITIONS["normal-egg"];
   const durationFromMs = Math.ceil(Number(egg?.requiredMs || egg?.remainingTime || 0) / 1000);
+  const rarity = rarities.includes(egg?.rarity) ? egg.rarity : (rarities.includes(egg?.eggRarity) ? egg.eggRarity : definition.rarity);
+  const element = normalizeEggElement(egg);
   return {
     id: egg?.id || createId("egg"),
     type: definition.type,
     name: String(egg?.name || definition.name),
-    rarity: rarities.includes(egg?.rarity) ? egg.rarity : (rarities.includes(egg?.eggRarity) ? egg.eggRarity : definition.rarity),
-    eggRarity: rarities.includes(egg?.eggRarity) ? egg.eggRarity : definition.rarity,
-    elementBias: egg?.elementBias || definition.elementBias,
+    rarity,
+    eggRarity: rarities.includes(egg?.eggRarity) ? egg.eggRarity : rarity,
+    element,
+    elementHint: element,
+    attribute: element,
+    elementBias: element === "neutral" ? (egg?.elementBias || definition.elementBias || "random") : element,
     hatchDuration: positiveNumber(egg?.hatchDuration, durationFromMs || definition.hatchDuration),
-    image: String(egg?.image || definition.image),
+    hatchTime: positiveNumber(egg?.hatchTime, durationFromMs || definition.hatchDuration),
+    image: getEggAsset({ ...egg, element, rarity }),
+    assignedIncubatorId: egg?.assignedIncubatorId || null,
+    hatched: Boolean(egg?.hatched),
+    rarityRates: Array.isArray(egg?.rarityRates) && egg.rarityRates.length > 0
+      ? egg.rarityRates.map((item) => ({
+        rarity: rarities.includes(item?.rarity) ? item.rarity : definition.rarity,
+        rate: positiveNumber(item?.rate, 0)
+      })).filter((item) => item.rate > 0)
+      : definition.rarityRates.map((item) => ({ ...item })),
     createdAt: positiveNumber(egg?.createdAt, Date.now())
   };
+}
+
+function normalizeEggElement(egg) {
+  const raw = String(
+    egg?.element ||
+    egg?.elementHint ||
+    egg?.attribute ||
+    egg?.eggElement ||
+    egg?.elementBias ||
+    ""
+  ).trim().toLowerCase();
+  const map = {
+    fire: "fire",
+    water: "water",
+    wood: "wood",
+    grass: "wood",
+    light: "light",
+    dark: "dark",
+    "火": "fire",
+    "水": "water",
+    "木": "wood",
+    "草": "wood",
+    "光": "light",
+    "暗": "dark"
+  };
+  return map[raw] || "neutral";
+}
+
+function getEggAsset(egg) {
+  const element = normalizeEggElement(egg);
+  const rarity = String(egg?.rarity || egg?.eggRarity || "C").toLowerCase();
+  if (!["fire", "water", "wood", "light", "dark"].includes(element)) {
+    return "assets/eggs/placeholder-egg.png";
+  }
+  return `assets/eggs/${element}/${rarity}.png`;
+}
+
+function getAvailableEggs() {
+  const activeEggIds = new Set((state.hatchIsland?.hatchSlots || [])
+    .map((slot) => slot?.currentEggId || slot?.currentEgg?.id)
+    .filter(Boolean));
+  return (Array.isArray(state.eggInventory) ? state.eggInventory : [])
+    .map(normalizeInventoryEgg)
+    .filter((egg) => !egg.hatched && !egg.assignedIncubatorId && !activeEggIds.has(egg.id));
+}
+
+function eggElementLabel(egg) {
+  const element = normalizeEggElement(egg);
+  return element === "neutral" ? "random" : element;
 }
 
 function inferInventoryEggType(egg) {
@@ -1449,6 +2010,8 @@ function syncPersistentAliases() {
     state.eggInventory = Array.isArray(state.eggs) ? state.eggs.map(normalizeInventoryEgg) : [];
   }
   state.eggs = state.eggInventory;
+  state.battleTeam = normalizeBattleTeam(state.battleTeam, state.dragons || []);
+  syncDragonTeamFlags();
 }
 
 function initializeCardCollection(catalog, ownedIds = [], selectedId = null) {
@@ -1489,6 +2052,119 @@ function normalizeInventory(inventory, defaults) {
     ticketsExplore: normalizedNonNegative(source.ticketsExplore, defaults.ticketsExplore),
     ticketsMercenary: normalizedNonNegative(source.ticketsMercenary, defaults.ticketsMercenary)
   };
+}
+
+function normalizeDragonHouse(value = {}) {
+  const source = value && typeof value === "object" ? value : {};
+  const maxUpgrades = Math.max(0, Math.floor(Number(source.maxUpgrades ?? DRAGON_HOUSE_DEFAULT.maxUpgrades)));
+  const purchasedUpgrades = clamp(
+    Math.floor(Number(source.purchasedUpgrades ?? DRAGON_HOUSE_DEFAULT.purchasedUpgrades) || 0),
+    0,
+    maxUpgrades
+  );
+
+  return {
+    baseRows: Math.max(1, Math.floor(Number(source.baseRows ?? DRAGON_HOUSE_DEFAULT.baseRows) || DRAGON_HOUSE_DEFAULT.baseRows)),
+    columns: Math.max(1, Math.floor(Number(source.columns ?? DRAGON_HOUSE_DEFAULT.columns) || DRAGON_HOUSE_DEFAULT.columns)),
+    purchasedUpgrades,
+    maxUpgrades
+  };
+}
+
+function getDragonHouseState() {
+  state.dragonHouse = normalizeDragonHouse(state.dragonHouse);
+  return state.dragonHouse;
+}
+
+function getDragonHouseRows() {
+  const house = getDragonHouseState();
+  return house.baseRows + house.purchasedUpgrades * 2;
+}
+
+function getDragonHouseColumns() {
+  return getDragonHouseState().columns;
+}
+
+function getDragonHouseCapacity() {
+  return getDragonHouseRows() * getDragonHouseColumns();
+}
+
+function getDragonHouseUpgradeCost() {
+  const house = getDragonHouseState();
+  return 100 + house.purchasedUpgrades * 75;
+}
+
+function canAddDragon() {
+  return (state.dragons || []).length < getDragonHouseCapacity();
+}
+
+function addDragonToPlayer(dragon, options = {}) {
+  if (!dragon) return false;
+  if (!canAddDragon()) {
+    if (!options.silent) showToast("龍舍已滿，請擴充龍舍或出售龍");
+    return false;
+  }
+
+  const normalizedDragon = normalizeDragon(dragon);
+  if (typeof dragon.isOnRestIsland !== "boolean") {
+    normalizedDragon.isOnRestIsland = !normalizedDragon.isInTeam && !isRestIslandFull();
+  }
+  state.dragons.push(normalizedDragon);
+  state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
+  if (options.save !== false) saveGame();
+  return true;
+}
+
+function completeTutorialTask() {
+  state.tutorial = normalizeTutorial(state.tutorial);
+  if (state.tutorial.firstDrawUnlocked) return;
+  state.tutorial.firstDrawUnlocked = true;
+  saveGame();
+  showToast("完成新手任務，獲得一次抽龍機會！");
+}
+
+function claimTutorialDragonDraw() {
+  state.tutorial = normalizeTutorial(state.tutorial);
+  if (!state.tutorial.firstDrawUnlocked) {
+    showToast("先完成新手任務，才能抽龍");
+    return false;
+  }
+  if (state.tutorial.firstDrawUsed) {
+    showToast("新手抽龍已經使用過了");
+    return false;
+  }
+
+  const dragon = hatchEggToDragon(createInventoryEgg("normal-egg"));
+  if (!addDragonToPlayer(dragon, { save: false })) return false;
+  state.tutorial.firstDrawUsed = true;
+  saveGame();
+  renderHomeV2();
+  showToast(`獲得 ${dragon.name}！`);
+  return true;
+}
+
+window.completeTutorialTask = completeTutorialTask;
+window.claimTutorialDragonDraw = claimTutorialDragonDraw;
+
+function buyDragonHouseRows() {
+  const house = getDragonHouseState();
+  if (house.purchasedUpgrades >= house.maxUpgrades) {
+    showToast("龍舍容量已達上限");
+    return;
+  }
+
+  const cost = getDragonHouseUpgradeCost();
+  if (state.diamonds < cost) {
+    showToast("鑽石不足");
+    return;
+  }
+
+  state.diamonds -= cost;
+  house.purchasedUpgrades += 1;
+  state.dragonHouse = normalizeDragonHouse(house);
+  saveGame();
+  renderHomeV2();
+  showToast("龍舍增加 2 列，共增加 10 個位置");
 }
 
 function createDefaultHatchSlots() {
@@ -1550,9 +2226,14 @@ function normalizeHatchIsland(hatchIsland, defaults) {
 
 function normalizeHomeIsland(homeIsland, dragons) {
   const savedIds = Array.isArray(homeIsland?.restDragons) ? homeIsland.restDragons : [];
-  const validIds = savedIds.filter((id) => dragons.some((dragon) => dragon.id === id)).slice(0, 5);
-  dragons.forEach((dragon) => {
-    if (validIds.length < 5 && !validIds.includes(dragon.id)) {
+  const restEligibleDragons = (dragons || []).filter((dragon) => (
+    dragon?.isOnRestIsland === true &&
+    !dragon.sold &&
+    !dragon.isInTeam
+  ));
+  const validIds = savedIds.filter((id) => restEligibleDragons.some((dragon) => dragon.id === id)).slice(0, REST_ISLAND_MAX_DRAGONS);
+  restEligibleDragons.forEach((dragon) => {
+    if (validIds.length < REST_ISLAND_MAX_DRAGONS && !validIds.includes(dragon.id)) {
       validIds.push(dragon.id);
     }
   });
@@ -1608,6 +2289,7 @@ function enterGame() {
   els.startScreen.hidden = true;
   if (els.loginScreen) els.loginScreen.hidden = true;
   audioManager.unlockPlayback("home");
+  window.setTimeout(maybeShowTutorialOverlay, 360);
   renderAudioControls();
   showToast("歡迎來到龍島！");
 }
@@ -1869,13 +2551,8 @@ function renderHomeV2() {
         </aside>
         <div class="home-v2-ground islandDecoration"></div>
         <div class="home-v2-dragons">
-          ${dragons.length > 0 ? dragons.map(renderHomeV2Dragon).join("") : `
-            <div class="home-v2-empty">
-              <b>還沒有休息中的龍</b>
-              <p>先到孵化島管理你的第一顆蛋。</p>
-            </div>
-          `}
-        </div>
+            ${renderRestIslandDragonsMarkup()}
+          </div>
         <div class="home-v2-mimi islandDecoration">
           ${homeV2Image(ASSETS.characters.mimiFull, "Mimi", "Mimi")}
         </div>
@@ -2015,17 +2692,7 @@ function renderHomeV2Slot(slot) {
 }
 
 function homeV2EggImage(egg) {
-  const map = {
-    "normal-egg": ASSETS.eggs.common,
-    "rare-egg": ASSETS.eggs.rare,
-    "epic-egg": ASSETS.eggs.epic,
-    "legendary-egg": ASSETS.eggs.legendary,
-    "dark-sss-egg": ASSETS.eggs.darkSss
-  };
-  if (map[egg?.type]) return map[egg.type];
-  if (egg?.image?.startsWith("assets/")) return egg.image;
-  if (egg?.image) return `assets/${egg.image}`;
-  return ASSETS.eggs.common;
+  return getEggAsset(egg);
 }
 
 function homeV2Image(src, alt, fallback) {
@@ -2033,6 +2700,208 @@ function homeV2Image(src, alt, fallback) {
     <img src="${src}" alt="${escapeHtml(alt)}" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
     <span class="home-v2-dragon-fallback" hidden>${escapeHtml(fallback)}</span>
   `;
+}
+
+function renderRestIslandDragonsMarkup() {
+  const dragons = getRestIslandDragons();
+  if (dragons.length === 0) {
+    return `
+      <div class="home-v2-empty">
+        <b>還沒有休息中的龍</b>
+        <p>孵化龍蛋後，未出戰的龍會回到這座休息島。</p>
+      </div>
+    `;
+  }
+  let positionChanged = false;
+  const markup = dragons.map((dragon, index) => {
+    positionChanged = ensureRestDragonPosition(dragon, index) || positionChanged;
+    return renderHomeV2Dragon(dragon, index);
+  }).join("");
+  if (positionChanged && typeof window !== "undefined") {
+    window.setTimeout(saveGame, 0);
+  }
+  return markup;
+}
+
+function refreshRestIslandInteractionLayer() {
+  const pager = document.getElementById("worldPager");
+  const currentScrollLeft = pager?.scrollLeft || 0;
+  const dragonLayer = document.querySelector(".restIsland .home-v2-dragons");
+  if (dragonLayer) {
+    dragonLayer.innerHTML = renderRestIslandDragonsMarkup();
+  }
+
+  const restPage = document.querySelector(".restIsland");
+  if (restPage) {
+    restPage.querySelector(".rest-dragon-status-panel")?.remove();
+    const panelHtml = renderRestDragonStatusPanel();
+    const stage = restPage.querySelector(".rest-island-stage");
+    if (panelHtml && stage) stage.insertAdjacentHTML("beforebegin", panelHtml);
+  }
+
+  if (pager) pager.scrollLeft = currentScrollLeft;
+}
+
+function findRestDragonElement(dragonId) {
+  return Array.from(document.querySelectorAll(".restIsland .home-v2-dragon[data-dragon-id]"))
+    .find((element) => element.dataset.dragonId === dragonId) || null;
+}
+
+function updateRestDragonSprite(dragon) {
+  const element = findRestDragonElement(dragon?.id);
+  if (!element || !dragon) return;
+  const action = DRAGON_ACTIONS.includes(dragon.currentAction) ? dragon.currentAction : "idle";
+  DRAGON_ACTIONS.forEach((item) => element.classList.remove(`action-${item}`));
+  element.classList.add(`action-${action}`);
+  element.classList.toggle("is-selected", selectedRestDragonId === dragon.id || state.selectedRestDragonId === dragon.id);
+  element.classList.toggle("is-angry", Boolean(dragon.isAngry && dragon.angryUntil && dragon.angryUntil > Date.now()));
+  const image = element.querySelector(".dragon-portrait img");
+  if (image) {
+    image.hidden = false;
+    image.dataset.fallback = "";
+    image.src = getDragonAsset(dragon, action);
+  }
+}
+
+function applyRestDragonPosition(element, dragon) {
+  if (!element || !dragon) return;
+  const x = finiteRestCoordinate(dragon.restX);
+  const y = finiteRestCoordinate(dragon.restY);
+  if (x == null || y == null) return;
+  element.style.setProperty("--x", `${x}%`);
+  element.style.setProperty("--y", `${y}%`);
+  element.style.setProperty("--s", dragon.restScale || 0.85);
+}
+
+function updateRestDragonElement(dragon) {
+  const element = findRestDragonElement(dragon?.id);
+  if (!element || !dragon) return;
+  applyRestDragonPosition(element, dragon);
+  updateRestDragonSprite(dragon);
+}
+
+function finishRestDragonDrag(dragon, element, lockMs = 8000) {
+  if (!dragon) return;
+  const next = clampRestDragonPosition(dragon.restX, dragon.restY);
+  dragon.restX = next.x;
+  dragon.restY = next.y;
+  dragon.targetRestX = null;
+  dragon.targetRestY = null;
+  dragon.isDragging = false;
+  dragon.lockPositionUntil = Date.now() + lockMs;
+  dragon.lockActionUntil = Math.max(Number(dragon.lockActionUntil) || 0, Date.now() + lockMs);
+  applyRestDragonPosition(element, dragon);
+  updateRestDragonSprite(dragon);
+  saveGame();
+}
+
+function pointerToRestIslandPercent(event) {
+  const stage = document.querySelector(".restIsland .rest-island-stage");
+  if (!stage) return null;
+  const rect = stage.getBoundingClientRect();
+  if (!rect.width || !rect.height) return null;
+  return {
+    x: ((event.clientX - rect.left) / rect.width) * 100,
+    y: ((event.clientY - rect.top) / rect.height) * 100
+  };
+}
+
+function handleHomeV2DragonPointerShield(event) {
+  const dragonButton = event.target?.closest?.(".home-v2-dragon[data-v2-action='select-dragon']");
+  if (!dragonButton || !els.homeV2Root?.contains(dragonButton)) return;
+  event.preventDefault();
+  event.stopPropagation();
+
+  const dragon = getDragonById(dragonButton.dataset.dragonId);
+  if (!dragon) return;
+  ensureRestDragonPosition(dragon);
+  dragon.currentAction = "idle";
+  dragon.lockActionUntil = Date.now() + 5000;
+  dragon.isDragging = true;
+  updateRestDragonSprite(dragon);
+
+  restDragonDragState = {
+    pointerId: event.pointerId,
+    dragonId: dragon.id,
+    element: dragonButton,
+    startX: event.clientX,
+    startY: event.clientY,
+    moved: false
+  };
+  dragonButton.classList.add("is-pressing");
+  if (dragonButton.setPointerCapture) {
+    try { dragonButton.setPointerCapture(event.pointerId); } catch (error) { /* ignore capture edge cases */ }
+  }
+}
+
+function handleHomeV2DragonDragMove(event) {
+  if (!restDragonDragState || restDragonDragState.pointerId !== event.pointerId) return;
+  event.preventDefault();
+  event.stopPropagation();
+
+  const dragon = getDragonById(restDragonDragState.dragonId);
+  if (!dragon) return;
+  const distance = Math.hypot(event.clientX - restDragonDragState.startX, event.clientY - restDragonDragState.startY);
+  if (distance > 6) {
+    restDragonDragState.moved = true;
+    restDragonDragState.element?.classList.add("is-dragging");
+  }
+  if (!restDragonDragState.moved) return;
+
+  const percent = pointerToRestIslandPercent(event);
+  if (!percent) return;
+  const next = clampRestDragonPosition(percent.x, percent.y);
+  dragon.restX = next.x;
+  dragon.restY = next.y;
+  dragon.targetRestX = null;
+  dragon.targetRestY = null;
+  dragon.currentAction = "idle";
+  dragon.isDragging = true;
+  dragon.lockActionUntil = Date.now() + 8000;
+  dragon.lockPositionUntil = Date.now() + 8000;
+  applyRestDragonPosition(restDragonDragState.element, dragon);
+  updateRestDragonSprite(dragon);
+}
+
+function handleHomeV2DragonDragEnd(event) {
+  if (!restDragonDragState || restDragonDragState.pointerId !== event.pointerId) return;
+  event.preventDefault();
+  event.stopPropagation();
+
+  const drag = restDragonDragState;
+  const dragon = getDragonById(drag.dragonId);
+  drag.element?.classList.remove("is-pressing", "is-dragging");
+  if (drag.element?.releasePointerCapture) {
+    try { drag.element.releasePointerCapture(event.pointerId); } catch (error) { /* ignore capture edge cases */ }
+  }
+  restDragonDragState = null;
+
+  if (!dragon) return;
+  if (event.type === "pointercancel") {
+    finishRestDragonDrag(dragon, drag.element);
+    return;
+  }
+  if (drag.moved) {
+    restDragonSuppressClickId = dragon.id;
+    restDragonSuppressClickUntil = Date.now() + 450;
+    finishRestDragonDrag(dragon, drag.element);
+    return;
+  }
+  dragon.isDragging = false;
+  restDragonSuppressClickId = dragon.id;
+  restDragonSuppressClickUntil = Date.now() + 450;
+  handleRestDragonClick(dragon.id, event);
+}
+
+function handleHomeV2DragonDirectClick(event) {
+  const dragonButton = event.target?.closest?.(".home-v2-dragon[data-v2-action='select-dragon']");
+  if (!dragonButton || !els.homeV2Root?.contains(dragonButton)) return;
+  event.preventDefault();
+  event.stopPropagation();
+  if (restDragonSuppressClickId === dragonButton.dataset.dragonId && Date.now() < restDragonSuppressClickUntil) {
+    return;
+  }
+  handleRestDragonClick(dragonButton.dataset.dragonId, event);
 }
 
 function handleHomeV2Click(event) {
@@ -2327,7 +3196,7 @@ function renderHomeV2() {
 }
 
 function renderWorldHomePage(index) {
-  const dragons = state.dragons.slice(0, 5);
+  const dragons = getRestIslandDragons();
   const readySlots = (state.hatchIsland?.hatchSlots || []).filter((slot) => slot.currentEgg && getHatchSlotStatus(slot).ready).length;
   const taskText = readySlots > 0 ? `${readySlots} 顆蛋可以孵化` : "照顧休息中的龍寶";
 
@@ -2336,7 +3205,6 @@ function renderWorldHomePage(index) {
       <div class="rest-ambient" aria-hidden="true">
         <span class="rest-cloud rest-cloud-a"></span>
         <span class="rest-cloud rest-cloud-b"></span>
-        <span class="rest-mini-island"></span>
         <span class="rest-far-crystal rest-far-crystal-a"></span>
         <span class="rest-far-crystal rest-far-crystal-b"></span>
         <span class="rest-particle particle-a"></span>
@@ -2352,6 +3220,7 @@ function renderWorldHomePage(index) {
         <b>今日任務</b>
         <span>${escapeHtml(taskText)}</span>
       </aside>
+      ${renderRestDragonStatusPanel()}
       <div class="rest-island-stage">
         <div class="rest-island-glow" aria-hidden="true"></div>
         <img
@@ -2364,13 +3233,8 @@ function renderWorldHomePage(index) {
         <div class="rest-island-art-fallback" hidden>休息島</div>
         <div class="rest-island-characters">
       <div class="home-v2-dragons">
-        ${dragons.length > 0 ? dragons.map(renderHomeV2Dragon).join("") : `
-          <div class="home-v2-empty">
-            <b>還沒有休息中的龍</b>
-            <p>前往龍窟孵化第一位龍寶吧。</p>
+            ${renderRestIslandDragonsMarkup()}
           </div>
-        `}
-      </div>
       <div class="home-v2-mimi islandDecoration">
         ${homeV2Image(ASSETS.characters.mimiFull, "Mimi", "Mimi")}
       </div>
@@ -2462,6 +3326,7 @@ function renderHomeV2() {
       nextPager.scrollLeft = preservedPage * nextPager.clientWidth;
     }
     updateHomeV2ActiveSlide();
+    bindBeginnerFeatureButtons();
   }, 0);
 }
 
@@ -2473,7 +3338,6 @@ function renderWorldHomePage(index) {
       <div class="rest-ambient" aria-hidden="true">
         <span class="rest-cloud rest-cloud-a"></span>
         <span class="rest-cloud rest-cloud-b"></span>
-        <span class="rest-mini-island"></span>
         <span class="rest-far-crystal rest-far-crystal-a"></span>
         <span class="rest-far-crystal rest-far-crystal-b"></span>
         <span class="rest-particle particle-a"></span>
@@ -2502,13 +3366,47 @@ function renderWorldHomePage(index) {
         </div>
         <div class="rest-island-characters">
           <div class="home-v2-dragons">
-            ${dragons.length > 0 ? dragons.map(renderHomeV2Dragon).join("") : `
-              <div class="home-v2-empty">
-                <b>還沒有龍在休息</b>
-                <p>前往龍窟孵化龍蛋，讓休息島熱鬧起來。</p>
-              </div>
-            `}
+            ${renderRestIslandDragonsMarkup()}
           </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderWorldExplorePage(index) {
+  state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
+  const ticketCount = normalizedNonNegative(state.inventory.ticketsExplore, 0);
+  return `
+    <section class="worldPage explorePage" data-world-index="${index}" aria-label="探險">
+      <div class="explore-page-shell">
+        <section class="explore-hero">
+          <div>
+            <h1>探險</h1>
+            <p>使用探險券前往火山、海洋與森林取得龍蛋。偶爾，也可能遇見稀有的光屬性或暗屬性龍蛋。</p>
+          </div>
+          <img src="${ASSETS.characters.mimiGuide || ASSETS.characters.mimiFull}" alt="Mimi" onerror="this.hidden=true">
+        </section>
+        <div class="explore-ticket-pill">
+          <img src="${ASSETS.explore.ticket}" alt="" onerror="this.hidden=true">
+          探險券 ${formatNumber(ticketCount)}
+        </div>
+        ${renderExploreMissionStrip()}
+        <div class="explore-area-grid">
+          ${EXPLORE_AREAS.map((area) => `
+            <article class="explore-area-card explore-${area.id}" aria-label="${escapeHtml(area.name)}">
+              <div class="explore-card-icon" aria-hidden="true">
+                <img src="${area.image}" alt="" onerror="this.hidden=true">
+                <span>${escapeHtml(dragonElementText(area.mainElement))}</span>
+              </div>
+              <div class="explore-card-content">
+                <h2>${escapeHtml(area.name)}</h2>
+                <p>${escapeHtml(area.description)}</p>
+                <span>消耗探險券 x${area.ticketCost}</span>
+              </div>
+              <button class="explore-start-btn" type="button" data-v2-action="start-explore" data-area-id="${area.id}">開始探險</button>
+            </article>
+          `).join("")}
         </div>
       </div>
     </section>
@@ -2631,7 +3529,6 @@ function homeV2NavItem(page, index, active = false) {
         ${renderAssetImage(page.assetKey, page.label, "asset-image nav-icon-art")}
         <span class="navItemEmoji">${page.icon}</span>
       </i>
-      <span>${page.label}</span>
     </button>
   `;
 }
@@ -2763,6 +3660,74 @@ function handleHomeV2Click(event) {
   }
 }
 
+function handleBeginnerFeatureClick(event) {
+  const actionButton = event.target.closest("[data-v2-action]");
+  if (!actionButton || !els?.homeV2Root?.contains(actionButton)) return;
+  const action = actionButton.dataset.v2Action;
+  const beginnerActions = new Set([
+    "tutorial-next",
+    "start-explore",
+    "claim-explore-egg",
+    "draw-explore-again",
+    "claim-mission",
+    "claim-final-mission"
+  ]);
+  if (!beginnerActions.has(action)) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+
+  if (action === "tutorial-next") {
+    advanceTutorial();
+    return;
+  }
+  if (action === "start-explore") {
+    startExplore(actionButton.dataset.areaId);
+    return;
+  }
+  if (action === "claim-explore-egg") {
+    claimExploreEggResult({ closeOverlay: true });
+    return;
+  }
+  if (action === "draw-explore-again") {
+    drawExploreAgain();
+    return;
+  }
+  if (action === "claim-mission") {
+    claimBeginnerMissionReward(actionButton.dataset.missionId);
+    return;
+  }
+  if (action === "claim-final-mission") {
+    claimBeginnerFinalReward();
+  }
+}
+
+function attachBeginnerFeatureEventBridge() {
+  if (!els?.homeV2Root || els.homeV2Root.dataset.beginnerFeatureBound === "true") return;
+  els.homeV2Root.addEventListener("click", handleBeginnerFeatureClick, true);
+  els.homeV2Root.dataset.beginnerFeatureBound = "true";
+}
+
+function bindBeginnerFeatureButtons() {
+  if (!els?.homeV2Root) return;
+  const selector = [
+    "[data-v2-action='tutorial-next']",
+    "[data-v2-action='start-explore']",
+    "[data-v2-action='claim-explore-egg']",
+    "[data-v2-action='draw-explore-again']",
+    "[data-v2-action='claim-mission']",
+    "[data-v2-action='claim-final-mission']"
+  ].join(",");
+  els.homeV2Root.querySelectorAll(selector).forEach((button) => {
+    if (button.dataset.beginnerBound === "true") return;
+    button.addEventListener("click", handleBeginnerFeatureClick, true);
+    button.dataset.beginnerBound = "true";
+  });
+}
+
+attachBeginnerFeatureEventBridge();
+
 function handleHomeV2Scroll(event) {
   if (event.target.id !== "worldPager") return;
   const pager = event.target;
@@ -2804,6 +3769,11 @@ function updateHomeV2ActiveSlide() {
   if (!pager) return;
   const page = clamp(Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth)), 0, (pager.children.length || 1) - 1);
   currentWorldPage = page;
+  if (page !== 0 && (selectedRestDragonId || state.selectedRestDragonId)) {
+    selectedRestDragonId = null;
+    state.selectedRestDragonId = null;
+    saveGame();
+  }
 
   document.querySelectorAll(".homeDot").forEach((dot) => {
     dot.classList.toggle("is-active", Number(dot.dataset.page) === page);
@@ -2897,13 +3867,7 @@ function renderHomeScene() {
 }
 
 function renderRestIsland() {
-  const restIds = state.homeIsland?.restDragons || [];
-  const restDragons = restIds
-    .map((id) => findDragon(id))
-    .filter(Boolean)
-    .slice(0, 5);
-  const fallbackDragons = state.dragons.filter((dragon) => !restDragons.some((item) => item.id === dragon.id)).slice(0, Math.max(0, 5 - restDragons.length));
-  const dragons = [...restDragons, ...fallbackDragons].slice(0, 5);
+  const dragons = getRestIslandDragons();
 
   return `
     <section class="home-island home-island-slide rest-island" aria-label="休息島">
@@ -2926,21 +3890,18 @@ function renderRestIsland() {
 }
 
 function renderRestDragon(dragon, index) {
-  const positions = [
-    { x: 18, y: 58, s: 0.92, d: 0 },
-    { x: 44, y: 48, s: 0.82, d: -0.8 },
-    { x: 70, y: 60, s: 0.88, d: -1.3 },
-    { x: 30, y: 75, s: 0.76, d: -1.9 },
-    { x: 62, y: 78, s: 0.74, d: -2.4 }
-  ];
-  const pos = positions[index % positions.length];
+  ensureRestDragonPosition(dragon, index);
+  const x = finiteRestCoordinate(dragon.restX) ?? 50;
+  const y = finiteRestCoordinate(dragon.restY) ?? 58;
+  const scale = Number.isFinite(Number(dragon.restScale)) ? Number(dragon.restScale) : 0.85;
+  const delay = -index * 0.45;
   return `
     <button
       class="rest-dragon rarity-${dragon.rarity}"
       type="button"
       data-action="active-home-dragon"
       data-dragon-id="${dragon.id}"
-      style="--x:${pos.x}%;--y:${pos.y}%;--scale:${pos.s};--delay:${pos.d}s;"
+      style="--x:${x}%;--y:${y}%;--scale:${scale};--delay:${delay}s;"
     >
       ${renderAssetImage(dragonAssetKey(dragon.rarity), dragon.name, "asset-image rest-dragon-art")}
       <span class="rest-dragon-fallback element-${elementClass[dragon.element]}">${dragon.element}</span>
@@ -3844,7 +4805,7 @@ function hatchSlotEgg(slotId) {
 
   const egg = slot.currentEgg;
   const dragon = createDragon(rollRarityForEgg(egg), rollElementForEgg(egg));
-  state.dragons.push(dragon);
+  if (!addDragonToPlayer(dragon, { save: false })) return;
   state.activeDragonId = state.activeDragonId || dragon.id;
   state.totalHatched += 1;
   updateHighestRarity(dragon.rarity);
@@ -3924,8 +4885,8 @@ function hatchEgg(eggId) {
 
   // 孵化時依照蛋種機率抽稀有度，商店無法直接買到成龍。
   const dragon = createDragon(rollRarityForEgg(egg), rollElementForEgg(egg));
+  if (!addDragonToPlayer(dragon, { save: false })) return;
   state.eggs = state.eggs.filter((item) => item.id !== eggId);
-  state.dragons.push(dragon);
   state.activeDragonId = state.activeDragonId || dragon.id;
   state.totalHatched += 1;
   updateHighestRarity(dragon.rarity);
@@ -4482,7 +5443,7 @@ function handleDebugAction(event) {
   if (action === "dragon") {
     const rarity = els.debugRaritySelect.value;
     const dragon = createDragon(rarity);
-    state.dragons.push(dragon);
+    if (!addDragonToPlayer(dragon, { save: false })) return;
     state.activeDragonId = dragon.id;
     updateHighestRarity(dragon.rarity);
     saveGame();
@@ -4959,7 +5920,7 @@ function getPlayerLevel(activeDragon) {
 }
 
 function calculateBattlePower() {
-  if (state.dragons.length === 0) return 12680;
+  if (state.dragons.length === 0) return 0;
   return state.dragons.reduce((total, dragon) => {
     const rarityBonus = rarities.indexOf(dragon.rarity) * 2200;
     return total + dragon.hp * 14 + dragon.attack * 75 + dragon.defense * 60 + dragon.speed * 54 + dragon.level * 450 + rarityBonus;
@@ -5317,7 +6278,7 @@ function renderHomeV2Slot(slot) {
 
 function renderEggSelectionModal() {
   if (!eggSelectionSlotId) return "";
-  const eggs = Array.isArray(state.eggInventory) ? state.eggInventory : [];
+  const eggs = getAvailableEggs();
 
   return `
     <div class="egg-modal-backdrop" data-v2-backdrop="egg-select" role="presentation">
@@ -5328,24 +6289,22 @@ function renderEggSelectionModal() {
         </header>
         <div class="egg-choice-list">
           ${eggs.length > 0 ? eggs.map((egg) => `
-            <article class="egg-choice-card">
-              <div class="egg-choice-art">
-                ${homeV2Image(homeV2EggImage(egg), egg.name, "🥚")}
+            <article class="egg-choice-card egg-list-item">
+              <div class="egg-choice-art egg-thumb-wrap">
+                <img class="egg-thumb" src="${getEggAsset(egg)}" alt="${escapeHtml(egg.name)}" onerror="this.src='assets/eggs/placeholder-egg.png'">
               </div>
-              <div class="egg-choice-info">
-                <b>${escapeHtml(egg.name)}</b>
-                <span>稀有度：${escapeHtml(egg.rarity || egg.eggRarity || "C")}</span>
-                <span>屬性傾向：${escapeHtml(egg.elementBias === "random" || !egg.elementBias ? "隨機" : egg.elementBias)}</span>
-                <span>孵化時間：${formatTime((egg.hatchDuration || 60) * 1000)}</span>
+              <div class="egg-choice-info egg-info">
+                <div class="egg-name">${escapeHtml(egg.name)}</div>
+                <div class="egg-rarity">稀有度：${escapeHtml(egg.rarity || egg.eggRarity || "C")}</div>
+                <div class="egg-element">屬性傾向：${escapeHtml(eggElementLabel(egg))}</div>
+                <div class="egg-time">孵化時間：${formatTime((egg.hatchDuration || egg.hatchTime || 60) * 1000)}</div>
               </div>
-              <button type="button" data-v2-action="start-hatch" data-slot-id="${eggSelectionSlotId}" data-egg-id="${egg.id}">
-                選擇
-              </button>
+              <button class="egg-select-btn" type="button" data-v2-action="start-hatch" data-slot-id="${eggSelectionSlotId}" data-egg-id="${egg.id}">選擇</button>
             </article>
           `).join("") : `
             <div class="egg-empty-message">
               <b>目前沒有龍蛋</b>
-              <p>請前往探索取得龍蛋。</p>
+              <p>目前沒有可放入的龍蛋，請前往探索取得龍蛋。</p>
             </div>
           `}
         </div>
@@ -5557,7 +6516,7 @@ function claimHatchedDragon(slotId) {
 
   const egg = slot.currentEgg;
   const dragon = hatchEggToDragon(egg);
-  state.dragons.push(dragon);
+  if (!addDragonToPlayer(dragon, { save: false })) return;
   state.activeDragonId = state.activeDragonId || dragon.id;
   state.totalHatched = normalizedNonNegative(state.totalHatched, 0) + 1;
   updateHighestRarity(dragon.rarity);
@@ -5771,9 +6730,7 @@ function getDragonImageByRarity(rarity) {
 }
 
 function homeV2EggImage(egg) {
-  const normalized = normalizeInventoryEgg(egg);
-  const definition = HATCH_EGG_DEFINITIONS[normalized.type] || HATCH_EGG_DEFINITIONS["normal-egg"];
-  return normalized.image || definition.image;
+  return getEggAsset(egg);
 }
 
 function finishAllHatchSlotsForDebug() {
@@ -5875,7 +6832,7 @@ function handleDebugAction(event) {
     dragon.defense = calculateHatchDragonStat(rarity, 18, 8);
     dragon.speed = calculateHatchDragonStat(rarity, 14, 7);
     dragon.image = getDragonImageByRarity(rarity);
-    state.dragons.push(dragon);
+    if (!addDragonToPlayer(dragon, { save: false })) return;
     state.activeDragonId = dragon.id;
     updateHighestRarity(dragon.rarity);
     state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
@@ -5913,7 +6870,6 @@ function renderWorldHomePage(index) {
       <div class="rest-ambient" aria-hidden="true">
         <span class="rest-cloud rest-cloud-a"></span>
         <span class="rest-cloud rest-cloud-b"></span>
-        <span class="rest-mini-island"></span>
         <span class="rest-far-crystal rest-far-crystal-a"></span>
         <span class="rest-far-crystal rest-far-crystal-b"></span>
         <span class="rest-particle particle-a"></span>
@@ -5950,12 +6906,7 @@ function renderWorldHomePage(index) {
         </div>
         <div class="rest-island-characters">
           <div class="home-v2-dragons">
-            ${dragons.length > 0 ? dragons.map(renderHomeV2Dragon).join("") : `
-              <div class="home-v2-empty">
-                <b>還沒有龍在休息島</b>
-                <p>前往龍窟孵化龍蛋，讓牠們來島上散步吧。</p>
-              </div>
-            `}
+            ${renderRestIslandDragonsMarkup()}
           </div>
           <div class="home-v2-mimi npc-guide">
             ${homeV2Image(ASSETS.characters.mimiFull, "Mimi", "Mimi")}
@@ -6041,9 +6992,8 @@ function renderDragonCaveNestLayer() {
           alt="${escapeHtml(featuredEgg.name || "孵化中的蛋")}"
           decoding="async"
           loading="lazy"
-          onerror="this.hidden=true;this.nextElementSibling.hidden=false"
+          onerror="this.src='assets/eggs/placeholder-egg.png'"
         >
-        <span class="island-egg-placeholder" hidden aria-hidden="true"></span>
       ` : ""}
     </div>
   `;
@@ -6122,9 +7072,8 @@ function renderHomeV2Slot(slot) {
           alt=""
           decoding="async"
           loading="lazy"
-          onerror="this.hidden=true;this.nextElementSibling.hidden=false"
+          onerror="this.src='assets/eggs/placeholder-egg.png'"
         >
-        <span class="slot-egg-placeholder" hidden></span>
       </div>
       <b class="slot-egg-name">${escapeHtml(slot.currentEgg.name || "孵化中的蛋")}</b>
       <p class="slot-state">${status.ready ? "可領取" : status.label}</p>
@@ -6179,20 +7128,21 @@ function findHatchSlotElement(slotId) {
 // Final rest-island placement tuning. This override keeps the current
 // worldPager intact while giving dragons room to stand on the enlarged island.
 function renderHomeV2Dragon(dragon, index) {
-  const positions = [
-    { x: 25, y: 58, s: 0.9 },
-    { x: 50, y: 51, s: 0.98 },
-    { x: 72, y: 59, s: 0.84 },
-    { x: 36, y: 70, s: 0.72 },
-    { x: 64, y: 70, s: 0.7 }
-  ];
-  const pos = positions[index % positions.length];
+  ensureRestDragonPosition(dragon, index);
+  const pos = {
+    x: dragon.restX,
+    y: dragon.restY,
+    s: dragon.restScale || getDefaultRestDragonPosition(dragon, index).s
+  };
   const rarity = String(dragon.rarity || "C");
-  const image = ASSETS.dragons[rarity.toLowerCase()] || ASSETS.dragons.c;
+  const action = DRAGON_ACTIONS.includes(dragon.currentAction) ? dragon.currentAction : "idle";
+  const image = getDragonAsset(dragon, action);
   const rarityClass = `is-rarity-${rarity.toLowerCase()}`;
+  const isSelected = selectedRestDragonId === dragon.id || state.selectedRestDragonId === dragon.id;
+  const isAngry = Boolean(dragon.isAngry && dragon.angryUntil && dragon.angryUntil > Date.now());
   return `
     <button
-      class="home-v2-dragon ${rarityClass}"
+      class="home-v2-dragon ${rarityClass} action-${action}${isSelected ? " is-selected" : ""}${isAngry ? " is-angry dragon-angry-effect" : ""}"
       type="button"
       data-v2-action="select-dragon"
       data-dragon-id="${dragon.id}"
@@ -6202,12 +7152,2611 @@ function renderHomeV2Dragon(dragon, index) {
       <span class="dragon-ground-shadow" aria-hidden="true"></span>
       <span class="dragon-aura" aria-hidden="true"></span>
       <span class="dragon-portrait">
-        ${homeV2Image(image, dragon.name || "龍夥伴", dragon.element || "龍")}
+        <img
+          src="${image}"
+          alt="${escapeHtml(dragon.name || "龍夥伴")}"
+          decoding="async"
+          loading="lazy"
+          onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${DRAGON_FALLBACK_ASSET}'}else{this.hidden=true;this.nextElementSibling.hidden=false}"
+        >
+        <span class="home-v2-dragon-fallback" hidden>${escapeHtml(dragonElementText(dragon.element))}</span>
       </span>
       <span class="dragon-nameplate">
         <b>${escapeHtml(dragon.name || "龍夥伴")}</b>
-        <span><i>${rarity}</i>${escapeHtml(dragon.element || "未知")}</span>
+        <span><i>${rarity}</i>${escapeHtml(dragonElementText(dragon.element))}</span>
       </span>
+      ${isAngry ? `<span class="dragon-angry-bubble">不要一直點我！</span>` : ""}
     </button>
   `;
+}
+
+function handleHomeV2Click(event) {
+  if (homeV2Drag.moved) {
+    homeV2Drag.moved = false;
+    return;
+  }
+
+  if (event.target.matches("[data-v2-backdrop='egg-select']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeEggSelectionModal();
+    return;
+  }
+
+  if (event.target.matches("[data-v2-backdrop='rest-dragon-menu']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeRestDragonActionSheet();
+    return;
+  }
+
+  if (event.target.matches("[data-v2-backdrop='dragon-info']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDragonInfoModal();
+    return;
+  }
+
+  if (event.target.matches("[data-v2-backdrop='team-editor']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeTeamModal();
+    return;
+  }
+
+  if (event.target.matches("[data-v2-backdrop='dragon-sell']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeSellDragonConfirm();
+    return;
+  }
+
+  const actionButton = event.target.closest("[data-v2-action]");
+  if (actionButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    const action = actionButton.dataset.v2Action;
+    const dragonId = actionButton.dataset.dragonId;
+
+    if (action === "settings") {
+      toggleDebugPanel();
+      return;
+    }
+    if (action === "resource-plus") {
+      showToast("資源加號目前保留給之後擴充。");
+      return;
+    }
+    if (action === "unlock-slot") {
+      unlockHatchSlot(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "open-egg-modal") {
+      openEggPicker(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "close-egg-modal") {
+      closeEggSelectionModal();
+      return;
+    }
+    if (action === "start-hatch") {
+      putEggToSlot(actionButton.dataset.slotId, actionButton.dataset.eggId);
+      return;
+    }
+    if (action === "claim-hatch") {
+      claimHatchedDragon(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "focus-hatch-slot") {
+      focusHatchSlot(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "select-dragon") {
+      handleRestDragonClick(dragonId);
+      return;
+    }
+    if (action === "close-rest-dragon-panel") {
+      closeRestDragonStatusPanel();
+      return;
+    }
+    if (action === "close-rest-dragon-menu") {
+      closeRestDragonActionSheet();
+      return;
+    }
+    if (action === "feed-dragon") {
+      feedRestDragon(dragonId);
+      return;
+    }
+    if (action === "train-dragon") {
+      trainRestDragon(dragonId);
+      return;
+    }
+    if (action === "show-dragon-info") {
+      openDragonInfoModal(dragonId);
+      return;
+    }
+    if (action === "open-team-modal") {
+      openTeamModal(dragonId);
+      return;
+    }
+    if (action === "open-sell-dragon") {
+      openSellDragonConfirm(dragonId);
+      return;
+    }
+    if (action === "close-sell-dragon") {
+      closeSellDragonConfirm();
+      return;
+    }
+    if (action === "confirm-sell-dragon") {
+      confirmSellDragon(dragonId);
+      return;
+    }
+    if (action === "send-dragon-back-to-house" || action === "backToHouse") {
+      sendDragonBackToHouse(dragonId || selectedRestDragonId || state.selectedRestDragonId);
+      return;
+    }
+    if (action === "trade-dragon-placeholder") {
+      showToast("交易功能開發中");
+      return;
+    }
+    if (action === "close-dragon-info") {
+      closeDragonInfoModal();
+      return;
+    }
+    if (action === "close-team-modal") {
+      closeTeamModal();
+      return;
+    }
+    if (action === "add-to-team") {
+      addDragonToTeam(dragonId);
+      return;
+    }
+    if (action === "remove-from-team") {
+      removeDragonFromTeam(dragonId);
+      return;
+    }
+  }
+
+  const navArrow = event.target.closest("[data-v2-nav-arrow]");
+  if (navArrow) {
+    event.preventDefault();
+    event.stopPropagation();
+    const viewport = document.querySelector("#bottomNavViewport");
+    if (viewport) {
+      viewport.scrollBy({ left: Number(navArrow.dataset.v2NavArrow) * 80, behavior: "smooth" });
+    }
+    return;
+  }
+
+  const pageButton = event.target.closest("[data-page]");
+  if (pageButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (Number(pageButton.dataset.page) !== 0) closeRestDragonStatusPanel(false);
+    goToWorldPage(Number(pageButton.dataset.page));
+    return;
+  }
+
+  const navButton = event.target.closest("[data-world-page]");
+  if (navButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (Number(navButton.dataset.worldPage) !== 0) closeRestDragonStatusPanel(false);
+    goToWorldPage(Number(navButton.dataset.worldPage));
+  }
+}
+
+function renderWorldExplorePage(index) {
+  state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
+  const ticketCount = normalizedNonNegative(state.inventory.ticketsExplore, 0);
+  return `
+    <section class="worldPage explorePage" data-world-index="${index}" aria-label="探險">
+      <div class="explore-page-shell">
+        <section class="explore-hero">
+          <div>
+            <h1>探險</h1>
+            <p>使用探險券前往火山、海洋與森林取得龍蛋。偶爾，也可能遇見稀有的光屬性或暗屬性龍蛋。</p>
+          </div>
+          <img src="${ASSETS.characters.mimiGuide || ASSETS.characters.mimiFull}" alt="Mimi" onerror="this.hidden=true">
+        </section>
+        <div class="explore-ticket-pill">
+          <img src="${ASSETS.explore.ticket}" alt="" onerror="this.hidden=true">
+          探險券 ${formatNumber(ticketCount)}
+        </div>
+        ${renderExploreMissionStrip()}
+        <div class="explore-area-grid">
+          ${EXPLORE_AREAS.map((area) => `
+            <article class="explore-area-card explore-${area.id}" aria-label="${escapeHtml(area.name)}">
+              <div class="explore-card-content">
+                <h2>${escapeHtml(area.name)}</h2>
+                <p>${escapeHtml(area.description)}</p>
+                <span>消耗探險券 x${area.ticketCost}</span>
+                <button type="button" data-v2-action="start-explore" data-area-id="${area.id}">開始探險</button>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function mountHomeV2Overlay(html) {
+  if (!els.homeV2Root) return;
+  els.homeV2Root.insertAdjacentHTML("beforeend", html);
+}
+
+function closeRestDragonActionSheet() {
+  document.querySelector(".rest-dragon-action-backdrop")?.remove();
+}
+
+function openRestDragonActionSheet(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) return;
+  closeRestDragonActionSheet();
+  closeDragonInfoModal();
+  closeTeamModal();
+  mountHomeV2Overlay(`
+    <div class="rest-dragon-action-backdrop" data-v2-backdrop="rest-dragon-menu">
+      <section class="rest-dragon-sheet" role="dialog" aria-modal="true" aria-label="${escapeHtml(dragon.name)} 操作選單">
+        <header>
+          <img src="${getDragonAsset(dragon)}" alt="" onerror="this.src='${DRAGON_FALLBACK_ASSET}'">
+          <div>
+            <b>${escapeHtml(dragon.name)}</b>
+            <span>${dragonStageText(dragon.stage)}｜${dragonElementText(dragon.element)}｜${dragon.rarity}</span>
+          </div>
+        </header>
+        <div class="rest-dragon-actions">
+          <button type="button" data-v2-action="feed-dragon" data-dragon-id="${dragon.id}">餵食</button>
+          <button type="button" data-v2-action="train-dragon" data-dragon-id="${dragon.id}">訓練</button>
+          <button type="button" data-v2-action="open-team-modal" data-dragon-id="${dragon.id}">出戰</button>
+          <button type="button" data-v2-action="show-dragon-info" data-dragon-id="${dragon.id}">查看資訊</button>
+          <button type="button" class="is-muted" data-v2-action="close-rest-dragon-menu">關閉</button>
+        </div>
+      </section>
+    </div>
+  `);
+}
+
+function getDragonById(dragonId) {
+  return (state.dragons || []).find((dragon) => dragon.id === dragonId) || null;
+}
+
+function setDragonTemporaryAction(dragon, action) {
+  dragon.currentAction = action;
+  dragon.lockActionUntil = Date.now() + 2000;
+  saveGame();
+  refreshRestIslandInteractionLayer();
+  window.setTimeout(() => {
+    const latestDragon = getDragonById(dragon.id);
+    if (!latestDragon || latestDragon.currentAction !== action) return;
+    latestDragon.currentAction = "idle";
+    saveGame();
+    if (gameHasStarted && els.homeV2Root && !els.homeV2Root.hidden) {
+      refreshRestIslandInteractionLayer();
+    }
+  }, 1500);
+}
+
+function feedRestDragon(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) return;
+  closeRestDragonActionSheet();
+  dragon.hunger = Math.min(100, normalizedNonNegative(dragon.hunger, 80) + 10);
+  dragon.mood = Math.min(100, normalizedNonNegative(dragon.mood, 80) + 5);
+  dragon.exp = normalizedNonNegative(dragon.exp, 0) + 5;
+  setDragonTemporaryAction(dragon, "eat");
+  showToast("已餵食，龍看起來更有精神了！");
+}
+
+function trainRestDragon(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) return;
+  closeRestDragonActionSheet();
+  dragon.exp = normalizedNonNegative(dragon.exp, 0) + 20;
+  dragon.power = normalizedNonNegative(dragon.power, 10) + 5;
+  dragon.hunger = Math.max(0, normalizedNonNegative(dragon.hunger, 80) - 10);
+  dragon.mood = Math.max(0, normalizedNonNegative(dragon.mood, 80) - 5);
+  setDragonTemporaryAction(dragon, "train");
+  showToast("訓練完成，戰力提升！");
+}
+
+function closeDragonInfoModal() {
+  document.querySelector(".dragon-info-backdrop")?.remove();
+}
+
+function openDragonInfoModal(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) return;
+  closeRestDragonActionSheet();
+  closeDragonInfoModal();
+  mountHomeV2Overlay(`
+    <div class="dragon-info-backdrop" data-v2-backdrop="dragon-info">
+      <section class="dragon-info-modal" role="dialog" aria-modal="true" aria-label="${escapeHtml(dragon.name)} 資訊">
+        <header>
+          <img src="${getDragonAsset(dragon)}" alt="" onerror="this.src='${DRAGON_FALLBACK_ASSET}'">
+          <div>
+            <h2>${escapeHtml(dragon.name)}</h2>
+            <p>${dragonElementText(dragon.element)}屬性｜${dragon.rarity}｜${dragonStageText(dragon.stage)}</p>
+          </div>
+        </header>
+        <dl>
+          <div><dt>等級</dt><dd>Lv.${formatNumber(dragon.level || 1)}</dd></div>
+          <div><dt>經驗</dt><dd>${formatNumber(dragon.exp || 0)}</dd></div>
+          <div><dt>戰力</dt><dd>${formatNumber(dragon.power || 0)}</dd></div>
+          <div><dt>飽食度</dt><dd>${formatNumber(dragon.hunger || 0)} / 100</dd></div>
+          <div><dt>心情</dt><dd>${formatNumber(dragon.mood || 0)} / 100</dd></div>
+          <div><dt>出戰中</dt><dd>${dragon.isInTeam ? "是" : "否"}</dd></div>
+        </dl>
+        <button type="button" data-v2-action="close-dragon-info">關閉</button>
+      </section>
+    </div>
+  `);
+}
+
+function closeTeamModal() {
+  document.querySelector(".team-editor-backdrop")?.remove();
+}
+
+const restDragonSellPrices = { C: 50, B: 100, A: 200, S: 400, SS: 800, SSS: 1500 };
+
+function getRestDragonSellPrice(dragon) {
+  return Math.max(0, Math.round(Number(dragon?.sellPrice) || restDragonSellPrices[dragon?.rarity] || 50));
+}
+
+function closeSellDragonConfirm() {
+  document.querySelector(".dragon-sell-backdrop")?.remove();
+}
+
+function openSellDragonConfirm(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) {
+    selectedRestDragonId = null;
+    state.selectedRestDragonId = null;
+    showToast("這隻龍已不存在，無法出售");
+    refreshRestIslandInteractionLayer();
+    return;
+  }
+  state.battleTeam = normalizeBattleTeam(state.battleTeam, state.dragons);
+  if (dragon.isInTeam || state.battleTeam.includes(dragon.id)) {
+    showToast("此龍已編入隊伍，請先解除出戰後再出售");
+    return;
+  }
+
+  closeSellDragonConfirm();
+  closeRestDragonActionSheet();
+  closeDragonInfoModal();
+  closeTeamModal();
+  const price = getRestDragonSellPrice(dragon);
+  mountHomeV2Overlay(`
+    <div class="dragon-sell-backdrop" data-v2-backdrop="dragon-sell">
+      <section class="dragon-sell-modal" role="dialog" aria-modal="true" aria-label="出售龍確認">
+        <header>
+          <img src="${getDragonAsset(dragon, "idle")}" alt="${escapeHtml(dragon.name)}" onerror="this.src='${DRAGON_FALLBACK_ASSET}'">
+          <div>
+            <h2>確定要出售【${escapeHtml(dragon.name)}】嗎？</h2>
+            <p>出售後會從休息島移除｜售價 ${formatNumber(price)} 金幣</p>
+          </div>
+        </header>
+        <div class="dragon-sell-actions">
+          <button type="button" class="is-muted" data-v2-action="close-sell-dragon">取消</button>
+          <button type="button" data-v2-action="confirm-sell-dragon" data-dragon-id="${dragon.id}">確認出售</button>
+        </div>
+      </section>
+    </div>
+  `);
+}
+
+function confirmSellDragon(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) {
+    closeSellDragonConfirm();
+    selectedRestDragonId = null;
+    state.selectedRestDragonId = null;
+    saveGame();
+    refreshRestIslandInteractionLayer();
+    showToast("這隻龍已不存在，無法出售");
+    return;
+  }
+  state.battleTeam = normalizeBattleTeam(state.battleTeam, state.dragons);
+  if (dragon.isInTeam || state.battleTeam.includes(dragon.id)) {
+    closeSellDragonConfirm();
+    showToast("此龍已編入隊伍，請先解除出戰後再出售");
+    return;
+  }
+
+  const price = getRestDragonSellPrice(dragon);
+  state.coins = normalizedNonNegative(state.coins, 0) + price;
+  state.soldDragonIds = Array.isArray(state.soldDragonIds) ? state.soldDragonIds : [];
+  if (!state.soldDragonIds.includes(dragon.id)) state.soldDragonIds.push(dragon.id);
+  state.dragons = state.dragons.filter((item) => item.id !== dragon.id);
+  state.battleTeam = normalizeBattleTeam((state.battleTeam || []).filter((id) => id !== dragon.id), state.dragons);
+  syncDragonTeamFlags();
+  if (state.activeDragonId === dragon.id) state.activeDragonId = state.dragons[0]?.id || null;
+  selectedRestDragonId = null;
+  state.selectedRestDragonId = null;
+  state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
+  closeSellDragonConfirm();
+  saveGame();
+  renderHomeV2();
+  showToast(`${dragon.name} 已出售，獲得 ${formatNumber(price)} 金幣`);
+}
+
+function openTeamModal(selectedDragonId = null) {
+  const selectedDragon = getDragonById(selectedDragonId);
+  closeRestDragonActionSheet();
+  closeTeamModal();
+  mountHomeV2Overlay(renderTeamModal(selectedDragon));
+}
+
+function renderTeamModal(selectedDragon) {
+  const teamIds = normalizeBattleTeam(state.battleTeam, state.dragons);
+  const teamCards = Array.from({ length: BATTLE_TEAM_LIMIT }, (_, index) => {
+    const dragon = getDragonById(teamIds[index]);
+    return `
+      <article class="team-slot ${dragon ? "has-dragon" : "is-empty"}">
+        <b>隊伍位置 ${index + 1}</b>
+        ${dragon ? `
+          <span>${escapeHtml(dragon.name)}</span>
+          <small>${dragonElementText(dragon.element)}｜${dragon.rarity}</small>
+          <button type="button" data-v2-action="remove-from-team" data-dragon-id="${dragon.id}">移出隊伍</button>
+        ` : `
+          <span>空隊伍欄位</span>
+          <small>最多 3 隻龍</small>
+        `}
+      </article>
+    `;
+  }).join("");
+
+  return `
+    <div class="team-editor-backdrop" data-v2-backdrop="team-editor">
+      <section class="team-editor-modal" role="dialog" aria-modal="true" aria-label="隊伍編排">
+        <header>
+          <h2>隊伍編排</h2>
+          <button type="button" data-v2-action="close-team-modal" aria-label="關閉">×</button>
+        </header>
+        ${selectedDragon ? `
+          <div class="team-selected-dragon">
+            <img src="${getDragonAsset(selectedDragon)}" alt="" onerror="this.src='${DRAGON_FALLBACK_ASSET}'">
+            <div>
+              <b>目前選取：${escapeHtml(selectedDragon.name)}</b>
+              <span>${dragonStageText(selectedDragon.stage)}｜${dragonElementText(selectedDragon.element)}｜${selectedDragon.rarity}</span>
+            </div>
+          </div>
+        ` : ""}
+        <div class="team-slots">${teamCards}</div>
+        <div class="team-editor-actions">
+          ${selectedDragon ? `
+            <button type="button" data-v2-action="add-to-team" data-dragon-id="${selectedDragon.id}">加入隊伍</button>
+          ` : ""}
+          <button type="button" class="is-muted" data-v2-action="close-team-modal">關閉</button>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function addDragonToTeam(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) return;
+  state.battleTeam = normalizeBattleTeam(state.battleTeam, state.dragons);
+  if (state.battleTeam.includes(dragon.id)) {
+    showToast("這隻龍已經在隊伍中");
+    return;
+  }
+  if (state.battleTeam.length >= BATTLE_TEAM_LIMIT) {
+    showToast("隊伍已滿，請先移除一隻龍");
+    return;
+  }
+  state.battleTeam.push(dragon.id);
+  dragon.isInTeam = true;
+  selectedRestDragonId = null;
+  state.selectedRestDragonId = null;
+  state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
+  saveGame();
+  renderHomeV2();
+  openTeamModal(dragon.id);
+  showToast("已加入隊伍");
+}
+
+function removeDragonFromTeam(dragonId) {
+  const dragon = getDragonById(dragonId);
+  state.battleTeam = normalizeBattleTeam(state.battleTeam, state.dragons)
+    .filter((id) => id !== dragonId);
+  if (dragon) dragon.isInTeam = false;
+  state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
+  saveGame();
+  renderHomeV2();
+  openTeamModal(dragon?.id || null);
+  showToast("已移出隊伍");
+}
+
+function startRestDragonBehaviorLoop() {
+  if (restDragonBehaviorTimer) return;
+  const tick = () => {
+    restDragonBehaviorTimer = null;
+    randomizeRestDragonActions();
+    restDragonBehaviorTimer = window.setTimeout(tick, randomInt(5000, 8000));
+  };
+  restDragonBehaviorTimer = window.setTimeout(tick, randomInt(5000, 8000));
+}
+
+function randomizeRestDragonActions() {
+  const restDragons = getRestIslandDragons();
+  let changed = false;
+  restDragons.forEach((dragon) => {
+    const now = Date.now();
+    if (dragon.id === selectedRestDragonId || dragon.id === state.selectedRestDragonId) return;
+    if (isRestDragonPositionLocked(dragon, now)) return;
+    if (dragon.lockActionUntil && dragon.lockActionUntil > now) return;
+    if (dragon.isAngry && dragon.angryUntil && dragon.angryUntil > now) return;
+    if (["eat", "train", "attack", "angry"].includes(dragon.currentAction)) return;
+    ensureRestDragonPosition(dragon);
+    if (Math.random() <= 0.72) {
+      dragon.currentAction = randomItem(REST_RANDOM_ACTIONS);
+      changed = true;
+    }
+    if (Math.random() <= 0.68) {
+      const next = clampRestDragonPosition(
+        dragon.restX + randomInt(-10, 11),
+        dragon.restY + randomInt(-6, 7)
+      );
+      dragon.targetRestX = next.x;
+      dragon.targetRestY = next.y;
+      dragon.restX = next.x;
+      dragon.restY = next.y;
+      if (dragon.currentAction === "idle") dragon.currentAction = "walk";
+      changed = true;
+    }
+    updateRestDragonElement(dragon);
+  });
+  if (!changed) return;
+  saveGame();
+}
+
+function hatchEggToDragon(egg) {
+  const normalizedEgg = normalizeInventoryEgg(egg);
+  const definition = HATCH_EGG_DEFINITIONS[normalizedEgg.type] || HATCH_EGG_DEFINITIONS["normal-egg"];
+  const rarity = rollWeightedHatchRarity(definition.rarityRates);
+  const element = normalizeDragonElement(pickHatchElement(normalizedEgg.elementBias || definition.elementBias));
+  const stage = "baby";
+  const dragon = {
+    id: createId("dragon"),
+    name: generateDragonName(rarity, dragonElementText(element)),
+    rarity,
+    element,
+    stage,
+    level: 1,
+    hp: calculateHatchDragonStat(rarity, 88, 28),
+    attack: calculateHatchDragonStat(rarity, 24, 11),
+    defense: calculateHatchDragonStat(rarity, 18, 8),
+    speed: calculateHatchDragonStat(rarity, 14, 7),
+    hunger: 100,
+    mood: 90,
+    exp: 0,
+    power: Math.round((rarityPower[rarity] || 1) * 12),
+    isInTeam: false,
+    currentAction: "idle",
+    assetBase: `assets/dragons/${element}/${stage}/`,
+    avatarAsset: `assets/dragons/${element}/${stage}/avatar.png`,
+    costumeId: null,
+    skinId: null,
+    isAngry: false,
+    angryUntil: null,
+    lockActionUntil: null,
+    lastInteractedAt: null
+  };
+  dragon.image = getDragonAsset(dragon);
+  return dragon;
+}
+
+function renderWorldHomePage(index) {
+  const dragons = getRestIslandDragons();
+  const readySlots = (state.hatchIsland?.hatchSlots || []).filter((slot) => slot.currentEgg && getHatchSlotStatus(slot).ready).length;
+  const taskText = readySlots > 0 ? `${readySlots} 顆龍蛋可以領取` : "讓龍寶們在島上休息";
+
+  return `
+    <section class="worldPage homePage restIsland" data-world-index="${index}" aria-label="休息島">
+      <div class="rest-ambient" aria-hidden="true">
+        <span class="rest-cloud rest-cloud-a"></span>
+        <span class="rest-cloud rest-cloud-b"></span>
+        <span class="rest-far-crystal rest-far-crystal-a"></span>
+        <span class="rest-far-crystal rest-far-crystal-b"></span>
+        <span class="rest-particle particle-a"></span>
+        <span class="rest-particle particle-b"></span>
+        <span class="rest-particle particle-c"></span>
+        <span class="rest-particle particle-d"></span>
+      </div>
+      <div class="home-v2-title">
+        <h1>休息島</h1>
+        <p>龍的休憩花園</p>
+      </div>
+      <aside class="home-v2-task">
+        <b>今日任務</b>
+        <span>${escapeHtml(taskText)}</span>
+      </aside>
+      ${renderRestDragonStatusPanel()}
+      <div class="rest-island-stage">
+        <div class="rest-island-glow" aria-hidden="true"></div>
+        <img
+          class="rest-island-art"
+          src="${ASSETS.islands.rest}"
+          alt="休息島"
+          decoding="async"
+          onerror="this.hidden=true;this.nextElementSibling.hidden=false"
+        >
+        <div class="rest-island-art-fallback" hidden>休息島</div>
+        <div class="rest-island-decor" aria-hidden="true">
+          <span class="rest-decor decor-flowerbed"></span>
+          <span class="rest-decor decor-crystal-front"></span>
+          <span class="rest-decor decor-bush"></span>
+          <span class="rest-decor decor-mushroom"></span>
+          <span class="rest-decor decor-stump"></span>
+          <span class="rest-decor decor-sparkle decor-sparkle-a"></span>
+          <span class="rest-decor decor-sparkle decor-sparkle-b"></span>
+        </div>
+        <div class="rest-island-characters">
+          <div class="home-v2-dragons">
+            ${renderRestIslandDragonsMarkup()}
+          </div>
+          <div class="home-v2-mimi npc-guide">
+            ${homeV2Image(ASSETS.characters.mimiFull, "Mimi", "Mimi")}
+            <span class="mimi-npc-shadow" aria-hidden="true"></span>
+            <span class="mimi-npc-bubble">這裡很安全，龍寶們會慢慢恢復精神。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderRestDragonStatusPanel() {
+  const dragon = getDragonById(selectedRestDragonId || state.selectedRestDragonId);
+  if (!dragon || dragon.isInTeam || dragon.isOnRestIsland !== true) return "";
+  const now = Date.now();
+  if (dragon.angryUntil && dragon.angryUntil > now) return "";
+  const avatar = getDragonAvatarAsset(dragon);
+  return `
+    <section class="rest-dragon-status-panel" aria-label="${escapeHtml(dragon.name)} 狀態面板">
+      <button class="dragon-status-close" type="button" data-v2-action="close-rest-dragon-panel" aria-label="關閉">×</button>
+      <div class="dragon-status-avatar-wrap">
+        <img
+          class="dragon-status-avatar"
+          src="${avatar}"
+          alt="${escapeHtml(dragon.name)} 大頭貼"
+          onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${getDragonAsset(dragon, "idle")}'}else{this.src='${DRAGON_FALLBACK_ASSET}'}"
+        >
+        <div class="dragon-costume-badge">時裝</div>
+      </div>
+      <div class="dragon-status-info">
+        <header>
+          <h2>${escapeHtml(dragon.name)}</h2>
+          <p>${dragonElementText(dragon.element)} / ${dragon.rarity} / Lv.${formatNumber(dragon.level || 1)}</p>
+        </header>
+        <div class="dragon-stat-rows">
+          <span>階段 <b>${dragonStageText(dragon.stage)}</b></span>
+          <span>戰力 <b>${formatNumber(dragon.power || 0)}</b></span>
+          <span>飽食 <b>${formatNumber(dragon.hunger || 0)}</b></span>
+          <span>心情 <b>${formatNumber(dragon.mood || 0)}</b></span>
+        </div>
+        <div class="dragon-status-actions">
+          <button type="button" data-v2-action="feed-dragon" data-dragon-id="${dragon.id}">餵食</button>
+          <button type="button" data-v2-action="train-dragon" data-dragon-id="${dragon.id}">訓練</button>
+          <button type="button" data-v2-action="open-team-modal" data-dragon-id="${dragon.id}">出戰</button>
+          <button type="button" data-v2-action="open-sell-dragon" data-dragon-id="${dragon.id}">出售</button>
+          <button type="button" data-v2-action="send-dragon-back-to-house" data-action="backToHouse" data-dragon-id="${dragon.id}">回龍舍</button>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function handleRestDragonClick(dragonId, event = null) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  const dragon = getDragonById(dragonId);
+  if (!dragon) return;
+  const now = Date.now();
+  if (dragon.angryUntil && dragon.angryUntil > now) {
+    showToast("牠生氣了，暫時不想理你！");
+    return;
+  }
+
+  if (lastClickedDragonId === dragonId && now - lastDragonClickTime < 2000) {
+    dragonClickCount += 1;
+  } else {
+    lastClickedDragonId = dragonId;
+    dragonClickCount = 1;
+  }
+  lastDragonClickTime = now;
+  if (dragonClickCount > 6) {
+    triggerDragonAngry(dragon);
+    dragonClickCount = 0;
+    return;
+  }
+
+  dragon.currentAction = "idle";
+  dragon.lockActionUntil = now + 5000;
+  dragon.isDragging = false;
+  dragon.isAngry = false;
+  dragon.angryUntil = null;
+  dragon.lastInteractedAt = now;
+  selectedRestDragonId = dragon.id;
+  state.selectedRestDragonId = dragon.id;
+  saveGame();
+  updateRestDragonSprite(dragon);
+  refreshRestIslandInteractionLayer();
+}
+
+function triggerDragonAngry(dragon) {
+  const now = Date.now();
+  dragon.currentAction = "angry";
+  dragon.isAngry = true;
+  dragon.angryUntil = now + 5000;
+  dragon.lockActionUntil = now + 5000;
+  dragon.lastInteractedAt = now;
+  selectedRestDragonId = null;
+  state.selectedRestDragonId = null;
+  saveGame();
+  refreshRestIslandInteractionLayer();
+  showToast("不要一直點我！");
+  window.setTimeout(() => {
+    const latest = getDragonById(dragon.id);
+    if (!latest || !latest.angryUntil || latest.angryUntil > Date.now()) return;
+    latest.isAngry = false;
+    latest.angryUntil = null;
+    latest.lockActionUntil = null;
+    latest.currentAction = "idle";
+    saveGame();
+    if (gameHasStarted && els.homeV2Root && !els.homeV2Root.hidden) refreshRestIslandInteractionLayer();
+  }, 5100);
+}
+
+function closeRestDragonStatusPanel(shouldRender = true) {
+  const selectedId = selectedRestDragonId || state?.selectedRestDragonId;
+  const dragon = selectedId ? getDragonById(selectedId) : null;
+  if (dragon && (!dragon.angryUntil || dragon.angryUntil <= Date.now())) {
+    dragon.lockActionUntil = null;
+  }
+  selectedRestDragonId = null;
+  if (state) state.selectedRestDragonId = null;
+  if (shouldRender && gameHasStarted && els.homeV2Root && !els.homeV2Root.hidden) {
+    saveGame();
+    refreshRestIslandInteractionLayer();
+  }
+}
+
+function getHomeV2DragTarget(target) {
+  if (!target) return null;
+  if (target.closest("#bottomNavViewport")) return null;
+  if (
+    target.closest(
+      "button, select, input, textarea, a, [data-v2-action], [data-world-page], [data-page], .egg-modal, .egg-modal-backdrop, .egg-choice-card, .rest-dragon-status-panel, .rest-dragon-action-backdrop, .rest-dragon-sheet, .dragon-info-backdrop, .dragon-info-modal, .team-editor-backdrop, .team-editor-modal, .dragon-sell-backdrop, .dragon-sell-modal"
+    )
+  ) {
+    return null;
+  }
+  return target.closest("#worldPager");
+}
+
+// Dragon House: final page integration. This page uses the same state.dragons
+// list as rest island, so selling, team state, rename, and hatching stay in sync.
+function getWorldPages() {
+  return [
+    { id: "home", label: "家", title: "休息島", icon: "家", assetKey: "navHome", className: "homePage", render: renderWorldHomePage },
+    { id: "dragonHouse", label: "龍舍", title: "龍舍", icon: "龍", assetKey: "navDragonHouse", className: "dragonHousePage", render: renderWorldDragonHousePage },
+    { id: "dragonCave", label: "龍窟", title: "龍窟", icon: "蛋", assetKey: "navDragonCave", className: "dragonCavePage", render: renderWorldDragonCavePage },
+    { id: "equipment", label: "裝備店", title: "裝備店", icon: "裝", assetKey: "navEquipmentShop", className: "equipmentShopPage", render: (index) => renderWorldPlaceholderPage(index, "equipmentShopPage", "裝備店", "販售寵物與傭兵裝備的預留頁。", [
+      ["寵物頭盔", "提升龍寵防禦"],
+      ["寵物胸甲", "提升龍寵耐久"],
+      ["傭兵武器", "提升角色攻擊"],
+      ["傭兵鞋靴", "提升速度"]
+    ]) },
+    { id: "items", label: "道具店", title: "道具店", icon: "包", assetKey: "navItemShop", className: "itemShopPage", render: (index) => renderWorldPlaceholderPage(index, "itemShopPage", "道具店", "販售探險卷、契約券、食物與孵化道具。", [
+      ["探險卷", "探索區域取得龍蛋"],
+      ["傭兵契約券", "冒險公會抽傭兵"],
+      ["寵物食物", "恢復飽食與心情"],
+      ["孵化道具", "加速孵化流程"]
+    ]) },
+    { id: "explore", label: "探索", title: "探索", icon: "探", assetKey: "navExplore", className: "explorePage", render: (index) => renderWorldPlaceholderPage(index, "explorePage", "探索", "使用探險卷前往火山、海洋與森林取得龍蛋。", [
+      ["火山", "偏火屬性龍蛋"],
+      ["海洋", "偏水屬性龍蛋"],
+      ["森林", "偏木與土屬性龍蛋"],
+      ["稀有氣息", "低機率光 / 暗屬性"]
+    ]) },
+    { id: "quest", label: "任務", title: "任務", icon: "任", assetKey: "navQuest", className: "questPage", render: renderWorldQuestPage }
+  ];
+}
+
+function scrollHomeV2To(target) {
+  const pageMap = {
+    home: 0,
+    rest: 0,
+    dragonHouse: 1,
+    house: 1,
+    dragonCave: 2,
+    hatch: 2,
+    eggs: 2,
+    equipment: 3,
+    items: 4,
+    explore: 5,
+    quest: 6
+  };
+  const index = typeof target === "number" ? target : pageMap[target] ?? 0;
+  goToWorldPage(index);
+}
+
+function updateHomeV2ActiveSlide() {
+  const pager = document.querySelector("#worldPager");
+  if (!pager) return;
+  const page = clamp(Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth)), 0, (pager.children.length || 1) - 1);
+  currentWorldPage = page;
+
+  if (page !== 0 && (selectedRestDragonId || state.selectedRestDragonId)) {
+    selectedRestDragonId = null;
+    state.selectedRestDragonId = null;
+    saveGame();
+  }
+
+  document.querySelectorAll(".homeDot").forEach((dot) => {
+    dot.classList.toggle("is-active", Number(dot.dataset.page) === page);
+  });
+
+  document.querySelectorAll(".navItem").forEach((button) => {
+    const isActive = Number(button.dataset.worldPage) === page;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-current", isActive ? "page" : "false");
+  });
+
+  const activeNav = document.querySelector(`.navItem[data-world-page="${page}"]`);
+  const viewport = document.querySelector("#bottomNavViewport");
+  if (activeNav && viewport) {
+    const navRect = activeNav.getBoundingClientRect();
+    const viewportRect = viewport.getBoundingClientRect();
+    if (navRect.left < viewportRect.left || navRect.right > viewportRect.right) {
+      activeNav.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  }
+
+  const dialogueText = document.querySelector(".mimi-guide-text p, .home-v2-dialogue p");
+  if (dialogueText) {
+    const pageTips = [
+      "歡迎回來！這裡是休息島，龍寶們正在休息喔。",
+      "這裡是龍舍，可以管理你擁有的所有龍。",
+      "這裡是龍窟，快來照顧你的龍蛋吧。",
+      "裝備店會放寵物與傭兵裝備。",
+      "道具店會準備探險卷、食物與孵化道具。",
+      "探索可以取得新的龍蛋。",
+      "任務會記錄今天的冒險目標。"
+    ];
+    dialogueText.textContent = pageTips[page] || pageTips[0];
+  }
+}
+
+function renderWorldDragonHousePage(index) {
+  return `
+    <section class="worldPage dragonHousePage" data-world-index="${index}" aria-label="龍舍">
+      ${renderDragonHousePageInner()}
+    </section>
+  `;
+}
+
+function renderDragonHousePageInner() {
+  const capacity = getDragonHouseCapacity();
+  const total = (state.dragons || []).length;
+  const rows = getDragonHouseRows();
+  const cost = getDragonHouseUpgradeCost();
+  const house = getDragonHouseState();
+  const filters = getDragonHouseFilters();
+
+  return `
+    <div class="dragon-house-page">
+      <section class="dragon-house-header">
+        <div>
+          <h1>龍舍</h1>
+          <p>管理目前所有已擁有的龍</p>
+        </div>
+        <div class="dragon-house-capacity">
+          <b>${formatNumber(total)} / ${formatNumber(capacity)}</b>
+          <span>${formatNumber(rows)} 列容量</span>
+        </div>
+      </section>
+
+      <section class="dragon-house-tools" aria-label="龍舍搜尋與篩選">
+        <label class="dragon-house-search">
+          ${renderAssetImage("dragonSearchIcon", "搜尋", "asset-image dragon-house-tool-icon")}
+          <input type="search" data-dragon-house-search placeholder="搜尋龍名稱、屬性、稀有度" value="${escapeHtml(filters.search)}">
+        </label>
+        <div class="dragon-house-filters">
+          <label>
+            <span>屬性</span>
+            <select data-dragon-house-filter="element">
+              ${renderDragonHouseSelectOptions([
+                ["all", "全部"],
+                ["fire", "火"],
+                ["water", "水"],
+                ["wood", "木"],
+                ["light", "光"],
+                ["dark", "暗"]
+              ], filters.element)}
+            </select>
+          </label>
+          <label>
+            <span>等級</span>
+            <select data-dragon-house-filter="level">
+              ${renderDragonHouseSelectOptions([
+                ["all", "全部"],
+                ["1-9", "Lv.1-9"],
+                ["10-19", "Lv.10-19"],
+                ["20-39", "Lv.20-39"],
+                ["40+", "Lv.40+"]
+              ], filters.level)}
+            </select>
+          </label>
+          <label>
+            <span>稀有度</span>
+            <select data-dragon-house-filter="rarity">
+              ${renderDragonHouseSelectOptions([
+                ["all", "全部"],
+                ["C", "C"],
+                ["B", "B"],
+                ["A", "A"],
+                ["S", "S"],
+                ["SS", "SS"],
+                ["SSS", "SSS"],
+                ["SSSS", "SSSS"]
+              ], filters.rarity)}
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="dragon-house-grid" aria-label="所有龍">
+        ${renderDragonHouseGrid()}
+      </section>
+
+      <section class="dragon-house-upgrade">
+        <div>
+          <b>擴充龍舍</b>
+          <span>每次增加 2 列，共 10 個位置</span>
+        </div>
+        <button type="button" data-v2-action="buy-dragon-house-rows" ${house.purchasedUpgrades >= house.maxUpgrades ? "disabled" : ""}>
+          ${house.purchasedUpgrades >= house.maxUpgrades ? "已滿" : `+2列 ${formatNumber(cost)}鑽`}
+        </button>
+      </section>
+    </div>
+  `;
+}
+
+function renderDragonHouseSelectOptions(options, selectedValue) {
+  return options.map(([value, label]) => (
+    `<option value="${escapeHtml(value)}"${value === selectedValue ? " selected" : ""}>${escapeHtml(label)}</option>`
+  )).join("");
+}
+
+function getDragonHouseFilters() {
+  if (!dragonHouseFilters || typeof dragonHouseFilters !== "object") {
+    dragonHouseFilters = { search: "", element: "all", level: "all", rarity: "all" };
+  }
+  return dragonHouseFilters;
+}
+
+function getDragonHouseFilteredDragons() {
+  const filters = getDragonHouseFilters();
+  const keyword = String(filters.search || "").trim().toLowerCase();
+  const levelMatcher = DRAGON_HOUSE_LEVEL_FILTERS[filters.level] || DRAGON_HOUSE_LEVEL_FILTERS.all;
+
+  return (state.dragons || []).filter((dragon) => {
+    const element = normalizeDragonElement(dragon.element);
+    const level = positiveNumber(dragon.level, 1);
+    const rarity = dragon.rarity || "C";
+    const searchable = [
+      dragon.name,
+      element,
+      dragonElementText(element),
+      rarity,
+      `lv${level}`,
+      String(level)
+    ].join(" ").toLowerCase();
+
+    return (!keyword || searchable.includes(keyword))
+      && (filters.element === "all" || element === filters.element)
+      && (filters.rarity === "all" || rarity === filters.rarity)
+      && levelMatcher(level);
+  });
+}
+
+function isDragonHouseFiltering() {
+  const filters = getDragonHouseFilters();
+  return Boolean(filters.search) || filters.element !== "all" || filters.level !== "all" || filters.rarity !== "all";
+}
+
+function renderDragonHouseGrid() {
+  const dragons = getDragonHouseFilteredDragons();
+  const capacity = getDragonHouseCapacity();
+  const slotCount = isDragonHouseFiltering() ? Math.max(5, dragons.length) : capacity;
+  const cells = [];
+
+  for (let index = 0; index < slotCount; index += 1) {
+    const dragon = dragons[index];
+    cells.push(dragon ? renderDragonHouseCard(dragon) : renderDragonHouseEmptySlot(index));
+  }
+
+  return cells.join("");
+}
+
+function renderDragonHouseCard(dragon) {
+  const element = normalizeDragonElement(dragon.element);
+  const action = dragon.currentAction && DRAGON_ACTIONS.includes(dragon.currentAction) ? dragon.currentAction : "idle";
+  const isTeam = Boolean(dragon.isInTeam);
+  return `
+    <button class="dragon-house-card rarity-${String(dragon.rarity || "C").toLowerCase()}" type="button" data-v2-action="open-dragon-house-detail" data-dragon-id="${dragon.id}" aria-label="${escapeHtml(dragon.name)}">
+      <span class="dragon-house-thumb">
+        <img src="${getDragonAsset(dragon, action)}" alt="" decoding="async" loading="lazy" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${DRAGON_FALLBACK_ASSET}'}else{this.hidden=true}">
+      </span>
+      <b>${escapeHtml(dragon.name)}</b>
+      <small>${escapeHtml(dragonElementText(element))} / ${escapeHtml(dragon.rarity || "C")}</small>
+      <em>Lv.${formatNumber(dragon.level || 1)}</em>
+      <i class="${isTeam ? "is-team" : "is-rest"}">${isTeam ? "出戰" : "休息"}</i>
+    </button>
+  `;
+}
+
+function renderDragonHouseEmptySlot(index) {
+  return `
+    <div class="dragon-house-empty-slot" aria-label="空龍格 ${index + 1}">
+      ${renderAssetImage("dragonEmptySlotIcon", "空格", "asset-image dragon-empty-slot-icon")}
+      <span>空</span>
+    </div>
+  `;
+}
+
+function refreshDragonHousePage() {
+  const page = document.querySelector(".dragonHousePage");
+  if (!page) return;
+  page.innerHTML = renderDragonHousePageInner();
+}
+
+function openDragonHouseDetail(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) {
+    showToast("這隻龍已不存在");
+    refreshDragonHousePage();
+    return;
+  }
+
+  closeDragonHouseDetail();
+  closeDragonRenameModal();
+  mountHomeV2Overlay(renderDragonHouseDetailModal(dragon));
+}
+
+function closeDragonHouseDetail() {
+  document.querySelector(".dragon-house-detail-backdrop")?.remove();
+}
+
+function goToHomePage() {
+  if (typeof scrollHomeV2To === "function") {
+    scrollHomeV2To("home");
+    return;
+  }
+  goToWorldPage(0);
+}
+
+function sendDragonHome(dragonId) {
+  const dragon = getDragonById(dragonId);
+
+  if (!dragon) {
+    showToast("找不到這隻龍");
+    closeDragonHouseDetail();
+    refreshDragonHousePage();
+    return;
+  }
+
+  if (dragon.isInTeam) {
+    showToast("這隻龍正在出戰，請先移出隊伍");
+    return;
+  }
+
+  if (dragon.isOnRestIsland) {
+    closeDragonHouseDetail();
+    goToHomePage();
+    return;
+  }
+
+  if (isRestIslandFull()) {
+    showToast("休息島已滿");
+    return;
+  }
+
+  dragon.isOnRestIsland = true;
+  ensureRestDragonPosition(dragon, getRestIslandDragons().length);
+  state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
+  saveGame();
+  closeDragonHouseDetail();
+  renderHomeV2();
+  window.setTimeout(() => goToHomePage(), 0);
+  showToast(`${dragon.name} 已回到休息島`);
+}
+
+function sendDragonBackToHouse(dragonId) {
+  const targetId = dragonId || selectedRestDragonId || state?.selectedRestDragonId;
+  if (!targetId) {
+    showToast("請先選擇一隻龍");
+    return;
+  }
+
+  const dragon = getDragonById(targetId);
+  if (!dragon) {
+    showToast("找不到這隻龍");
+    if (selectedRestDragonId === targetId) selectedRestDragonId = null;
+    if (state?.selectedRestDragonId === targetId) state.selectedRestDragonId = null;
+    closeRestDragonStatusPanel(false);
+    refreshRestIslandInteractionLayer();
+    return;
+  }
+
+  dragon.isOnRestIsland = false;
+  dragon.isDragging = false;
+  dragon.lockActionUntil = null;
+
+  if (selectedRestDragonId === targetId) selectedRestDragonId = null;
+  if (state.selectedRestDragonId === targetId) state.selectedRestDragonId = null;
+
+  state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
+  closeRestDragonStatusPanel(false);
+  saveGame();
+  refreshRestIslandInteractionLayer();
+  refreshDragonHousePage();
+
+  if (typeof scrollHomeV2To === "function") {
+    scrollHomeV2To("dragonHouse");
+  }
+
+  showToast(`${dragon.name} 已回到龍舍`);
+}
+
+function renderDragonHouseDetailModal(dragon) {
+  const isTeam = Boolean(dragon.isInTeam);
+  const locationText = isTeam ? "出戰中" : (dragon.isOnRestIsland ? "休息島" : "龍舍");
+  return `
+    <div class="dragon-house-detail-backdrop" data-v2-backdrop="dragon-house-detail">
+      <section class="dragon-house-detail-modal" role="dialog" aria-modal="true" aria-label="${escapeHtml(dragon.name)} 詳細資料">
+        <header>
+          <img src="${getDragonAvatarAsset(dragon)}" alt="${escapeHtml(dragon.name)}" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${getDragonAsset(dragon, "idle")}'}else{this.src='${DRAGON_FALLBACK_ASSET}'}">
+          <div>
+            <h2>${escapeHtml(dragon.name)}</h2>
+            <p>${escapeHtml(dragonElementText(dragon.element))} / ${escapeHtml(dragon.rarity || "C")} / ${escapeHtml(dragonStageText(dragon.stage))}</p>
+          </div>
+          <button type="button" data-v2-action="close-dragon-house-detail" aria-label="關閉">×</button>
+        </header>
+        <dl>
+          <div><dt>等級</dt><dd>Lv.${formatNumber(dragon.level || 1)}</dd></div>
+          <div><dt>經驗</dt><dd>${formatNumber(dragon.exp || 0)}</dd></div>
+          <div><dt>戰力</dt><dd>${formatNumber(dragon.power || 0)}</dd></div>
+          <div><dt>飽食</dt><dd>${formatNumber(dragon.hunger || 0)} / 100</dd></div>
+          <div><dt>心情</dt><dd>${formatNumber(dragon.mood || 0)} / 100</dd></div>
+          <div><dt>狀態</dt><dd>${locationText}</dd></div>
+        </dl>
+        <div class="dragon-house-detail-actions">
+          <button type="button" data-v2-action="open-dragon-rename" data-dragon-id="${dragon.id}">改名</button>
+          <button type="button" data-v2-action="show-dragon-info" data-dragon-id="${dragon.id}">查看</button>
+          <button type="button" data-v2-action="${isTeam ? "remove-from-team" : "open-team-modal"}" data-dragon-id="${dragon.id}">${isTeam ? "移出隊伍" : "出戰"}</button>
+          <button type="button" data-v2-action="open-sell-dragon" data-dragon-id="${dragon.id}">出售</button>
+          <button type="button" data-v2-action="trade-dragon-placeholder" data-dragon-id="${dragon.id}">交易</button>
+          <button type="button" class="is-muted" data-v2-action="send-dragon-home" data-dragon-id="${dragon.id}">回家</button>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function openDragonRenameModal(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) {
+    showToast("這隻龍已不存在");
+    return;
+  }
+  closeDragonRenameModal();
+  mountHomeV2Overlay(`
+    <div class="dragon-rename-backdrop" data-v2-backdrop="dragon-rename">
+      <section class="dragon-rename-modal" role="dialog" aria-modal="true" aria-label="改名">
+        <h2>替 ${escapeHtml(dragon.name)} 改名</h2>
+        <p>最多 8 個中文字或 16 個英文字。</p>
+        <input class="dragon-rename-input" type="text" value="${escapeHtml(dragon.name)}" maxlength="16" data-rename-dragon-id="${dragon.id}">
+        <div>
+          <button type="button" class="is-muted" data-v2-action="close-dragon-rename">取消</button>
+          <button type="button" data-v2-action="confirm-dragon-rename" data-dragon-id="${dragon.id}">儲存</button>
+        </div>
+      </section>
+    </div>
+  `);
+  window.setTimeout(() => document.querySelector(".dragon-rename-input")?.focus(), 0);
+}
+
+function closeDragonRenameModal() {
+  document.querySelector(".dragon-rename-backdrop")?.remove();
+}
+
+function getDragonNameLengthCost(name) {
+  return Array.from(String(name || "")).reduce((total, char) => (
+    total + (char.charCodeAt(0) > 127 ? 2 : 1)
+  ), 0);
+}
+
+function confirmDragonRename(dragonId) {
+  const dragon = getDragonById(dragonId);
+  const input = document.querySelector(".dragon-rename-input");
+  const nextName = String(input?.value || "").trim();
+  if (!dragon) {
+    closeDragonRenameModal();
+    closeDragonHouseDetail();
+    showToast("這隻龍已不存在");
+    return;
+  }
+  if (!nextName) {
+    showToast("名稱不能空白");
+    return;
+  }
+  if (getDragonNameLengthCost(nextName) > 16) {
+    showToast("名稱太長");
+    return;
+  }
+
+  dragon.name = nextName;
+  saveGame();
+  closeDragonRenameModal();
+  closeDragonHouseDetail();
+  renderHomeV2();
+  showToast("龍的名字已更新");
+}
+
+function handleHomeV2Input(event) {
+  const searchInput = event.target.closest("[data-dragon-house-search]");
+  if (!searchInput) return;
+  getDragonHouseFilters().search = searchInput.value;
+  refreshDragonHousePage();
+}
+
+function handleHomeV2Change(event) {
+  const filter = event.target.closest("[data-dragon-house-filter]");
+  if (!filter) return;
+  const filters = getDragonHouseFilters();
+  filters[filter.dataset.dragonHouseFilter] = filter.value;
+  refreshDragonHousePage();
+}
+
+function handleHomeV2Click(event) {
+  if (homeV2Drag.moved) {
+    homeV2Drag.moved = false;
+    return;
+  }
+
+  if (event.target.matches("[data-v2-backdrop='egg-select']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeEggSelectionModal();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='rest-dragon-menu']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeRestDragonActionSheet();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='dragon-info']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDragonInfoModal();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='team-editor']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeTeamModal();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='dragon-sell']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeSellDragonConfirm();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='dragon-house-detail']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDragonHouseDetail();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='dragon-rename']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDragonRenameModal();
+    return;
+  }
+
+  const actionButton = event.target.closest("[data-v2-action]");
+  if (actionButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    const action = actionButton.dataset.v2Action;
+    const dragonId = actionButton.dataset.dragonId;
+
+    if (action === "settings") {
+      toggleDebugPanel();
+      return;
+    }
+    if (action === "resource-plus") {
+      showToast("資源加號先保留給之後擴充。");
+      return;
+    }
+    if (action === "buy-dragon-house-rows") {
+      buyDragonHouseRows();
+      return;
+    }
+    if (action === "open-dragon-house-detail") {
+      openDragonHouseDetail(dragonId);
+      return;
+    }
+    if (action === "close-dragon-house-detail") {
+      closeDragonHouseDetail();
+      return;
+    }
+    if (action === "send-dragon-home") {
+      sendDragonHome(dragonId);
+      return;
+    }
+    if (action === "open-dragon-rename") {
+      openDragonRenameModal(dragonId);
+      return;
+    }
+    if (action === "close-dragon-rename") {
+      closeDragonRenameModal();
+      return;
+    }
+    if (action === "confirm-dragon-rename") {
+      confirmDragonRename(dragonId);
+      return;
+    }
+    if (action === "unlock-slot") {
+      unlockHatchSlot(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "open-egg-modal") {
+      openEggPicker(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "close-egg-modal") {
+      closeEggSelectionModal();
+      return;
+    }
+    if (action === "start-hatch") {
+      putEggToSlot(actionButton.dataset.slotId, actionButton.dataset.eggId);
+      return;
+    }
+    if (action === "claim-hatch") {
+      claimHatchedDragon(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "focus-hatch-slot") {
+      focusHatchSlot(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "select-dragon") {
+      handleRestDragonClick(dragonId);
+      return;
+    }
+    if (action === "close-rest-dragon-panel") {
+      closeRestDragonStatusPanel();
+      return;
+    }
+    if (action === "close-rest-dragon-menu") {
+      closeRestDragonActionSheet();
+      return;
+    }
+    if (action === "feed-dragon") {
+      feedRestDragon(dragonId);
+      refreshDragonHousePage();
+      return;
+    }
+    if (action === "train-dragon") {
+      trainRestDragon(dragonId);
+      refreshDragonHousePage();
+      return;
+    }
+    if (action === "show-dragon-info") {
+      closeDragonHouseDetail();
+      openDragonInfoModal(dragonId);
+      return;
+    }
+    if (action === "open-team-modal") {
+      closeDragonHouseDetail();
+      openTeamModal(dragonId);
+      return;
+    }
+    if (action === "open-sell-dragon") {
+      closeDragonHouseDetail();
+      openSellDragonConfirm(dragonId);
+      return;
+    }
+    if (action === "close-sell-dragon") {
+      closeSellDragonConfirm();
+      return;
+    }
+    if (action === "confirm-sell-dragon") {
+      confirmSellDragon(dragonId);
+      return;
+    }
+    if (action === "send-dragon-back-to-house" || action === "backToHouse") {
+      sendDragonBackToHouse(dragonId || selectedRestDragonId || state.selectedRestDragonId);
+      return;
+    }
+    if (action === "trade-dragon-placeholder") {
+      showToast("交易功能開發中");
+      return;
+    }
+    if (action === "close-dragon-info") {
+      closeDragonInfoModal();
+      return;
+    }
+    if (action === "close-team-modal") {
+      closeTeamModal();
+      return;
+    }
+    if (action === "add-to-team") {
+      addDragonToTeam(dragonId);
+      return;
+    }
+    if (action === "remove-from-team") {
+      closeDragonHouseDetail();
+      removeDragonFromTeam(dragonId);
+      return;
+    }
+  }
+
+  const navArrow = event.target.closest("[data-v2-nav-arrow]");
+  if (navArrow) {
+    event.preventDefault();
+    event.stopPropagation();
+    const viewport = document.querySelector("#bottomNavViewport");
+    if (viewport) {
+      viewport.scrollBy({ left: Number(navArrow.dataset.v2NavArrow) * 80, behavior: "smooth" });
+    }
+    return;
+  }
+
+  const pageButton = event.target.closest("[data-page]");
+  if (pageButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (Number(pageButton.dataset.page) !== 0) closeRestDragonStatusPanel(false);
+    goToWorldPage(Number(pageButton.dataset.page));
+    return;
+  }
+
+  const navButton = event.target.closest("[data-world-page]");
+  if (navButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (Number(navButton.dataset.worldPage) !== 0) closeRestDragonStatusPanel(false);
+    goToWorldPage(Number(navButton.dataset.worldPage));
+  }
+}
+
+function getHomeV2DragTarget(target) {
+  if (!target) return null;
+  if (target.closest("#bottomNavViewport")) return null;
+  if (
+    target.closest(
+      "button, select, input, textarea, a, [data-v2-action], [data-world-page], [data-page], .egg-modal, .egg-modal-backdrop, .egg-choice-card, .rest-dragon-status-panel, .rest-dragon-action-backdrop, .rest-dragon-sheet, .dragon-info-backdrop, .dragon-info-modal, .team-editor-backdrop, .team-editor-modal, .dragon-sell-backdrop, .dragon-sell-modal, .dragon-house-detail-backdrop, .dragon-house-detail-modal, .dragon-rename-backdrop, .dragon-rename-modal, .dragon-house-tools, .dragon-house-grid"
+    )
+  ) {
+    return null;
+  }
+  return target.closest("#worldPager");
+}
+
+function claimHatchedDragon(slotId) {
+  const slot = findHatchSlot(slotId);
+  if (!slot?.currentEgg) return;
+  const status = getHatchSlotStatus(slot);
+  if (!status.ready) {
+    showToast("龍蛋還在孵化中。");
+    return;
+  }
+
+  const egg = slot.currentEgg;
+  const dragon = hatchEggToDragon(egg);
+  if (!addDragonToPlayer(dragon, { save: false })) {
+    return;
+  }
+
+  state.activeDragonId = state.activeDragonId || dragon.id;
+  state.totalHatched = normalizedNonNegative(state.totalHatched, 0) + 1;
+  updateHighestRarity(dragon.rarity);
+  Object.assign(slot, {
+    type: "time",
+    slotType: "time",
+    currentEgg: null,
+    currentEggId: null,
+    startTime: null,
+    hatchDuration: 0,
+    finishTime: null,
+    status: "empty"
+  });
+  state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
+  syncPersistentAliases();
+  saveGame();
+  replaceHatchSlotDom(slot.id);
+  updateHatchIslandOverviewDom();
+  refreshDragonHousePage();
+  showToast(`孵化成功！獲得 ${dragon.rarity} ${dragon.name}`);
+}
+
+function attachDragonHouseEventBridge() {
+  if (!els?.homeV2Root || els.homeV2Root.dataset.dragonHouseBound === "true") return;
+  els.homeV2Root.addEventListener("input", handleHomeV2Input);
+  els.homeV2Root.addEventListener("change", handleHomeV2Change);
+  els.homeV2Root.dataset.dragonHouseBound = "true";
+}
+
+attachDragonHouseEventBridge();
+
+// Beginner tutorial, exploration, and mission flow. These overrides are kept at
+// the end of the file so they integrate with the current Home V2 worldPager
+// without rebuilding unrelated pages.
+function normalizeTutorial(tutorial = {}) {
+  const source = tutorial && typeof tutorial === "object" ? tutorial : {};
+  const seen = Boolean(source.tutorialSeen || source.seen || source.completed);
+  const step = clamp(Math.floor(Number(source.step ?? source.tutorialStep ?? 0) || 0), 0, TUTORIAL_STEPS.length - 1);
+  return {
+    started: source.started !== false,
+    tutorialSeen: seen,
+    seen,
+    completed: seen,
+    step,
+    tutorialStep: step,
+    beginnerQuestStarted: source.beginnerQuestStarted !== false,
+    ticketsGranted: Boolean(source.ticketsGranted),
+    waitingFor: source.waitingFor || null,
+    firstDrawUnlocked: Boolean(source.firstDrawUnlocked),
+    firstDrawUsed: Boolean(source.firstDrawUsed)
+  };
+}
+
+function createDefaultBeginnerMissions() {
+  const steps = {};
+  BEGINNER_MISSION_DEFS.forEach((mission) => {
+    steps[mission.id] = { current: 0, target: mission.target, claimed: false };
+  });
+  return {
+    beginner: {
+      started: true,
+      completed: false,
+      steps,
+      finalClaimed: false
+    }
+  };
+}
+
+function normalizeBeginnerMissionStep(step, mission) {
+  const source = step && typeof step === "object" ? step : {};
+  const target = positiveNumber(source.target, mission.target);
+  return {
+    current: clamp(Math.floor(Number(source.current) || 0), 0, target),
+    target,
+    claimed: Boolean(source.claimed)
+  };
+}
+
+function normalizeMissions(missions = {}) {
+  const defaults = createDefaultBeginnerMissions();
+  const savedBeginner = missions?.beginner && typeof missions.beginner === "object" ? missions.beginner : {};
+  const steps = {};
+  BEGINNER_MISSION_DEFS.forEach((mission) => {
+    steps[mission.id] = normalizeBeginnerMissionStep(savedBeginner.steps?.[mission.id], mission);
+  });
+  const beginner = {
+    ...defaults.beginner,
+    ...savedBeginner,
+    steps,
+    started: savedBeginner.started !== false,
+    finalClaimed: Boolean(savedBeginner.finalClaimed)
+  };
+  beginner.completed = BEGINNER_MISSION_DEFS.every((mission) => {
+    const step = beginner.steps[mission.id];
+    return step.current >= step.target && step.claimed;
+  });
+  return { ...defaults, ...missions, beginner };
+}
+
+function syncPersistentAliases() {
+  if (!state || typeof state !== "object") return;
+  if (!state.hatchIsland || typeof state.hatchIsland !== "object") {
+    state.hatchIsland = { hatchSlots: createDefaultHatchSlots() };
+  }
+  if (!Array.isArray(state.hatchIsland.hatchSlots)) {
+    state.hatchIsland.hatchSlots = createDefaultHatchSlots();
+  }
+  state.hatchSlots = state.hatchIsland.hatchSlots;
+  if (!Array.isArray(state.eggInventory)) {
+    state.eggInventory = Array.isArray(state.eggs) ? state.eggs.map(normalizeInventoryEgg) : [];
+  }
+  state.eggs = state.eggInventory;
+  state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
+  state.tutorial = normalizeTutorial(state.tutorial);
+  state.tutorialSeen = state.tutorial.tutorialSeen;
+  state.tutorialStep = state.tutorial.step;
+  state.beginnerQuestStarted = state.tutorial.beginnerQuestStarted;
+  state.missions = normalizeMissions(state.missions);
+  state.battleTeam = normalizeBattleTeam(state.battleTeam, state.dragons || []);
+  syncDragonTeamFlags();
+}
+
+function getBeginnerMissionState() {
+  state.missions = normalizeMissions(state.missions);
+  return state.missions.beginner;
+}
+
+function getBeginnerMissionStep(id) {
+  return getBeginnerMissionState().steps[id] || null;
+}
+
+function updateBeginnerMissionProgress(id, amount = 1, options = {}) {
+  const mission = BEGINNER_MISSION_DEFS.find((item) => item.id === id);
+  const step = getBeginnerMissionStep(id);
+  if (!mission || !step || step.current >= step.target) return false;
+  step.current = clamp(step.current + amount, 0, step.target);
+  state.missions.beginner.completed = false;
+  if (options.save !== false) saveGame();
+  if (options.render !== false) refreshMissionPage();
+  return true;
+}
+
+function isBeginnerMissionReady(id) {
+  const step = getBeginnerMissionStep(id);
+  return Boolean(step && step.current >= step.target);
+}
+
+function getBeginnerMissionCompletedCount() {
+  const beginner = getBeginnerMissionState();
+  return BEGINNER_MISSION_DEFS.filter((mission) => {
+    const step = beginner.steps[mission.id];
+    return step && step.current >= step.target;
+  }).length;
+}
+
+function applyMissionReward(reward = {}) {
+  if (!reward || typeof reward !== "object") return;
+  state.coins = normalizedNonNegative(state.coins, 0) + normalizedNonNegative(reward.coins, 0);
+  state.diamonds = normalizedNonNegative(state.diamonds, 0) + normalizedNonNegative(reward.diamonds, 0);
+  state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
+  state.inventory.ticketsExplore = normalizedNonNegative(state.inventory.ticketsExplore, 0) + normalizedNonNegative(reward.ticketsExplore, 0);
+  if (reward.items && typeof reward.items === "object") {
+    state.inventory.items = state.inventory.items || {};
+    Object.entries(reward.items).forEach(([itemId, count]) => {
+      state.inventory.items[itemId] = normalizedNonNegative(state.inventory.items[itemId], 0) + normalizedNonNegative(count, 0);
+    });
+  }
+}
+
+function renderMissionRewardLabel(reward = {}) {
+  const parts = [];
+  if (reward.coins) parts.push(`金幣 x${formatNumber(reward.coins)}`);
+  if (reward.diamonds) parts.push(`鑽石 x${formatNumber(reward.diamonds)}`);
+  if (reward.ticketsExplore) parts.push(`探險券 x${formatNumber(reward.ticketsExplore)}`);
+  if (reward.items?.mysteryBag) parts.push(`神秘獎勵袋 x${formatNumber(reward.items.mysteryBag)}`);
+  return parts.join(" / ") || "獎勵";
+}
+
+function claimBeginnerMissionReward(id) {
+  const mission = BEGINNER_MISSION_DEFS.find((item) => item.id === id);
+  const step = getBeginnerMissionStep(id);
+  if (!mission || !step) return;
+  if (step.current < step.target) {
+    showToast("任務尚未完成");
+    return;
+  }
+  if (step.claimed) {
+    showToast("獎勵已領取");
+    return;
+  }
+  applyMissionReward(mission.reward);
+  step.claimed = true;
+  saveGame();
+  updateHomeV2HudResources();
+  refreshMissionPage();
+  showToast(`已領取：${renderMissionRewardLabel(mission.reward)}`);
+}
+
+function claimBeginnerFinalReward() {
+  const beginner = getBeginnerMissionState();
+  const allReady = BEGINNER_MISSION_DEFS.every((mission) => {
+    const step = beginner.steps[mission.id];
+    return step.current >= step.target;
+  });
+  if (!allReady) {
+    showToast("還有新手任務尚未完成");
+    return;
+  }
+  if (beginner.finalClaimed) {
+    showToast("總獎勵已領取");
+    return;
+  }
+  applyMissionReward(BEGINNER_FINAL_REWARD);
+  beginner.finalClaimed = true;
+  beginner.completed = true;
+  saveGame();
+  updateHomeV2HudResources();
+  refreshMissionPage();
+  showToast("已領取新手任務總獎勵");
+}
+
+function checkGrowBattleReadyMission(options = {}) {
+  const hasBattleReadyDragon = (state.dragons || []).some((dragon) => (
+    !dragon.sold &&
+    (dragon.stage !== "baby" || normalizedNonNegative(dragon.level, 1) >= 3 || normalizedNonNegative(dragon.exp, 0) >= 25 || normalizedNonNegative(dragon.power, 0) >= 15)
+  ));
+  if (hasBattleReadyDragon) {
+    updateBeginnerMissionProgress("growBattleReady", 1, options);
+  }
+}
+
+function refreshMissionPage() {
+  const page = document.querySelector(".questPage");
+  if (!page) return;
+  page.outerHTML = renderWorldQuestPage(Number(page.dataset.worldIndex) || 6);
+  updateHomeV2ActiveSlide();
+}
+
+function refreshExplorePage() {
+  const page = document.querySelector(".explorePage");
+  if (!page) return;
+  page.outerHTML = renderWorldExplorePage(Number(page.dataset.worldIndex) || 5);
+  updateHomeV2ActiveSlide();
+}
+
+function grantTutorialExploreTickets() {
+  state.tutorial = normalizeTutorial(state.tutorial);
+  if (state.tutorial.ticketsGranted) return;
+  state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
+  state.inventory.ticketsExplore = normalizedNonNegative(state.inventory.ticketsExplore, 0) + 3;
+  state.tutorial.ticketsGranted = true;
+  state.tutorial.beginnerQuestStarted = true;
+  state.beginnerQuestStarted = true;
+  saveGame();
+  updateHomeV2HudResources();
+  refreshExplorePage();
+  showToast("Mimi 送你 3 張探險券！");
+}
+
+function maybeShowTutorialOverlay() {
+  if (!gameHasStarted || !els.homeV2Root || els.homeV2Root.hidden) return;
+  state.tutorial = normalizeTutorial(state.tutorial);
+  if (state.tutorial.tutorialSeen) return;
+  showTutorialOverlay(state.tutorial.step);
+}
+
+function closeTutorialOverlay() {
+  document.querySelector(".tutorial-overlay")?.remove();
+}
+
+function showTutorialOverlay(stepIndex = 0) {
+  if (!els.homeV2Root) return;
+  closeTutorialOverlay();
+  const step = clamp(Number(stepIndex) || 0, 0, TUTORIAL_STEPS.length - 1);
+  state.tutorial = normalizeTutorial({ ...state.tutorial, step });
+  const active = TUTORIAL_STEPS[step];
+  const buttonLabel = step === TUTORIAL_STEPS.length - 1 ? "完成引導" : "點擊繼續";
+  els.homeV2Root.insertAdjacentHTML("beforeend", `
+    <div class="tutorial-overlay" role="dialog" aria-modal="true" aria-label="新手引導">
+      <div class="tutorial-card">
+        <img class="tutorial-logo-mark" src="assets/ui/logo-dragon-adventure.png" alt="龍的冒險" onerror="this.hidden=true">
+        <div class="tutorial-step-badge">新手引導 ${step + 1}/${TUTORIAL_STEPS.length}</div>
+        <div class="tutorial-steps">
+          ${TUTORIAL_STEPS.map((item, index) => `
+            <div class="tutorial-step${index === step ? " is-active" : ""}">
+              <span>${index + 1}</span>
+              <p>${escapeHtml(index === step ? `${item.title}\n${item.body}` : item.title)}</p>
+            </div>
+          `).join("")}
+        </div>
+        <img class="tutorial-mimi" src="${ASSETS.characters.mimiFull}" alt="Mimi" onerror="this.hidden=true">
+        <button class="tutorial-continue" type="button" data-v2-action="tutorial-next">${buttonLabel}</button>
+      </div>
+    </div>
+  `);
+  bindBeginnerFeatureButtons();
+}
+
+function advanceTutorial() {
+  state.tutorial = normalizeTutorial(state.tutorial);
+  const current = state.tutorial.step;
+  if (current === 2) {
+    grantTutorialExploreTickets();
+  }
+  if (current === 3) {
+    state.tutorial.waitingFor = "explore";
+    saveGame();
+    closeTutorialOverlay();
+    scrollHomeV2To("explore");
+    showToast("請點擊探險卡片開始尋龍之旅");
+    return;
+  }
+  if (current === 5) {
+    state.tutorial.waitingFor = "incubator";
+    saveGame();
+    closeTutorialOverlay();
+    scrollHomeV2To("dragonCave");
+    updateBeginnerMissionProgress("goHatchIsland", 1, { render: false });
+    return;
+  }
+  if (current >= TUTORIAL_STEPS.length - 1) {
+    state.tutorial.tutorialSeen = true;
+    state.tutorial.seen = true;
+    state.tutorial.completed = true;
+    state.tutorial.waitingFor = null;
+    state.tutorial.step = TUTORIAL_STEPS.length - 1;
+    state.tutorialSeen = true;
+    state.tutorialStep = state.tutorial.step;
+    saveGame();
+    closeTutorialOverlay();
+    showToast("新手引導完成，任務頁已開放！");
+    return;
+  }
+  state.tutorial.step = clamp(current + 1, 0, TUTORIAL_STEPS.length - 1);
+  state.tutorial.tutorialStep = state.tutorial.step;
+  saveGame();
+  showTutorialOverlay(state.tutorial.step);
+}
+
+function handleTutorialEvent(type) {
+  state.tutorial = normalizeTutorial(state.tutorial);
+  if (state.tutorial.tutorialSeen) return;
+  if (type === "getEgg" && state.tutorial.step <= 4) {
+    state.tutorial.step = 4;
+    state.tutorial.waitingFor = null;
+    saveGame();
+    showTutorialOverlay(4);
+    return;
+  }
+  if (type === "finishHatch" && state.tutorial.step <= 6) {
+    state.tutorial.step = 6;
+    state.tutorial.waitingFor = null;
+    saveGame();
+    showTutorialOverlay(6);
+  }
+}
+
+function rollWeightedOption(options, valueKey) {
+  const total = options.reduce((sum, item) => sum + normalizedNonNegative(item.rate, 0), 0);
+  let roll = Math.random() * Math.max(1, total);
+  for (const item of options) {
+    roll -= normalizedNonNegative(item.rate, 0);
+    if (roll <= 0) return item[valueKey];
+  }
+  return options[0]?.[valueKey];
+}
+
+function rollExploreEggRarity() {
+  return rollWeightedOption(EGG_RARITY_RATES, "rarity") || "C";
+}
+
+function rollExploreElement(area) {
+  const areaId = typeof area === "string" ? area : area?.id;
+  const mainElement = typeof area === "object" && area?.mainElement ? area.mainElement : null;
+  const r = Math.random();
+
+  if (r < 0.08) return "light";
+  if (r < 0.16) return "dark";
+
+  if (areaId === "volcano") return "fire";
+  if (areaId === "ocean") return "water";
+  if (areaId === "forest") return "wood";
+
+  return normalizeDragonElement(mainElement || "fire");
+}
+
+function getEggImageForExploreResult(rarity, element) {
+  return getEggAsset({ rarity, element });
+}
+
+function getEggTypeForExploreResult(rarity, element) {
+  if (element === "dark" && ["S", "SS", "SSS"].includes(rarity)) return "dark-sss-egg";
+  if (["SS", "SSS"].includes(rarity)) return "legendary-egg";
+  if (rarity === "S") return "epic-egg";
+  if (rarity === "A") return "rare-egg";
+  return "normal-egg";
+}
+
+function getHatchDurationForRarity(rarity) {
+  const durations = { C: 60, B: 90, A: 120, S: 180, SS: 240, SSS: 300 };
+  return durations[rarity] || 60;
+}
+
+function createExplorationEgg(area) {
+  const rarity = rollExploreEggRarity();
+  const element = rollExploreElement(area);
+  const type = getEggTypeForExploreResult(rarity, element);
+  return normalizeInventoryEgg({
+    id: createId("egg"),
+    type,
+    name: `${dragonElementText(element)}屬性 ${rarity} 級龍蛋`,
+    element,
+    elementHint: element,
+    attribute: element,
+    rarity,
+    eggRarity: rarity,
+    elementBias: element,
+    hatchDuration: getHatchDurationForRarity(rarity),
+    image: getEggImageForExploreResult(rarity, element),
+    rarityRates: [{ rarity, rate: 100 }],
+    createdAt: Date.now()
+  });
+}
+
+function startExplore(areaId) {
+  const area = EXPLORE_AREAS.find((item) => item.id === areaId);
+  if (!area) return;
+  beginExploreDraw(area);
+}
+
+function closeExploreReveal() {
+  document.querySelector(".explore-reveal-backdrop")?.remove();
+  currentGachaResult = null;
+}
+
+function beginExploreDraw(area) {
+  state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
+  const tickets = normalizedNonNegative(state.inventory.ticketsExplore, 0);
+  if (tickets < area.ticketCost) {
+    showToast("探險券不足");
+    return false;
+  }
+
+  state.inventory.ticketsExplore = tickets - area.ticketCost;
+  const egg = createExplorationEgg(area);
+  syncPersistentAliases();
+  saveGame();
+  refreshExplorePage();
+  updateHomeV2HudResources();
+  showExploreReveal(egg, area);
+  return true;
+}
+
+function showExploreReveal(egg, area) {
+  if (!els.homeV2Root) return;
+  closeExploreReveal();
+  const element = normalizeDragonElement(egg.element || egg.elementHint || egg.elementBias);
+  const isRareElement = element === "light" || element === "dark";
+  const elementText = dragonElementText(element);
+  const rarity = String(egg.rarity || "C").toLowerCase();
+
+  currentGachaResult = {
+    egg,
+    area,
+    areaId: area.id,
+    claimed: false
+  };
+
+  els.homeV2Root.insertAdjacentHTML("beforeend", `
+    <div class="explore-reveal-backdrop" role="dialog" aria-modal="true" aria-label="獲得龍蛋">
+      <section class="explore-reveal-card gacha-result-card rarity-${escapeHtml(rarity)}${isRareElement ? " is-rare-element" : ""}">
+        <div class="gacha-flash" aria-hidden="true"></div>
+        <div class="explore-reveal-glow" aria-hidden="true"></div>
+        <p class="explore-reveal-phase">龍蛋出現！</p>
+        <p class="explore-reveal-area">${escapeHtml(area.name)}探索成功！</p>
+        <img class="explore-reveal-egg gacha-result-egg" src="${homeV2EggImage(egg)}" alt="${escapeHtml(egg.name)}" onerror="this.src='assets/eggs/placeholder-egg.png'">
+        <div class="gacha-result-text" hidden>
+          ${isRareElement ? `<p class="explore-reveal-rare">稀有氣息出現！</p>` : ""}
+          <h2>獲得龍蛋！</h2>
+          <p>獲得：${escapeHtml(elementText)}屬性 ${escapeHtml(egg.rarity)} 級龍蛋</p>
+        </div>
+        <div class="explore-reveal-actions gacha-result-actions">
+          <button class="gacha-result-btn primary" type="button" data-v2-action="claim-explore-egg">獲得龍蛋</button>
+          <button class="gacha-result-btn secondary" type="button" data-v2-action="draw-explore-again">繼續抽獎</button>
+        </div>
+      </section>
+    </div>
+  `);
+  bindBeginnerFeatureButtons();
+
+  window.setTimeout(() => {
+    document.querySelector(".gacha-result-egg")?.classList.add("charging");
+  }, 500);
+
+  window.setTimeout(() => {
+    const card = document.querySelector(".gacha-result-card");
+    const eggImage = document.querySelector(".gacha-result-egg");
+    eggImage?.classList.remove("charging");
+    card?.classList.add("is-revealed");
+    card?.querySelector(".gacha-flash")?.classList.add("is-active");
+    const resultText = card?.querySelector(".gacha-result-text");
+    if (resultText) resultText.hidden = false;
+  }, 1500);
+}
+
+function claimExploreEggResult({ closeOverlay = true } = {}) {
+  if (!currentGachaResult || currentGachaResult.claimed) return false;
+  currentGachaResult.claimed = true;
+  document.querySelectorAll(".gacha-result-btn").forEach((button) => {
+    button.disabled = true;
+  });
+  const egg = currentGachaResult.egg;
+
+  state.eggInventory = Array.isArray(state.eggInventory) ? state.eggInventory : [];
+  state.eggInventory.push(egg);
+  state.eggs = state.eggInventory;
+  updateBeginnerMissionProgress("getEgg", 1, { save: false, render: false });
+  syncPersistentAliases();
+  saveGame();
+  refreshExplorePage();
+  refreshMissionPage();
+  updateHomeV2HudResources();
+  handleTutorialEvent("getEgg");
+
+  if (closeOverlay) closeExploreReveal();
+  return true;
+}
+
+function drawExploreAgain() {
+  if (!currentGachaResult) return;
+  const area = currentGachaResult.area || EXPLORE_AREAS.find((item) => item.id === currentGachaResult.areaId);
+  if (!claimExploreEggResult({ closeOverlay: false })) return;
+  if (!area) {
+    closeExploreReveal();
+    return;
+  }
+
+  state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
+  const tickets = normalizedNonNegative(state.inventory.ticketsExplore, 0);
+  if (tickets < area.ticketCost) {
+    showToast("探險券不足");
+    closeExploreReveal();
+    return;
+  }
+
+  beginExploreDraw(area);
+}
+
+function renderExploreMissionStrip() {
+  const step = getBeginnerMissionStep("getEgg");
+  const current = step?.current || 0;
+  const target = step?.target || 1;
+  return `
+    <section class="explore-mission-strip">
+      <b>新手任務：使用探險券，取得你的第一顆龍蛋</b>
+      <div class="mission-strip-progress"><i style="width:${clamp((current / target) * 100, 0, 100)}%"></i></div>
+      <span>${current} / ${target}</span>
+    </section>
+  `;
+}
+
+function renderWorldExplorePage(index) {
+  state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
+  const ticketCount = normalizedNonNegative(state.inventory.ticketsExplore, 0);
+  return `
+    <section class="worldPage explorePage" data-world-index="${index}" aria-label="探險">
+      <div class="explore-page-shell">
+        <section class="explore-hero">
+          <div>
+            <h1>探險</h1>
+            <p>使用探險券前往火山、海洋與森林取得龍蛋。偶爾，也可能遇見稀有的光屬性或暗屬性龍蛋。</p>
+          </div>
+          <img src="${ASSETS.characters.mimiGuide || ASSETS.characters.mimiFull}" alt="Mimi" onerror="this.hidden=true">
+        </section>
+        <div class="explore-ticket-pill">
+          <img src="${ASSETS.explore.ticket}" alt="" onerror="this.hidden=true">
+          探險券 ${formatNumber(ticketCount)}
+        </div>
+        ${renderExploreMissionStrip()}
+        <div class="explore-area-grid">
+          ${EXPLORE_AREAS.map((area) => `
+            <article class="explore-area-card explore-${area.id}" aria-label="${escapeHtml(area.name)}">
+              <div class="explore-card-icon" aria-hidden="true">
+                <img src="${area.image}" alt="" onerror="this.hidden=true">
+                <span>${escapeHtml(dragonElementText(area.mainElement))}</span>
+              </div>
+              <div class="explore-card-content">
+                <h2>${escapeHtml(area.name)}</h2>
+                <p>${escapeHtml(area.description)}</p>
+                <span>消耗探險券 x${area.ticketCost}</span>
+              </div>
+              <button class="explore-start-btn" type="button" data-v2-action="start-explore" data-area-id="${area.id}">開始探險</button>
+            </article>
+          `).join("")}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderWorldQuestPage(index) {
+  const beginner = getBeginnerMissionState();
+  const completedCount = getBeginnerMissionCompletedCount();
+  const allReady = completedCount >= BEGINNER_MISSION_DEFS.length;
+  return `
+    <section class="worldPage questPage" data-world-index="${index}" aria-label="任務">
+      <div class="quest-page-shell">
+        <section class="quest-hero">
+          <div>
+            <h1>任務</h1>
+            <p>完成任務，培養強大的龍寶寶吧！Mimi 會一直在你身邊幫助你喔～</p>
+          </div>
+          <img src="${ASSETS.characters.mimiFull}" alt="Mimi" onerror="this.hidden=true">
+        </section>
+        <section class="quest-main-card">
+          <header>
+            <div>
+              <b>新手任務</b>
+              <h2>請照顧你的龍寶寶直到牠長大可以出戰</h2>
+            </div>
+            <span>${completedCount}/${BEGINNER_MISSION_DEFS.length} 完成</span>
+          </header>
+          <div class="quest-overall-progress"><i style="width:${clamp((completedCount / BEGINNER_MISSION_DEFS.length) * 100, 0, 100)}%"></i></div>
+          <div class="mission-list">
+            ${BEGINNER_MISSION_DEFS.map((mission, index) => {
+              const step = beginner.steps[mission.id];
+              const percent = clamp(((step?.current || 0) / (step?.target || mission.target)) * 100, 0, 100);
+              const ready = percent >= 100;
+              const claimed = Boolean(step?.claimed);
+              return `
+                <article class="mission-row${ready ? " is-ready" : ""}${claimed ? " is-claimed" : ""}">
+                  <span class="mission-index">${index + 1}</span>
+                  <div class="mission-row-main">
+                    <h3>${escapeHtml(mission.title)}</h3>
+                    <div class="mission-row-progress"><i style="width:${percent}%"></i></div>
+                    <small>${step?.current || 0}/${step?.target || mission.target}</small>
+                  </div>
+                  <div class="mission-reward">${renderMissionRewardLabel(mission.reward)}</div>
+                  <button type="button" data-v2-action="claim-mission" data-mission-id="${mission.id}" ${!ready || claimed ? "disabled" : ""}>${claimed ? "已完成" : ready ? "領取" : "進行中"}</button>
+                </article>
+              `;
+            }).join("")}
+          </div>
+        </section>
+        <section class="quest-final-reward">
+          <div>
+            <b>完成新手任務可獲得</b>
+            <p>${renderMissionRewardLabel(BEGINNER_FINAL_REWARD)}</p>
+          </div>
+          <button type="button" data-v2-action="claim-final-mission" ${!allReady || beginner.finalClaimed ? "disabled" : ""}>${beginner.finalClaimed ? "已領取" : allReady ? "領取總獎勵" : "進行中"}</button>
+        </section>
+      </div>
+    </section>
+  `;
+}
+
+function getWorldPages() {
+  return [
+    { id: "home", label: "家", title: "休息島", icon: "家", assetKey: "navHome", className: "homePage", render: renderWorldHomePage },
+    { id: "dragonHouse", label: "龍舍", title: "龍舍", icon: "龍", assetKey: "navDragonHouse", className: "dragonHousePage", render: renderWorldDragonHousePage },
+    { id: "dragonCave", label: "孵蛋島", title: "孵蛋島", icon: "蛋", assetKey: "navDragonCave", className: "dragonCavePage", render: renderWorldDragonCavePage },
+    { id: "equipment", label: "裝備店", title: "裝備店", icon: "裝", assetKey: "navEquipmentShop", className: "equipmentShopPage", render: (index) => renderWorldPlaceholderPage(index, "equipmentShopPage", "裝備店", "寵物裝備與傭兵裝備之後會放在這裡。", [
+      ["寵物頭盔", "提升龍寶寶守護力"],
+      ["寵物胸甲", "提升龍寶寶耐久"],
+      ["傭兵武器", "提升冒險角色攻擊"],
+      ["傭兵靴子", "提升速度"]
+    ]) },
+    { id: "items", label: "道具店", title: "道具店", icon: "物", assetKey: "navItemShop", className: "itemShopPage", render: (index) => renderWorldPlaceholderPage(index, "itemShopPage", "道具店", "探險券、恢復藥、食物與孵化道具之後會放在這裡。", [
+      ["探險券", "用來前往探索取得龍蛋"],
+      ["恢復藥", "戰鬥後恢復狀態"],
+      ["龍果實", "餵食龍寶寶"],
+      ["孵化沙漏", "縮短孵化時間"]
+    ]) },
+    { id: "explore", label: "探險", title: "探險", icon: "探", assetKey: "navExplore", className: "explorePage", render: renderWorldExplorePage },
+    { id: "quest", label: "任務", title: "任務", icon: "任", assetKey: "navQuest", className: "questPage", render: renderWorldQuestPage }
+  ];
+}
+
+function goToWorldPage(index) {
+  console.log("[goToWorldPage]", index);
+  const pager = document.getElementById("worldPager");
+  if (!pager) return;
+  const pageWidth = pager.clientWidth;
+  const pageCount = pager.children.length || 1;
+  const targetIndex = clamp(Number(index) || 0, 0, pageCount - 1);
+  currentWorldPage = targetIndex;
+  const pageId = getWorldPages()[targetIndex]?.id;
+  if (pageId === "dragonCave") {
+    updateBeginnerMissionProgress("goHatchIsland", 1, { render: false });
+  }
+  pager.scrollTo({
+    left: pageWidth * targetIndex,
+    behavior: "smooth"
+  });
+  window.setTimeout(updateHomeV2ActiveSlide, 180);
+}
+
+function hatchEggToDragon(egg) {
+  const normalizedEgg = normalizeInventoryEgg(egg);
+  const definition = HATCH_EGG_DEFINITIONS[normalizedEgg.type] || HATCH_EGG_DEFINITIONS["normal-egg"];
+  const rates = Array.isArray(normalizedEgg.rarityRates) && normalizedEgg.rarityRates.length > 0
+    ? normalizedEgg.rarityRates
+    : definition.rarityRates;
+  const rarity = rollWeightedHatchRarity(rates);
+  const element = normalizeDragonElement(pickHatchElement(normalizedEgg.elementBias || definition.elementBias));
+  const stage = "baby";
+  const dragon = {
+    id: createId("dragon"),
+    name: generateDragonName(rarity, dragonElementText(element)),
+    rarity,
+    element,
+    stage,
+    level: 1,
+    hp: calculateHatchDragonStat(rarity, 88, 28),
+    attack: calculateHatchDragonStat(rarity, 24, 11),
+    defense: calculateHatchDragonStat(rarity, 18, 8),
+    speed: calculateHatchDragonStat(rarity, 14, 7),
+    hunger: 100,
+    mood: 90,
+    exp: 0,
+    power: Math.round((rarityPower[rarity] || 1) * 12),
+    isInTeam: false,
+    isOnRestIsland: false,
+    currentAction: "idle",
+    assetBase: `assets/dragons/${element}/${stage}/`,
+    avatarAsset: `assets/dragons/${element}/${stage}/avatar.png`,
+    costumeId: null,
+    skinId: null,
+    isAngry: false,
+    angryUntil: null,
+    lockActionUntil: null,
+    lastInteractedAt: null
+  };
+  dragon.image = getDragonAsset(dragon);
+  return dragon;
+}
+
+function startHatchingEgg(slotId, eggId) {
+  const slot = findHatchSlot(slotId);
+  const eggs = Array.isArray(state.eggInventory) ? state.eggInventory : [];
+  const eggIndex = eggs.findIndex((egg) => egg.id === eggId);
+  if (!slot || !slot.unlocked || slot.currentEgg || slot.status === "locked") return;
+  if (eggIndex < 0) {
+    showToast("找不到這顆龍蛋");
+    return;
+  }
+
+  const egg = normalizeInventoryEgg(eggs[eggIndex]);
+  const alreadyAssigned = Boolean(egg.assignedIncubatorId) || (state.hatchIsland?.hatchSlots || [])
+    .some((item) => item?.id !== slot.id && (item?.currentEggId === egg.id || item?.currentEgg?.id === egg.id));
+  if (alreadyAssigned) {
+    showToast("這顆龍蛋已經在孵化器中");
+    closeEggSelectionModal();
+    return;
+  }
+  const now = Date.now();
+  egg.assignedIncubatorId = slot.id;
+  egg.startedAt = now;
+  eggs.splice(eggIndex, 1);
+  slot.type = "time";
+  slot.slotType = "time";
+  slot.currentEgg = egg;
+  slot.currentEggId = egg.id;
+  slot.startTime = now;
+  slot.hatchDuration = egg.hatchDuration;
+  slot.finishTime = now + egg.hatchDuration * 1000;
+  slot.status = "hatching";
+  eggSelectionSlotId = null;
+  updateBeginnerMissionProgress("putInIncubator", 1, { save: false, render: false });
+
+  syncPersistentAliases();
+  saveGame();
+  closeEggSelectionModal();
+  replaceHatchSlotDom(slot.id);
+  updateHatchIslandOverviewDom();
+  refreshMissionPage();
+  showToast(`${egg.name} 已放入孵化器`);
+}
+
+function claimHatchedDragon(slotId) {
+  const slot = findHatchSlot(slotId);
+  if (!slot?.currentEgg) return;
+  const status = getHatchSlotStatus(slot);
+  if (!status.ready) {
+    showToast("龍蛋還在孵化中");
+    return;
+  }
+
+  const egg = slot.currentEgg;
+  const dragon = hatchEggToDragon(egg);
+  if (!addDragonToPlayer(dragon, { save: false })) {
+    return;
+  }
+
+  state.activeDragonId = state.activeDragonId || dragon.id;
+  state.totalHatched = normalizedNonNegative(state.totalHatched, 0) + 1;
+  updateHighestRarity(dragon.rarity);
+  updateBeginnerMissionProgress("finishHatch", 1, { save: false, render: false });
+  checkGrowBattleReadyMission({ save: false, render: false });
+  Object.assign(slot, {
+    type: "time",
+    slotType: "time",
+    currentEgg: null,
+    currentEggId: null,
+    startTime: null,
+    hatchDuration: 0,
+    finishTime: null,
+    status: "empty"
+  });
+  state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
+  syncPersistentAliases();
+  saveGame();
+  replaceHatchSlotDom(slot.id);
+  updateHatchIslandOverviewDom();
+  refreshDragonHousePage();
+  refreshMissionPage();
+  handleTutorialEvent("finishHatch");
+  showToast(`孵化成功：${dragon.rarity} ${dragon.name}`);
+}
+
+function feedRestDragon(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) return;
+  closeRestDragonActionSheet();
+  dragon.hunger = Math.min(100, normalizedNonNegative(dragon.hunger, 80) + 10);
+  dragon.mood = Math.min(100, normalizedNonNegative(dragon.mood, 80) + 5);
+  dragon.exp = normalizedNonNegative(dragon.exp, 0) + 5;
+  updateBeginnerMissionProgress("feedOnce", 1, { save: false, render: false });
+  checkGrowBattleReadyMission({ save: false, render: false });
+  setDragonTemporaryAction(dragon, "eat");
+  refreshMissionPage();
+  showToast("已餵食，龍看起來更有精神了！");
+}
+
+function trainRestDragon(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) return;
+  closeRestDragonActionSheet();
+  dragon.exp = normalizedNonNegative(dragon.exp, 0) + 20;
+  dragon.power = normalizedNonNegative(dragon.power, 10) + 5;
+  dragon.hunger = Math.max(0, normalizedNonNegative(dragon.hunger, 80) - 10);
+  dragon.mood = Math.max(0, normalizedNonNegative(dragon.mood, 80) - 5);
+  updateBeginnerMissionProgress("trainOnce", 1, { save: false, render: false });
+  checkGrowBattleReadyMission({ save: false, render: false });
+  setDragonTemporaryAction(dragon, "train");
+  refreshMissionPage();
+  showToast("訓練完成，戰力提升！");
+}
+
+function handleHomeV2Click(event) {
+  if (homeV2Drag.moved) {
+    homeV2Drag.moved = false;
+    return;
+  }
+
+  if (event.target.matches("[data-v2-backdrop='egg-select']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeEggSelectionModal();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='rest-dragon-menu']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeRestDragonActionSheet();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='dragon-info']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDragonInfoModal();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='team-editor']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeTeamModal();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='dragon-sell']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeSellDragonConfirm();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='dragon-house-detail']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDragonHouseDetail();
+    return;
+  }
+  if (event.target.matches("[data-v2-backdrop='dragon-rename']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDragonRenameModal();
+    return;
+  }
+
+  const actionButton = event.target.closest("[data-v2-action]");
+  if (actionButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    const action = actionButton.dataset.v2Action;
+    const dragonId = actionButton.dataset.dragonId;
+
+    if (action === "tutorial-next") {
+      advanceTutorial();
+      return;
+    }
+    if (action === "start-explore") {
+      startExplore(actionButton.dataset.areaId);
+      return;
+    }
+    if (action === "claim-explore-egg") {
+      claimExploreEggResult({ closeOverlay: true });
+      return;
+    }
+    if (action === "draw-explore-again") {
+      drawExploreAgain();
+      return;
+    }
+    if (action === "claim-mission") {
+      claimBeginnerMissionReward(actionButton.dataset.missionId);
+      return;
+    }
+    if (action === "claim-final-mission") {
+      claimBeginnerFinalReward();
+      return;
+    }
+    if (action === "settings") {
+      toggleDebugPanel();
+      return;
+    }
+    if (action === "resource-plus") {
+      showToast("資源補充功能之後開放");
+      return;
+    }
+    if (action === "buy-dragon-house-rows") {
+      buyDragonHouseRows();
+      return;
+    }
+    if (action === "open-dragon-house-detail") {
+      openDragonHouseDetail(dragonId);
+      return;
+    }
+    if (action === "close-dragon-house-detail") {
+      closeDragonHouseDetail();
+      return;
+    }
+    if (action === "send-dragon-home") {
+      sendDragonHome(dragonId);
+      return;
+    }
+    if (action === "open-dragon-rename") {
+      openDragonRenameModal(dragonId);
+      return;
+    }
+    if (action === "close-dragon-rename") {
+      closeDragonRenameModal();
+      return;
+    }
+    if (action === "confirm-dragon-rename") {
+      confirmDragonRename(dragonId);
+      return;
+    }
+    if (action === "unlock-slot") {
+      unlockHatchSlot(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "open-egg-modal") {
+      openEggPicker(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "close-egg-modal") {
+      closeEggSelectionModal();
+      return;
+    }
+    if (action === "start-hatch") {
+      putEggToSlot(actionButton.dataset.slotId, actionButton.dataset.eggId);
+      return;
+    }
+    if (action === "claim-hatch") {
+      claimHatchedDragon(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "focus-hatch-slot") {
+      focusHatchSlot(actionButton.dataset.slotId);
+      return;
+    }
+    if (action === "select-dragon") {
+      handleRestDragonClick(dragonId);
+      return;
+    }
+    if (action === "close-rest-dragon-panel") {
+      closeRestDragonStatusPanel();
+      return;
+    }
+    if (action === "close-rest-dragon-menu") {
+      closeRestDragonActionSheet();
+      return;
+    }
+    if (action === "feed-dragon") {
+      feedRestDragon(dragonId);
+      refreshDragonHousePage();
+      return;
+    }
+    if (action === "train-dragon") {
+      trainRestDragon(dragonId);
+      refreshDragonHousePage();
+      return;
+    }
+    if (action === "show-dragon-info") {
+      closeDragonHouseDetail();
+      openDragonInfoModal(dragonId);
+      return;
+    }
+    if (action === "open-team-modal") {
+      closeDragonHouseDetail();
+      openTeamModal(dragonId);
+      return;
+    }
+    if (action === "open-sell-dragon") {
+      closeDragonHouseDetail();
+      openSellDragonConfirm(dragonId);
+      return;
+    }
+    if (action === "close-sell-dragon") {
+      closeSellDragonConfirm();
+      return;
+    }
+    if (action === "confirm-sell-dragon") {
+      confirmSellDragon(dragonId);
+      return;
+    }
+    if (action === "send-dragon-back-to-house" || action === "backToHouse") {
+      sendDragonBackToHouse(dragonId || selectedRestDragonId || state.selectedRestDragonId);
+      return;
+    }
+    if (action === "trade-dragon-placeholder") {
+      showToast("交易功能開發中");
+      return;
+    }
+    if (action === "close-dragon-info") {
+      closeDragonInfoModal();
+      return;
+    }
+    if (action === "close-team-modal") {
+      closeTeamModal();
+      return;
+    }
+    if (action === "add-to-team") {
+      addDragonToTeam(dragonId);
+      return;
+    }
+    if (action === "remove-from-team") {
+      closeDragonHouseDetail();
+      removeDragonFromTeam(dragonId);
+      return;
+    }
+  }
+
+  const navArrow = event.target.closest("[data-v2-nav-arrow]");
+  if (navArrow) {
+    event.preventDefault();
+    event.stopPropagation();
+    const viewport = document.querySelector("#bottomNavViewport");
+    if (viewport) {
+      viewport.scrollBy({ left: Number(navArrow.dataset.v2NavArrow) * 80, behavior: "smooth" });
+    }
+    return;
+  }
+
+  const pageButton = event.target.closest("[data-page]");
+  if (pageButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (Number(pageButton.dataset.page) !== 0) closeRestDragonStatusPanel(false);
+    goToWorldPage(Number(pageButton.dataset.page));
+    return;
+  }
+
+  const navButton = event.target.closest("[data-world-page]");
+  if (navButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (Number(navButton.dataset.worldPage) !== 0) closeRestDragonStatusPanel(false);
+    goToWorldPage(Number(navButton.dataset.worldPage));
+  }
 }
