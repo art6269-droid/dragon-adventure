@@ -442,6 +442,8 @@ const ASSETS = {
     navGuild: "assets/icons/nav-guild.png",
     navStage: "assets/icons/nav-stage.png",
     navDragonHouse: "assets/ui/icon-dragon-house.png",
+    navAdventurerGuild: "assets/ui/nav-adventurer-guild.png",
+    characterTicket: "assets/ui/icon-character-ticket.png",
     navQuest: "assets/ui/nav-quest.png"
   },
   items: {
@@ -620,6 +622,7 @@ const assetSources = {
   navEggs: assetPathList(ASSETS.icons.navEggs, ASSETS.icons.egg),
   navExplore: assetPathList(ASSETS.ui.navExplore, ASSETS.icons.navExplore, ASSETS.icons.adventure),
   navGuild: assetPathList(ASSETS.icons.navGuild, ASSETS.icons.dragon),
+  navAdventurerGuild: assetPathList(ASSETS.icons.navAdventurerGuild, ASSETS.icons.navGuild, ASSETS.icons.dragon),
   navStage: assetPathList(ASSETS.icons.navStage, ASSETS.icons.pk),
   navQuest: assetPathList(ASSETS.ui.navQuest, ASSETS.icons.navQuest, ASSETS.icons.egg),
   dragonHouseIcon: assetPathList(ASSETS.ui.iconDragonHouse, ASSETS.icons.dragon),
@@ -936,6 +939,34 @@ const EXPLORE_AREAS = [
     ticketCost: 1
   }
 ];
+const ADVENTURER_RARITY_RATES = [
+  { rarity: "C", rate: 45 },
+  { rarity: "B", rate: 28 },
+  { rarity: "A", rate: 15 },
+  { rarity: "S", rate: 7 },
+  { rarity: "SS", rate: 4 },
+  { rarity: "SSS", rate: 1 }
+];
+const ADVENTURER_SUMMON_DIAMOND_COST = 30;
+const ADVENTURER_SELL_PRICES = { C: 50, B: 100, A: 200, S: 400, SS: 800, SSS: 1500 };
+const ADVENTURER_POOL = [
+  { templateId: "newbie-swordman-c-fire", name: "新人劍士", rarity: "C", element: "fire", job: "戰士", basePower: 28 },
+  { templateId: "apprentice-archer-c-wood", name: "見習弓手", rarity: "C", element: "wood", job: "弓手", basePower: 26 },
+  { templateId: "flame-fist-b-fire", name: "火焰拳士", rarity: "B", element: "fire", job: "戰士", basePower: 38 },
+  { templateId: "aqua-mage-b-water", name: "水靈法師", rarity: "B", element: "water", job: "法師", basePower: 40 },
+  { templateId: "forest-assassin-a-wood", name: "森林刺客", rarity: "A", element: "wood", job: "刺客", basePower: 54 },
+  { templateId: "light-pastor-a-light", name: "雷光牧者", rarity: "A", element: "light", job: "牧者", basePower: 52 },
+  { templateId: "crimson-knight-s-fire", name: "赤焰騎士", rarity: "S", element: "fire", job: "戰士", basePower: 70 },
+  { templateId: "azure-sorcerer-s-water", name: "蒼海術士", rarity: "S", element: "water", job: "法師", basePower: 72 },
+  { templateId: "holy-guardian-ss-light", name: "聖光守衛", rarity: "SS", element: "light", job: "守衛", basePower: 94 },
+  { templateId: "shadow-hunter-ss-dark", name: "暗影獵手", rarity: "SS", element: "dark", job: "弓手", basePower: 96 },
+  { templateId: "alon-sss-fire", name: "阿龍", rarity: "SSS", element: "fire", job: "龍裔戰士", basePower: 120 },
+  { templateId: "star-dragonlord-sss-light", name: "星辰龍主", rarity: "SSS", element: "light", job: "戰士", basePower: 124 }
+].map((template) => ({
+  ...template,
+  cardAsset: `assets/adventurers/cards/${template.templateId}.png`,
+  spriteAsset: `assets/adventurers/pixel/${template.templateId}-idle.png`
+}));
 const dragonElementLabels = {
   fire: "火",
   water: "水",
@@ -1017,6 +1048,10 @@ let activeShopTab = "coin";
 let toastTimer;
 let loginMessageTimer;
 let mimiTipIndex = 0;
+let mimiDialogueTimer = null;
+let mimiDialogueHideTimer = null;
+let mimiPageIntroTimer = null;
+let lastMimiIntroPage = null;
 let gameHasStarted = false;
 let startGameTransitioning = false;
 let audioManager;
@@ -1031,10 +1066,13 @@ let restDragonDragState = null;
 let restDragonSuppressClickUntil = 0;
 let restDragonSuppressClickId = null;
 let currentGachaResult = null;
+let currentAdventurerGachaResult = null;
+let selectedAdventurerId = null;
 let currentWorldPage = 0;
 let lastWorldScrollDebugAt = 0;
 let lastWorldScrollDebugPage = -1;
 let dragonHouseFilters = { search: "", element: "all", level: "all", rarity: "all" };
+let adventurerGuildFilters = { search: "", rarity: "all", element: "all", job: "all" };
 const homeV2Drag = {
   active: false,
   target: null,
@@ -1440,7 +1478,7 @@ function attachEvents() {
   if (els.codexFilter) els.codexFilter.addEventListener("change", renderCodex);
   if (els.codexList) els.codexList.addEventListener("click", handleCodexClick);
   if (els.codexDetail) els.codexDetail.addEventListener("click", handleCodexClick);
-  els.mimiButton.addEventListener("click", cycleMimiTip);
+  if (els.mimiButton) els.mimiButton.addEventListener("click", cycleMimiTip);
   els.musicMuteButton.addEventListener("click", () => {
     audioManager.toggleMute();
     renderAudioControls();
@@ -1518,6 +1556,8 @@ function createNewState() {
     eggInventory: starterEggs,
     eggs: starterEggs,
     dragons: [],
+    adventurers: [],
+    characterTickets: 0,
     soldDragonIds: [],
     dragonHouse: normalizeDragonHouse(),
     battleTeam: [],
@@ -1556,6 +1596,8 @@ function ensureValidState() {
     : createStarterEggInventory();
   state.eggs = state.eggInventory;
   state.dragons = Array.isArray(state.dragons) ? state.dragons.map(normalizeDragon) : [];
+  state.adventurers = Array.isArray(state.adventurers) ? state.adventurers.map(normalizeAdventurer) : [];
+  state.characterTickets = normalizedNonNegative(state.characterTickets, 0);
   state.soldDragonIds = Array.isArray(state.soldDragonIds) ? state.soldDragonIds.filter(Boolean) : [];
   state.dragonHouse = normalizeDragonHouse(state.dragonHouse);
   state.battleTeam = normalizeBattleTeam(state.battleTeam, state.dragons);
@@ -3666,6 +3708,460 @@ function handleHomeV2Click(event) {
   }
 }
 
+function normalizeAdventurer(adventurer) {
+  const source = adventurer && typeof adventurer === "object" ? adventurer : {};
+  const template = ADVENTURER_POOL.find((item) => item.templateId === source.templateId)
+    || ADVENTURER_POOL.find((item) => item.name === source.name)
+    || ADVENTURER_POOL[0];
+  const rarity = String(source.rarity || template.rarity || "C").toUpperCase();
+  const rarityRank = Math.max(0, ["C", "B", "A", "S", "SS", "SSS"].indexOf(rarity));
+
+  return {
+    ...template,
+    ...source,
+    id: source.id || createId("adventurer"),
+    templateId: source.templateId || template.templateId,
+    name: source.name || template.name,
+    rarity,
+    element: normalizeDragonElement(source.element || template.element),
+    job: source.job || template.job,
+    level: positiveNumber(source.level, 1),
+    exp: normalizedNonNegative(source.exp, 0),
+    power: positiveNumber(source.power, template.basePower || 20),
+    hp: positiveNumber(source.hp, 80 + rarityRank * 22),
+    attack: positiveNumber(source.attack, 18 + rarityRank * 7),
+    defense: positiveNumber(source.defense, 14 + rarityRank * 5),
+    speed: positiveNumber(source.speed, 14 + rarityRank * 3),
+    locked: Boolean(source.locked),
+    isInTeam: Boolean(source.isInTeam),
+    shards: normalizedNonNegative(source.shards, 0),
+    obtainedAt: positiveNumber(source.obtainedAt, Date.now()),
+    cardAsset: source.cardAsset || template.cardAsset,
+    spriteAsset: source.spriteAsset || template.spriteAsset
+  };
+}
+
+function getAdventurerById(adventurerId) {
+  return (state.adventurers || []).find((item) => item.id === adventurerId) || null;
+}
+
+function adventurerElementLabel(element) {
+  return dragonElementText(normalizeDragonElement(element));
+}
+
+function getAdventurerCardAsset(adventurer) {
+  return adventurer.cardAsset || `assets/adventurers/cards/${adventurer.templateId}.png`;
+}
+
+function getAdventurerSpriteAsset(adventurer, action = "idle") {
+  const base = String(adventurer.spriteAsset || `assets/adventurers/pixel/${adventurer.templateId}-idle.png`);
+  return action === "idle" ? base : base.replace(/-idle\.png$/i, `-${action}.png`);
+}
+
+function getAdventurerCardFallback(rarity) {
+  return `assets/adventurers/placeholders/card-${String(rarity || "C").toLowerCase()}.png`;
+}
+
+function renderAdventurerImage(src, fallback, className, alt) {
+  return `<img class="${className}" src="${escapeHtml(src)}" alt="${escapeHtml(alt || "")}" decoding="async" loading="lazy" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${escapeHtml(fallback)}'}else{this.hidden=true}">`;
+}
+
+function rollAdventurerRarity() {
+  let roll = Math.random() * 100;
+  for (const entry of ADVENTURER_RARITY_RATES) {
+    roll -= entry.rate;
+    if (roll < 0) return entry.rarity;
+  }
+  return "C";
+}
+
+function createAdventurerInstance(template) {
+  return normalizeAdventurer({
+    ...template,
+    id: createId("adventurer"),
+    level: 1,
+    exp: 0,
+    power: template.basePower,
+    locked: false,
+    isInTeam: false,
+    shards: 0,
+    obtainedAt: Date.now()
+  });
+}
+
+function getFilteredAdventurers() {
+  const keyword = String(adventurerGuildFilters.search || "").trim().toLowerCase();
+  return (state.adventurers || []).filter((adventurer) => {
+    const searchable = [
+      adventurer.name,
+      adventurer.rarity,
+      adventurer.element,
+      adventurerElementLabel(adventurer.element),
+      adventurer.job,
+      `lv${adventurer.level}`
+    ].join(" ").toLowerCase();
+    return (!keyword || searchable.includes(keyword))
+      && (adventurerGuildFilters.rarity === "all" || adventurer.rarity === adventurerGuildFilters.rarity)
+      && (adventurerGuildFilters.element === "all" || adventurer.element === adventurerGuildFilters.element)
+      && (adventurerGuildFilters.job === "all" || adventurer.job === adventurerGuildFilters.job);
+  });
+}
+
+function renderAdventurerSelectOptions(options, selected) {
+  return options.map(([value, label]) => (
+    `<option value="${escapeHtml(value)}"${value === selected ? " selected" : ""}>${escapeHtml(label)}</option>`
+  )).join("");
+}
+
+function renderWorldAdventurerGuildPage(index) {
+  return `
+    <section class="worldPage adventurerGuildPage" data-world-index="${index}" aria-label="冒險者工會">
+      ${renderAdventurerGuildPageInner()}
+    </section>
+  `;
+}
+
+function renderAdventurerGuildPageInner() {
+  const adventurers = getFilteredAdventurers();
+  const total = (state.adventurers || []).length;
+  const tickets = normalizedNonNegative(state.characterTickets, 0);
+  const jobs = [...new Set(ADVENTURER_POOL.map((item) => item.job))];
+  const summonCostText = tickets > 0 ? "角色券 x1" : `${ADVENTURER_SUMMON_DIAMOND_COST} 鑽石`;
+
+  return `
+    <div class="adventurer-guild-page">
+      <section class="adventurer-guild-heading">
+        <div>
+          <h1>冒險者工會</h1>
+          <p>召喚角色卡，建立你的冒險者名冊。</p>
+        </div>
+        <span class="adventurer-count">持有 ${formatNumber(total)}</span>
+      </section>
+
+      <section class="adventurer-summon-bar">
+        <div class="adventurer-ticket-count">
+          ${renderAdventurerImage(ASSETS.icons.characterTicket, "assets/adventurers/placeholders/pixel-character.png", "adventurer-ticket-icon", "角色召喚券")}
+          <span>角色券 <b>${formatNumber(tickets)}</b></span>
+        </div>
+        <button type="button" data-v2-action="summon-adventurer">
+          <span>召喚角色</span>
+          <small>${summonCostText}</small>
+        </button>
+      </section>
+
+      <section class="adventurer-guild-tools" aria-label="角色搜尋與篩選">
+        <input type="search" data-adventurer-search placeholder="搜尋角色名稱或職業" value="${escapeHtml(adventurerGuildFilters.search)}">
+        <div>
+          <select data-adventurer-filter="rarity" aria-label="依稀有度篩選">
+            ${renderAdventurerSelectOptions([["all", "全部稀有度"], ["C", "C"], ["B", "B"], ["A", "A"], ["S", "S"], ["SS", "SS"], ["SSS", "SSS"]], adventurerGuildFilters.rarity)}
+          </select>
+          <select data-adventurer-filter="element" aria-label="依屬性篩選">
+            ${renderAdventurerSelectOptions([["all", "全部屬性"], ["fire", "火"], ["water", "水"], ["wood", "木"], ["light", "光"], ["dark", "暗"]], adventurerGuildFilters.element)}
+          </select>
+          <select data-adventurer-filter="job" aria-label="依職業篩選">
+            ${renderAdventurerSelectOptions([["all", "全部職業"], ...jobs.map((job) => [job, job])], adventurerGuildFilters.job)}
+          </select>
+        </div>
+      </section>
+
+      <section class="adventurer-grid" aria-label="持有角色">
+        ${adventurers.length
+          ? adventurers.map(renderAdventurerGuildCard).join("")
+          : `<div class="adventurer-empty-state"><b>尚無符合條件的角色</b><span>使用召喚券或鑽石召喚第一位冒險者。</span></div>`}
+      </section>
+    </div>
+  `;
+}
+
+function renderAdventurerGuildCard(adventurer) {
+  return `
+    <button class="adventurer-card rarity-${adventurer.rarity.toLowerCase()}" type="button" data-v2-action="open-adventurer-detail" data-adventurer-id="${adventurer.id}" aria-label="查看 ${escapeHtml(adventurer.name)}">
+      <span class="adventurer-card-sprite">
+        ${renderAdventurerImage(getAdventurerSpriteAsset(adventurer), "assets/adventurers/placeholders/pixel-character.png", "adventurer-pixel", adventurer.name)}
+      </span>
+      <b>${escapeHtml(adventurer.name)}</b>
+      <small>${escapeHtml(adventurerElementLabel(adventurer.element))} / ${escapeHtml(adventurer.job)}</small>
+      <span class="adventurer-card-meta"><em>${escapeHtml(adventurer.rarity)}</em><i>Lv.${formatNumber(adventurer.level)}</i></span>
+      ${adventurer.locked ? `<span class="adventurer-lock-mark" aria-label="已鎖定">鎖</span>` : ""}
+    </button>
+  `;
+}
+
+function refreshAdventurerGuildPage(options = {}) {
+  const page = document.querySelector(".adventurerGuildPage");
+  if (!page) return;
+  page.innerHTML = renderAdventurerGuildPageInner();
+  if (options.focusSearch) {
+    requestAnimationFrame(() => {
+      const input = page.querySelector("[data-adventurer-search]");
+      if (!input) return;
+      input.focus({ preventScroll: true });
+      input.setSelectionRange(input.value.length, input.value.length);
+    });
+  }
+}
+
+function canPayAdventurerSummon() {
+  return normalizedNonNegative(state.characterTickets, 0) > 0
+    || normalizedNonNegative(state.diamonds, 0) >= ADVENTURER_SUMMON_DIAMOND_COST;
+}
+
+function consumeAdventurerSummonCost() {
+  state.characterTickets = normalizedNonNegative(state.characterTickets, 0);
+  if (state.characterTickets > 0) {
+    state.characterTickets -= 1;
+    return "ticket";
+  }
+  if (normalizedNonNegative(state.diamonds, 0) >= ADVENTURER_SUMMON_DIAMOND_COST) {
+    state.diamonds -= ADVENTURER_SUMMON_DIAMOND_COST;
+    return "diamonds";
+  }
+  return null;
+}
+
+function summonAdventurer() {
+  if (!canPayAdventurerSummon()) {
+    showToast("角色召喚券與鑽石都不足");
+    return false;
+  }
+  const paidWith = consumeAdventurerSummonCost();
+  if (!paidWith) return false;
+
+  const rarity = rollAdventurerRarity();
+  const candidates = ADVENTURER_POOL.filter((item) => item.rarity === rarity);
+  const template = candidates[Math.floor(Math.random() * candidates.length)] || ADVENTURER_POOL[0];
+  const adventurer = createAdventurerInstance(template);
+  state.adventurers.push(adventurer);
+  currentAdventurerGachaResult = { adventurer, paidWith, claimed: false };
+  saveGame();
+  updateHomeV2HudResources();
+  refreshAdventurerGuildPage();
+  showAdventurerGachaOverlay(adventurer);
+  return true;
+}
+
+function getAdventurerCardBack(rarity) {
+  if (rarity === "SSS") return "assets/adventurers/card-backs/card-back-sss.png";
+  if (rarity === "S" || rarity === "SS") return "assets/adventurers/card-backs/card-back-rare.png";
+  return "assets/adventurers/card-backs/card-back-normal.png";
+}
+
+function showAdventurerGachaOverlay(adventurer) {
+  closeAdventurerGachaOverlay();
+  mountHomeV2Overlay(`
+    <div class="adventurer-gacha-backdrop" data-adventurer-backdrop="gacha">
+      <section class="adventurer-gacha-modal rarity-${adventurer.rarity.toLowerCase()}" role="dialog" aria-modal="true" aria-label="角色召喚結果">
+        <header><span>角色召喚</span><b>${escapeHtml(adventurer.rarity)}</b></header>
+        <div class="adventurer-card-flip" aria-live="polite">
+          <div class="adventurer-card-flip-inner">
+            <div class="adventurer-card-face adventurer-card-back">
+              ${renderAdventurerImage(getAdventurerCardBack(adventurer.rarity), "assets/adventurers/card-backs/card-back-normal.png", "adventurer-card-art", "角色卡背")}
+            </div>
+            <div class="adventurer-card-face adventurer-card-front">
+              ${renderAdventurerImage(getAdventurerCardAsset(adventurer), getAdventurerCardFallback(adventurer.rarity), "adventurer-card-art", adventurer.name)}
+            </div>
+          </div>
+        </div>
+        <div class="adventurer-gacha-copy">
+          <span>召喚成功</span>
+          <h2>${escapeHtml(adventurer.name)}</h2>
+          <p>${escapeHtml(adventurerElementLabel(adventurer.element))}屬性・${escapeHtml(adventurer.job)}・${escapeHtml(adventurer.rarity)}級</p>
+        </div>
+        <div class="adventurer-gacha-actions">
+          <button type="button" data-v2-action="accept-adventurer">收下角色</button>
+          <button type="button" data-v2-action="summon-adventurer-again">繼續召喚</button>
+        </div>
+      </section>
+    </div>
+  `);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => document.querySelector(".adventurer-card-flip")?.classList.add("is-revealed"));
+  });
+}
+
+function closeAdventurerGachaOverlay() {
+  document.querySelector(".adventurer-gacha-backdrop")?.remove();
+}
+
+function acceptAdventurerGacha() {
+  if (!currentAdventurerGachaResult || currentAdventurerGachaResult.claimed) return;
+  currentAdventurerGachaResult.claimed = true;
+  const name = currentAdventurerGachaResult.adventurer.name;
+  closeAdventurerGachaOverlay();
+  refreshAdventurerGuildPage();
+  showToast(`${name} 已加入冒險者名冊`);
+}
+
+function summonAdventurerAgain() {
+  if (!currentAdventurerGachaResult || currentAdventurerGachaResult.claimed) return;
+  if (!canPayAdventurerSummon()) {
+    showToast("角色召喚券與鑽石都不足");
+    return;
+  }
+  currentAdventurerGachaResult.claimed = true;
+  closeAdventurerGachaOverlay();
+  summonAdventurer();
+}
+
+function renderAdventurerDetailModal(adventurer) {
+  return `
+    <div class="adventurer-detail-backdrop" data-adventurer-backdrop="detail">
+      <section class="adventurer-detail-modal rarity-${adventurer.rarity.toLowerCase()}" role="dialog" aria-modal="true" aria-label="${escapeHtml(adventurer.name)}詳細資訊">
+        <button class="adventurer-modal-close" type="button" data-v2-action="close-adventurer-detail" aria-label="關閉">×</button>
+        <div class="adventurer-detail-visual">
+          ${renderAdventurerImage(getAdventurerCardAsset(adventurer), getAdventurerCardFallback(adventurer.rarity), "adventurer-detail-card-art", adventurer.name)}
+          ${renderAdventurerImage(getAdventurerSpriteAsset(adventurer), "assets/adventurers/placeholders/pixel-character.png", "adventurer-detail-pixel", adventurer.name)}
+        </div>
+        <div class="adventurer-detail-info">
+          <span class="adventurer-detail-rarity">${escapeHtml(adventurer.rarity)}</span>
+          <h2>${escapeHtml(adventurer.name)}</h2>
+          <p>${escapeHtml(adventurerElementLabel(adventurer.element))}屬性・${escapeHtml(adventurer.job)}・Lv.${formatNumber(adventurer.level)}</p>
+          <dl>
+            <div><dt>戰力</dt><dd>${formatNumber(adventurer.power)}</dd></div>
+            <div><dt>生命</dt><dd>${formatNumber(adventurer.hp)}</dd></div>
+            <div><dt>攻擊</dt><dd>${formatNumber(adventurer.attack)}</dd></div>
+            <div><dt>防禦</dt><dd>${formatNumber(adventurer.defense)}</dd></div>
+            <div><dt>速度</dt><dd>${formatNumber(adventurer.speed)}</dd></div>
+            <div><dt>碎片</dt><dd>${formatNumber(adventurer.shards)}</dd></div>
+          </dl>
+          <div class="adventurer-detail-actions">
+            <button type="button" data-v2-action="adventurer-team-placeholder">編隊</button>
+            <button type="button" data-v2-action="adventurer-upgrade-placeholder">升級</button>
+            <button type="button" data-v2-action="toggle-adventurer-lock" data-adventurer-id="${adventurer.id}">${adventurer.locked ? "解除鎖定" : "鎖定"}</button>
+            <button type="button" data-v2-action="open-adventurer-sell" data-adventurer-id="${adventurer.id}" ${adventurer.locked ? "disabled" : ""}>出售</button>
+            <button type="button" data-v2-action="close-adventurer-detail">關閉</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function openAdventurerDetail(adventurerId) {
+  const adventurer = getAdventurerById(adventurerId);
+  if (!adventurer) {
+    showToast("找不到這位冒險者");
+    refreshAdventurerGuildPage();
+    return;
+  }
+  selectedAdventurerId = adventurer.id;
+  closeAdventurerDetail();
+  mountHomeV2Overlay(renderAdventurerDetailModal(adventurer));
+}
+
+function closeAdventurerDetail() {
+  document.querySelector(".adventurer-detail-backdrop")?.remove();
+}
+
+function toggleAdventurerLock(adventurerId) {
+  const adventurer = getAdventurerById(adventurerId || selectedAdventurerId);
+  if (!adventurer) return;
+  adventurer.locked = !adventurer.locked;
+  saveGame();
+  refreshAdventurerGuildPage();
+  openAdventurerDetail(adventurer.id);
+  showToast(adventurer.locked ? "角色已鎖定" : "已解除角色鎖定");
+}
+
+function openAdventurerSellConfirm(adventurerId) {
+  const adventurer = getAdventurerById(adventurerId || selectedAdventurerId);
+  if (!adventurer) {
+    showToast("找不到這位冒險者");
+    return;
+  }
+  if (adventurer.locked) {
+    showToast("已鎖定的角色不能出售");
+    return;
+  }
+  document.querySelector(".adventurer-sell-backdrop")?.remove();
+  mountHomeV2Overlay(`
+    <div class="adventurer-sell-backdrop" data-adventurer-backdrop="sell">
+      <section class="adventurer-sell-modal" role="dialog" aria-modal="true" aria-label="確認出售角色">
+        <h2>出售角色</h2>
+        <p>確定要出售「${escapeHtml(adventurer.name)}」嗎？出售後無法復原。</p>
+        <div>
+          <button type="button" data-v2-action="close-adventurer-sell">取消</button>
+          <button type="button" data-v2-action="confirm-adventurer-sell" data-adventurer-id="${adventurer.id}">確認出售</button>
+        </div>
+      </section>
+    </div>
+  `);
+}
+
+function closeAdventurerSellConfirm() {
+  document.querySelector(".adventurer-sell-backdrop")?.remove();
+}
+
+function confirmAdventurerSell(adventurerId) {
+  const adventurer = getAdventurerById(adventurerId || selectedAdventurerId);
+  if (!adventurer) {
+    closeAdventurerSellConfirm();
+    closeAdventurerDetail();
+    refreshAdventurerGuildPage();
+    showToast("這位冒險者已不存在");
+    return;
+  }
+  if (adventurer.locked) {
+    showToast("已鎖定的角色不能出售");
+    return;
+  }
+  const price = ADVENTURER_SELL_PRICES[adventurer.rarity] || 50;
+  state.adventurers = state.adventurers.filter((item) => item.id !== adventurer.id);
+  state.coins = normalizedNonNegative(state.coins, 0) + price;
+  selectedAdventurerId = null;
+  closeAdventurerSellConfirm();
+  closeAdventurerDetail();
+  saveGame();
+  updateHomeV2HudResources();
+  refreshAdventurerGuildPage();
+  showToast(`已出售 ${adventurer.name}，獲得 ${price} 金幣`);
+}
+
+function handleAdventurerGuildClick(event) {
+  const backdrop = event.target.closest("[data-adventurer-backdrop]");
+  const actionButton = event.target.closest("[data-v2-action]");
+  const guildActions = new Set([
+    "summon-adventurer", "accept-adventurer", "summon-adventurer-again",
+    "open-adventurer-detail", "close-adventurer-detail", "adventurer-team-placeholder",
+    "adventurer-upgrade-placeholder", "toggle-adventurer-lock", "open-adventurer-sell",
+    "close-adventurer-sell", "confirm-adventurer-sell"
+  ]);
+  const action = actionButton?.dataset.v2Action;
+  if (!backdrop && (!action || !guildActions.has(action))) return;
+
+  event.preventDefault();
+  event.stopImmediatePropagation();
+
+  if (backdrop && event.target === backdrop) {
+    if (backdrop.dataset.adventurerBackdrop === "detail") closeAdventurerDetail();
+    if (backdrop.dataset.adventurerBackdrop === "sell") closeAdventurerSellConfirm();
+    return;
+  }
+  if (!actionButton) return;
+
+  const adventurerId = actionButton.dataset.adventurerId;
+  if (action === "summon-adventurer") summonAdventurer();
+  if (action === "accept-adventurer") acceptAdventurerGacha();
+  if (action === "summon-adventurer-again") summonAdventurerAgain();
+  if (action === "open-adventurer-detail") openAdventurerDetail(adventurerId);
+  if (action === "close-adventurer-detail") closeAdventurerDetail();
+  if (action === "adventurer-team-placeholder") showToast("冒險者編隊功能開發中");
+  if (action === "adventurer-upgrade-placeholder") showToast("冒險者升級功能開發中");
+  if (action === "toggle-adventurer-lock") toggleAdventurerLock(adventurerId);
+  if (action === "open-adventurer-sell") openAdventurerSellConfirm(adventurerId);
+  if (action === "close-adventurer-sell") closeAdventurerSellConfirm();
+  if (action === "confirm-adventurer-sell") confirmAdventurerSell(adventurerId);
+}
+
+function attachAdventurerGuildEventBridge() {
+  const root = els.homeV2Root || document.querySelector("#homeV2Root");
+  if (!root || root.dataset.adventurerGuildBound === "true") return;
+  root.addEventListener("click", handleAdventurerGuildClick, true);
+  root.dataset.adventurerGuildBound = "true";
+}
+
+attachAdventurerGuildEventBridge();
+
 function handleBeginnerFeatureClick(event) {
   const actionButton = event.target.closest("[data-v2-action]");
   if (!actionButton || !els?.homeV2Root?.contains(actionButton)) return;
@@ -3868,8 +4364,8 @@ function renderHomeScene() {
       ${renderHatchIsland()}
     </div>
   `;
-  els.mimiButton.innerHTML = renderMimiHead("mini");
-  els.mimiBubble.textContent = "左右滑動龍島：左邊讓龍休息，右邊管理孵化臺。";
+  if (els.mimiButton) els.mimiButton.innerHTML = renderMimiHead("mini");
+  if (els.mimiBubble) els.mimiBubble.textContent = "左右滑動龍島：左邊讓龍休息，右邊管理孵化臺。";
 }
 
 function renderRestIsland() {
@@ -5368,6 +5864,85 @@ function cycleMimiTip() {
   showToast("咪咪給了你新的冒險提示。");
 }
 
+function getMimiPageIntro(pageId) {
+  const messages = {
+    home: "這裡是龍之島，也是龍寶寶們休息與活動的家。",
+    rest: "這裡是龍之島，也是龍寶寶們休息與活動的家。",
+    dragonCave: "這裡是孵蛋島，把取得的龍蛋放進孵化器，等待新的夥伴誕生吧！",
+    hatch: "這裡是孵蛋島，把取得的龍蛋放進孵化器，等待新的夥伴誕生吧！",
+    dragonHouse: "這裡是龍舍，你擁有的龍都可以在這裡查看與管理。",
+    explore: "這裡是探索區，使用探險券前往火山、海洋或森林尋找龍蛋吧！",
+    inventory: "這裡是道具背包，你獲得的道具與資源都會收在這裡。",
+    equipment: "這裡是裝備店，可以替龍和冒險者準備更好的裝備。",
+    items: "這裡是道具店，旅途中需要的補給都可以在這裡找到。",
+    itemShop: "這裡是道具店，旅途中需要的補給都可以在這裡找到。",
+    quest: "這裡是任務頁，完成任務可以獲得金幣、鑽石與探險券。",
+    missions: "這裡是任務頁，完成任務可以獲得金幣、鑽石與探險券。",
+    adventurerGuild: "這裡是冒險者工會，你召喚到的冒險者都會在這裡集合。",
+    characterGacha: "這裡是冒險者召喚，消耗召喚券或鑽石，有機會遇見稀有夥伴！"
+  };
+  return messages[pageId] || "歡迎回來，繼續你的冒險吧！";
+}
+
+function showMimiDialogue(message, options = {}) {
+  const dialogue = document.getElementById("mimiDialogue");
+  const textEl = dialogue?.querySelector(".mimi-dialogue-text");
+  if (!dialogue || !textEl) return;
+
+  const duration = Math.max(0, Number(options.duration ?? 5000) || 5000);
+  if (mimiDialogueTimer) {
+    clearTimeout(mimiDialogueTimer);
+    mimiDialogueTimer = null;
+  }
+  if (mimiDialogueHideTimer) {
+    clearTimeout(mimiDialogueHideTimer);
+    mimiDialogueHideTimer = null;
+  }
+
+  textEl.textContent = String(message || "");
+  dialogue.classList.remove("is-visible", "is-hiding");
+  dialogue.setAttribute("aria-hidden", "false");
+  void dialogue.offsetWidth;
+  dialogue.classList.add("is-visible");
+
+  mimiDialogueTimer = window.setTimeout(() => {
+    mimiDialogueTimer = null;
+    hideMimiDialogue();
+  }, duration);
+}
+
+function hideMimiDialogue() {
+  const dialogue = document.getElementById("mimiDialogue");
+  if (mimiDialogueTimer) {
+    clearTimeout(mimiDialogueTimer);
+    mimiDialogueTimer = null;
+  }
+  if (!dialogue) return;
+
+  dialogue.classList.remove("is-visible");
+  dialogue.classList.add("is-hiding");
+  if (mimiDialogueHideTimer) clearTimeout(mimiDialogueHideTimer);
+  mimiDialogueHideTimer = window.setTimeout(() => {
+    dialogue.classList.remove("is-hiding");
+    dialogue.setAttribute("aria-hidden", "true");
+    mimiDialogueHideTimer = null;
+  }, 260);
+}
+
+function showMimiPageIntro(pageId) {
+  if (!pageId || lastMimiIntroPage === pageId) return;
+  lastMimiIntroPage = pageId;
+  showMimiDialogue(getMimiPageIntro(pageId), { duration: 5000 });
+}
+
+function queueMimiPageIntro(pageId) {
+  if (mimiPageIntroTimer) clearTimeout(mimiPageIntroTimer);
+  mimiPageIntroTimer = window.setTimeout(() => {
+    mimiPageIntroTimer = null;
+    showMimiPageIntro(pageId);
+  }, 140);
+}
+
 function toggleDebugPanel() {
   const willOpen = els.debugPanel.hidden;
   els.debugPanel.hidden = !willOpen;
@@ -6085,14 +6660,6 @@ function renderHomeV2() {
     <div class="homeDots" aria-label="目前島嶼">
       ${pages.map((page, index) => `<button class="homeDot${index === preservedPage ? " is-active" : ""}" type="button" data-page="${index}" aria-label="${escapeHtml(page.title)}"></button>`).join("")}
     </div>
-
-    <section class="home-v2-dialogue" aria-label="Mimi 對話">
-      ${homeV2Image(ASSETS.characters.mimiAvatar, "Mimi", "Mimi")}
-      <div>
-        <b>Mimi</b>
-        <p>歡迎回來！這裡是休息島，龍寶們正在休息喔。</p>
-      </div>
-    </section>
 
     <button id="navLeftBtn" class="home-v2-nav-arrow is-left" type="button" data-v2-nav-arrow="-1" aria-label="往左看功能">‹</button>
     <nav id="bottomNavViewport" aria-label="底部功能導航">
@@ -7987,7 +8554,9 @@ function scrollHomeV2To(target) {
     equipment: 3,
     items: 4,
     explore: 5,
-    quest: 6
+    adventurerGuild: 6,
+    guild: 6,
+    quest: 7
   };
   const index = typeof target === "number" ? target : pageMap[target] ?? 0;
   goToWorldPage(index);
@@ -7998,6 +8567,7 @@ function updateHomeV2ActiveSlide() {
   if (!pager) return;
   const page = clamp(Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth)), 0, (pager.children.length || 1) - 1);
   currentWorldPage = page;
+  queueMimiPageIntro(getWorldPages()[page]?.id || "home");
 
   if (page !== 0 && (selectedRestDragonId || state.selectedRestDragonId)) {
     selectedRestDragonId = null;
@@ -8025,19 +8595,6 @@ function updateHomeV2ActiveSlide() {
     }
   }
 
-  const dialogueText = document.querySelector(".mimi-guide-text p, .home-v2-dialogue p");
-  if (dialogueText) {
-    const pageTips = [
-      "歡迎回來！這裡是休息島，龍寶們正在休息喔。",
-      "這裡是龍舍，可以管理你擁有的所有龍。",
-      "這裡是龍窟，快來照顧你的龍蛋吧。",
-      "裝備店會放寵物與傭兵裝備。",
-      "道具店會準備探險卷、食物與孵化道具。",
-      "探索可以取得新的龍蛋。",
-      "任務會記錄今天的冒險目標。"
-    ];
-    dialogueText.textContent = pageTips[page] || pageTips[0];
-  }
 }
 
 function renderWorldDragonHousePage(index) {
@@ -8418,6 +8975,12 @@ function confirmDragonRename(dragonId) {
 }
 
 function handleHomeV2Input(event) {
+  const adventurerSearch = event.target.closest("[data-adventurer-search]");
+  if (adventurerSearch) {
+    adventurerGuildFilters.search = adventurerSearch.value;
+    refreshAdventurerGuildPage({ focusSearch: true });
+    return;
+  }
   const searchInput = event.target.closest("[data-dragon-house-search]");
   if (!searchInput) return;
   getDragonHouseFilters().search = searchInput.value;
@@ -8425,6 +8988,12 @@ function handleHomeV2Input(event) {
 }
 
 function handleHomeV2Change(event) {
+  const adventurerFilter = event.target.closest("[data-adventurer-filter]");
+  if (adventurerFilter) {
+    adventurerGuildFilters[adventurerFilter.dataset.adventurerFilter] = adventurerFilter.value;
+    refreshAdventurerGuildPage();
+    return;
+  }
   const filter = event.target.closest("[data-dragon-house-filter]");
   if (!filter) return;
   const filters = getDragonHouseFilters();
@@ -8654,7 +9223,7 @@ function getHomeV2DragTarget(target) {
   if (target.closest("#bottomNavViewport")) return null;
   if (
     target.closest(
-      "button, select, input, textarea, a, [data-v2-action], [data-world-page], [data-page], .egg-modal, .egg-modal-backdrop, .egg-choice-card, .rest-dragon-status-panel, .rest-dragon-action-backdrop, .rest-dragon-sheet, .dragon-info-backdrop, .dragon-info-modal, .team-editor-backdrop, .team-editor-modal, .dragon-sell-backdrop, .dragon-sell-modal, .dragon-house-detail-backdrop, .dragon-house-detail-modal, .dragon-rename-backdrop, .dragon-rename-modal, .dragon-house-tools, .dragon-house-grid"
+      "button, select, input, textarea, a, [data-v2-action], [data-world-page], [data-page], .egg-modal, .egg-modal-backdrop, .egg-choice-card, .rest-dragon-status-panel, .rest-dragon-action-backdrop, .rest-dragon-sheet, .dragon-info-backdrop, .dragon-info-modal, .team-editor-backdrop, .team-editor-modal, .dragon-sell-backdrop, .dragon-sell-modal, .dragon-house-detail-backdrop, .dragon-house-detail-modal, .dragon-rename-backdrop, .dragon-rename-modal, .dragon-house-tools, .dragon-house-grid, .adventurer-gacha-backdrop, .adventurer-detail-backdrop, .adventurer-sell-backdrop, .adventurer-guild-tools, .adventurer-grid"
     )
   ) {
     return null;
@@ -8790,6 +9359,8 @@ function syncPersistentAliases() {
   }
   state.eggs = state.eggInventory;
   state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
+  state.adventurers = Array.isArray(state.adventurers) ? state.adventurers.map(normalizeAdventurer) : [];
+  state.characterTickets = normalizedNonNegative(state.characterTickets, 0);
   state.tutorial = normalizeTutorial(state.tutorial);
   state.tutorialSeen = state.tutorial.tutorialSeen;
   state.tutorialStep = state.tutorial.step;
@@ -9351,6 +9922,7 @@ function getWorldPages() {
       ["孵化沙漏", "縮短孵化時間"]
     ]) },
     { id: "explore", label: "探險", title: "探險", icon: "探", assetKey: "navExplore", className: "explorePage", render: renderWorldExplorePage },
+    { id: "adventurerGuild", label: "冒險者工會", title: "冒險者工會", icon: "會", assetKey: "navAdventurerGuild", className: "adventurerGuildPage", render: renderWorldAdventurerGuildPage },
     { id: "quest", label: "任務", title: "任務", icon: "任", assetKey: "navQuest", className: "questPage", render: renderWorldQuestPage }
   ];
 }

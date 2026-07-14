@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/icons/icon-192.svg" type="image/svg+xml">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css?v=22">
-  <link rel="stylesheet" href="home-v2.css?v=47">
+  <link rel="stylesheet" href="home-v2.css?v=49">
 </head>
 <body>
   <div class="world-scene" aria-hidden="true">
@@ -148,16 +148,16 @@
     </aside>
 
     <section class="home-v2-root" id="homeV2Root" aria-label="龍島首頁 V2" hidden></section>
+    <div id="mimiDialogue" class="mimi-dialogue" aria-live="polite" aria-hidden="true">
+      <img class="mimi-dialogue-avatar" src="assets/characters/mimi-head.png" alt="">
+      <div class="mimi-dialogue-text"></div>
+    </div>
 
     <main class="game-screen" id="sceneRoot">
       <section class="tab-panel home-panel is-active" id="tab-home">
         <div class="home-scene" id="legacyHomeScene">
           <div class="main-hero" id="heroDragonStage"></div>
         </div>
-        <button class="mimi-help" id="mimiButton" type="button" aria-label="咪咪提示">
-          <span class="mimi-head mini"></span>
-        </button>
-        <div class="mimi-bubble dialogue-layer" id="mimiBubble">歡迎來到龍島！今天也一起冒險吧。</div>
         <div class="rarity-tip">
           <b>C / B / A / S / SS / SSS</b>
           <span>稀有度越高，龍龍越強大！</span>
@@ -448,7 +448,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=57"></script>
+  <script src="app.js?v=59"></script>
   <script src="home-v2-overrides.js?v=2"></script>
 </body>
 </html>

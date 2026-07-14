@@ -147,9 +147,45 @@
       "path": "assets/ui/nav-explore.png",
       "purpose": "Bottom navigation icon for Explore."
     },
+    "adventurerGuild": {
+      "path": "assets/ui/nav-adventurer-guild.png",
+      "purpose": "Bottom navigation icon for the Adventurer Guild character-card page."
+    },
     "quest": {
       "path": "assets/ui/nav-quest.png",
       "purpose": "Bottom navigation icon for Quest."
+    }
+  },
+  "adventurers": {
+    "characterTicket": {
+      "path": "assets/ui/icon-character-ticket.png",
+      "purpose": "Character summon ticket icon."
+    },
+    "cardBacks": {
+      "normal": "assets/adventurers/card-backs/card-back-normal.png",
+      "rare": "assets/adventurers/card-backs/card-back-rare.png",
+      "sss": "assets/adventurers/card-backs/card-back-sss.png"
+    },
+    "cards": {
+      "newbieSwordman": "assets/adventurers/cards/newbie-swordman-c-fire.png",
+      "apprenticeArcher": "assets/adventurers/cards/apprentice-archer-c-wood.png",
+      "flameFist": "assets/adventurers/cards/flame-fist-b-fire.png",
+      "aquaMage": "assets/adventurers/cards/aqua-mage-b-water.png",
+      "forestAssassin": "assets/adventurers/cards/forest-assassin-a-wood.png",
+      "lightPastor": "assets/adventurers/cards/light-pastor-a-light.png",
+      "crimsonKnight": "assets/adventurers/cards/crimson-knight-s-fire.png",
+      "azureSorcerer": "assets/adventurers/cards/azure-sorcerer-s-water.png",
+      "holyGuardian": "assets/adventurers/cards/holy-guardian-ss-light.png",
+      "shadowHunter": "assets/adventurers/cards/shadow-hunter-ss-dark.png",
+      "alon": "assets/adventurers/cards/alon-sss-fire.png",
+      "starDragonlord": "assets/adventurers/cards/star-dragonlord-sss-light.png"
+    },
+    "pixelSprites": {
+      "pattern": "assets/adventurers/pixel/{templateId}-{idle|walk|attack}.png",
+      "fallback": "assets/adventurers/placeholders/pixel-character.png"
+    },
+    "cardPlaceholders": {
+      "pattern": "assets/adventurers/placeholders/card-{c|b|a|s|ss|sss}.png"
     }
   },
   "tutorial": {
