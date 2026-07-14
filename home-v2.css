@@ -2783,6 +2783,283 @@ body.home-v2-active #toastLayer #toast.is-visible {
   margin-bottom: 18px !important;
 }
 
+/* Mission chapters: compact completed work while preserving the existing mission data. */
+.questPage .quest-page-shell.mission-scroll {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 8px 14px 132px;
+}
+
+.questPage .quest-page-shell.mission-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.questPage .mission-hero {
+  position: relative;
+  width: 100%;
+  min-height: 112px;
+  max-height: 125px;
+  margin: 8px auto 12px;
+  padding: 16px 132px 14px 18px;
+  box-sizing: border-box;
+  overflow: visible;
+  border: 2px solid rgba(246, 201, 89, 0.95);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(24, 55, 116, 0.92), rgba(8, 27, 70, 0.88));
+  color: #fff7cf;
+  box-shadow: 0 9px 20px rgba(0, 0, 0, 0.24);
+}
+
+.questPage .mission-hero-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.questPage .mission-hero h1 {
+  margin: 0 0 6px;
+  font-size: 1.65rem;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.questPage .mission-hero p {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.questPage .mission-hero-mimi {
+  position: absolute;
+  right: -8px;
+  bottom: -4px;
+  z-index: 3;
+  width: 148px;
+  height: auto;
+  max-height: 166px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.3));
+}
+
+.questPage .quest-main-card {
+  margin-top: 0;
+  padding: 11px;
+}
+
+.questPage .quest-main-card > header {
+  min-height: 28px;
+}
+
+.questPage .mission-chapters {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.questPage .mission-chapter {
+  overflow: hidden;
+  border: 2px solid rgba(246, 201, 89, 0.95);
+  border-radius: 18px;
+  background: rgba(10, 32, 77, 0.92);
+  box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+}
+
+.questPage .mission-chapter.is-complete {
+  border-color: rgba(104, 219, 139, 0.9);
+}
+
+.questPage .mission-chapter.is-locked {
+  border-color: rgba(170, 181, 207, 0.55);
+  background: rgba(15, 28, 58, 0.88);
+}
+
+.questPage .mission-chapter-header {
+  width: 100%;
+  min-height: 68px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 22px;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 13px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  box-shadow: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.questPage .mission-chapter.is-locked .mission-chapter-header {
+  cursor: not-allowed;
+}
+
+.questPage .mission-chapter-heading {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.questPage .mission-chapter-title {
+  color: #ffe9a4;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.questPage .mission-chapter-heading b {
+  overflow: hidden;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.questPage .mission-chapter-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  color: #fff7cf;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.questPage .mission-chapter-meta small {
+  color: #cbd8f3;
+  font-size: 0.65rem;
+  white-space: nowrap;
+}
+
+.questPage .mission-chapter.is-complete .mission-chapter-meta small {
+  color: #83e2a2;
+}
+
+.questPage .mission-chapter-toggle {
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.questPage .mission-chapter.is-expanded .mission-chapter-toggle {
+  transform: rotate(180deg);
+}
+
+.questPage .mission-chapter-body {
+  padding: 0 8px 9px;
+}
+
+.questPage .mission-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 0;
+}
+
+.questPage .mission-item {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.questPage .mission-row:not(.is-completed) {
+  min-height: 105px;
+  padding: 9px;
+}
+
+.questPage .mission-row.is-completed {
+  height: 54px !important;
+  min-height: 54px !important;
+  max-height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  box-sizing: border-box !important;
+  border: 1px solid rgba(113, 218, 144, 0.72);
+  border-radius: 14px;
+  background: rgba(226, 249, 231, 0.94);
+  color: #173d2a;
+}
+
+.questPage .mission-complete-check {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #43a963;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 900;
+  box-shadow: 0 3px 8px rgba(28, 111, 55, 0.28);
+}
+
+.questPage .mission-complete-copy {
+  min-width: 0;
+}
+
+.questPage .mission-complete-copy h3 {
+  margin: 0;
+  overflow: hidden;
+  font-size: 0.88rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.questPage .mission-complete-copy small {
+  display: block;
+  margin-top: 2px;
+  color: #3b8153;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.questPage .mission-item.is-completing {
+  animation: missionCompleteFlash 0.6s ease;
+}
+
+@keyframes missionCompleteFlash {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(80, 210, 120, 0);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 22px rgba(80, 210, 120, 0.75);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(80, 210, 120, 0);
+  }
+}
+
+@media (max-width: 370px) {
+  .questPage .mission-hero {
+    min-height: 106px;
+    padding-right: 116px;
+  }
+
+  .questPage .mission-hero-mimi {
+    width: 132px;
+  }
+
+  .questPage .mission-chapter-header {
+    padding-inline: 10px;
+  }
+}
+
 /* Adventurer guild: independent character-card collection and summon surface. */
 .adventurerGuildPage {
   overflow: hidden;
@@ -3358,6 +3635,447 @@ body.home-v2-active #toastLayer #toast.is-visible {
     grid-template-columns: 40% minmax(0, 1fr);
     padding: 9px;
   }
+}
+
+/* Adventurer management, equipment inventory, and the rotating equipment shop. */
+.adventurer-detail-backdrop {
+  display: block;
+  bottom: calc(var(--bottom-nav-height, 92px) + 10px);
+  padding: var(--adventurer-detail-top, calc(64px + env(safe-area-inset-top))) 18px 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: rgba(3, 8, 24, 0.3);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  pointer-events: auto;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+
+.adventurer-detail-backdrop::-webkit-scrollbar,
+.adventurer-detail-subpanel::-webkit-scrollbar,
+.equipment-shop-page-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.adventurer-detail-stack {
+  display: grid;
+  width: min(100%, 390px);
+  gap: 10px;
+  margin: 0 auto;
+  pointer-events: auto;
+}
+
+.adventurer-detail-panel,
+.adventurer-detail-subpanel {
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid #f4cc72;
+  border-radius: 8px;
+  background: rgba(12, 31, 72, 0.97);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.48);
+  color: #fff;
+}
+
+.adventurer-detail-panel {
+  position: relative;
+  display: grid;
+  min-height: 266px;
+  grid-template-columns: 42% minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px;
+  animation: adventurerModalIn 0.28s ease-out both;
+}
+
+.adventurer-detail-panel .adventurer-detail-visual {
+  min-height: 242px;
+}
+
+.adventurer-detail-panel .adventurer-detail-info {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.adventurer-detail-info dd i {
+  color: #79e6a6;
+  font-size: 0.52rem;
+  font-style: normal;
+}
+
+.adventurer-main-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 7px;
+}
+
+.adventurer-main-actions button,
+.adventurer-detail-subpanel button {
+  min-width: 0;
+  min-height: 36px;
+  border: 1px solid #ffe39a;
+  border-radius: 7px;
+  background: #234985;
+  color: #fff5c8;
+  font: inherit;
+  font-size: 0.66rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.adventurer-main-actions button.is-active,
+.adventurer-detail-subpanel button.is-active,
+.adventurer-detail-subpanel button:not(:disabled):active {
+  background: linear-gradient(180deg, #ffd875, #e99a38);
+  color: #17244d;
+}
+
+.adventurer-main-actions button:disabled,
+.adventurer-detail-subpanel button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.adventurer-detail-subpanel {
+  height: 330px;
+  max-height: 330px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  animation: adventurerSubpanelIn 0.22s ease-out both;
+}
+
+.adventurer-detail-subpanel > header {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 9px 6px 13px;
+  border-bottom: 1px solid rgba(255, 224, 143, 0.5);
+  background: #10295f;
+  color: #ffe8a1;
+}
+
+.adventurer-detail-subpanel > header button {
+  width: 30px;
+  min-height: 28px;
+  padding: 0;
+  font-size: 1rem;
+}
+
+.adventurer-subpanel-content {
+  padding: 10px;
+}
+
+.adventurer-team-tabs,
+.adventurer-trade-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.adventurer-trade-tabs {
+  grid-template-columns: 1fr 1fr;
+}
+
+.adventurer-team-summary,
+.adventurer-equipment-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 1px 6px;
+  color: #fff1b6;
+  font-size: 0.72rem;
+}
+
+.adventurer-team-slots {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.adventurer-team-slot {
+  display: grid;
+  min-width: 0;
+  height: 82px;
+  place-items: center;
+  align-content: center;
+  gap: 3px;
+  overflow: hidden;
+  border: 1px dashed rgba(255, 226, 146, 0.55);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.adventurer-team-slot.is-filled {
+  border-style: solid;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.adventurer-team-slot small {
+  width: 100%;
+  overflow: hidden;
+  font-size: 0.52rem;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adventurer-team-avatar {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.adventurer-selected-member {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 7px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.adventurer-selected-member div {
+  min-width: 0;
+}
+
+.adventurer-selected-member b,
+.adventurer-selected-member small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adventurer-selected-member b { color: #fff0ae; font-size: 0.72rem; }
+.adventurer-selected-member small { margin-top: 2px; color: rgba(255, 255, 255, 0.72); font-size: 0.56rem; }
+.adventurer-selected-avatar { width: 46px; height: 52px; object-fit: contain; image-rendering: pixelated; }
+.adventurer-selected-member > button { min-width: 86px; }
+
+.adventurer-upgrade-level {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3px 8px;
+  padding: 9px 11px;
+  border: 1px solid rgba(255, 225, 145, 0.6);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.adventurer-upgrade-level span { color: rgba(255, 255, 255, 0.76); font-size: 0.68rem; }
+.adventurer-upgrade-level b { color: #ffe084; }
+.adventurer-upgrade-level small { grid-column: 1 / -1; color: #bcd1ff; font-size: 0.58rem; }
+
+.adventurer-upgrade-preview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.adventurer-upgrade-preview div {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 4px;
+  padding: 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.62rem;
+}
+
+.adventurer-upgrade-preview i { color: #79e6a6; font-style: normal; font-weight: 900; }
+.adventurer-upgrade-button { width: 100%; margin-top: 9px; background: linear-gradient(180deg, #ffd875, #e99a38) !important; color: #17244d !important; }
+
+.adventurer-equipment-stats {
+  display: grid;
+  grid-template-columns: auto repeat(4, 1fr);
+  align-items: center;
+  gap: 4px;
+  padding: 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 0.53rem;
+}
+
+.adventurer-equipment-stats span { color: #ffe298; font-weight: 900; }
+.adventurer-equipment-stats b { text-align: center; }
+
+.adventurer-equipment-slots {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.equipment-slot-button {
+  display: grid;
+  min-height: 96px !important;
+  align-content: start;
+  justify-items: center;
+  gap: 3px;
+  padding: 5px 3px !important;
+  overflow: hidden;
+}
+
+.equipment-slot-button small { color: #ffe39a; font-size: 0.52rem; }
+.equipment-slot-button b { width: 100%; overflow: hidden; font-size: 0.51rem; text-overflow: ellipsis; white-space: nowrap; }
+.equipment-slot-icon { width: 46px; height: 46px; object-fit: contain; image-rendering: pixelated; }
+.equipment-slot-icon.is-empty { display: grid; place-items: center; color: rgba(255,255,255,.45); font-size: 1.25rem; }
+
+.adventurer-equipment-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.adventurer-equipment-item {
+  display: flex;
+  min-width: 0;
+  min-height: 168px;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px;
+  border: 1px solid #c18cff;
+  border-radius: 7px;
+  background: rgba(8, 20, 50, 0.82);
+  text-align: center;
+}
+
+.adventurer-equipment-item.rarity-s { border-color: #f5d269; }
+.adventurer-equipment-item.rarity-ss { border-color: #ff8d68; }
+.adventurer-equipment-item.rarity-sss { border-color: #fff3a2; box-shadow: inset 0 0 10px rgba(203, 118, 255, 0.38); }
+.adventurer-equipment-item.is-equipped { background: rgba(39, 84, 95, 0.86); }
+.adventurer-equipment-icon { width: 58px; height: 58px; object-fit: contain; image-rendering: pixelated; }
+.adventurer-equipment-item > b { width: 100%; overflow: hidden; color: #fff0a6; font-size: 0.58rem; text-overflow: ellipsis; white-space: nowrap; }
+.adventurer-equipment-item > small { margin-top: 2px; color: #d6e5ff; font-size: 0.5rem; }
+.adventurer-equipment-item > em { min-height: 28px; margin: 3px 0; color: #9ee6b7; font-size: 0.46rem; font-style: normal; line-height: 1.3; }
+.adventurer-equipment-item > button { width: 100%; min-height: 30px; margin-top: auto; }
+.adventurer-equipment-empty { grid-column: 1 / -1; padding: 18px 8px; border: 1px dashed rgba(255,226,146,.5); border-radius: 7px; color: rgba(255,255,255,.7); font-size: .68rem; text-align: center; }
+
+.adventurer-sell-panel,
+.adventurer-market-placeholder {
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255, 225, 145, 0.55);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.adventurer-sell-panel > div:first-child { display: flex; align-items: center; justify-content: space-between; color: #ffe08a; }
+.adventurer-sell-panel p,
+.adventurer-market-placeholder p { margin: 7px 0 0; color: rgba(255,255,255,.76); font-size: .66rem; line-height: 1.45; }
+.adventurer-sell-panel-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 10px; }
+.adventurer-sell-panel-actions button:last-child { background: #9e3d3d; }
+.adventurer-market-placeholder { min-height: 110px; text-align: center; }
+.adventurer-market-placeholder b { color: #ffe08a; }
+
+.equipmentShopPage {
+  overflow: hidden;
+  padding: 10px 12px 18px !important;
+}
+
+.equipment-shop-page-scroll {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2px 2px 112px;
+  box-sizing: border-box;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+
+.equipment-shop-heading {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 13px;
+  border: 2px solid rgba(255, 218, 126, 0.9);
+  border-radius: 8px;
+  background: rgba(16, 35, 78, 0.92);
+}
+
+.equipment-shop-heading h1 { margin: 0; color: #fff0aa; font-size: 1.35rem; letter-spacing: 0; }
+.equipment-shop-heading p { margin: 3px 0 0; color: rgba(255,255,255,.8); font-size: .66rem; }
+.equipment-shop-heading > span { flex: 0 0 auto; padding: 6px 8px; border: 1px solid #f5d77f; border-radius: 999px; background: rgba(5,15,42,.7); color: #fff2b1; font-size: .65rem; font-weight: 900; }
+
+.equipment-shop-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 223, 139, 0.66);
+  border-radius: 7px;
+  background: rgba(10, 28, 66, 0.86);
+}
+
+.equipment-shop-status small,
+.equipment-shop-status b { display: block; }
+.equipment-shop-status small { color: rgba(255,255,255,.65); font-size: .53rem; }
+.equipment-shop-status b { color: #fff0aa; font-size: .8rem; font-variant-numeric: tabular-nums; }
+.equipment-shop-status > span { color: #dce8ff; font-size: .66rem; }
+
+.equipment-shop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.equipment-shop-card {
+  display: flex;
+  min-width: 0;
+  min-height: 246px;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border: 2px solid #c18cff;
+  border-radius: 8px;
+  background: rgba(10, 26, 62, 0.94);
+  color: #fff;
+  text-align: center;
+}
+
+.equipment-shop-card.rarity-s { border-color: #f4d16a; }
+.equipment-shop-card.rarity-ss { border-color: #ff8b63; }
+.equipment-shop-card.rarity-sss { border-color: #fff2a1; box-shadow: inset 0 0 15px rgba(196, 105, 255, 0.38); }
+.equipment-shop-card.is-sold { opacity: .48; filter: grayscale(.45); }
+.equipment-shop-card > header { display: flex; width: 100%; justify-content: space-between; color: #ffe28a; font-size: .58rem; }
+.equipment-shop-icon { width: 82px; height: 82px; margin: 5px 0 2px; object-fit: contain; image-rendering: pixelated; }
+.equipment-shop-card h3 { width: 100%; overflow: hidden; margin: 2px 0; color: #fff0ae; font-size: .75rem; text-overflow: ellipsis; white-space: nowrap; }
+.equipment-shop-card p { min-height: 30px; margin: 2px 0; color: #a9e9be; font-size: .53rem; line-height: 1.35; }
+.equipment-shop-card > div { display: flex; width: 100%; justify-content: space-between; gap: 4px; margin-top: auto; color: #dce8ff; font-size: .54rem; }
+.equipment-shop-card > div b { color: #ffe08a; }
+.equipment-shop-card > button { width: 100%; min-height: 34px; margin-top: 7px; border: 1px solid #ffe39a; border-radius: 7px; background: linear-gradient(180deg, #ffd875, #e99a38); color: #17244d; font: inherit; font-size: .68rem; font-weight: 900; }
+.equipment-shop-card > button:disabled { background: #55617a; color: #dbe2ef; }
+
+@keyframes adventurerSubpanelIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 370px), (max-height: 700px) {
+  .adventurer-detail-backdrop { padding-inline: 12px; }
+  .adventurer-detail-panel { grid-template-columns: 39% minmax(0, 1fr); padding: 9px; }
+  .adventurer-detail-panel .adventurer-detail-visual { min-height: 218px; }
+  .adventurer-equipment-item { min-height: 154px; }
+  .adventurer-equipment-icon { width: 50px; height: 50px; }
+  .equipment-shop-card { min-height: 228px; }
+  .equipment-shop-icon { width: 70px; height: 70px; }
 }
 
 /* One shared Mimi dialogue for every worldPager page. */

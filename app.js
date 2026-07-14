@@ -904,6 +904,20 @@ const BEGINNER_MISSION_DEFS = [
   { id: "trainOnce", title: "訓練 1 次", target: 1, reward: { ticketsExplore: 1 } },
   { id: "growBattleReady", title: "成長至可出戰", target: 1, reward: { items: { mysteryBag: 1 } } }
 ];
+const MISSION_CHAPTERS = [
+  {
+    id: "chapter1",
+    title: "第一章",
+    subtitle: "龍寶寶誕生",
+    missionIds: ["getEgg", "goHatchIsland", "putInIncubator", "finishHatch"]
+  },
+  {
+    id: "chapter2",
+    title: "第二章",
+    subtitle: "成長與出戰",
+    missionIds: ["feedOnce", "trainOnce", "growBattleReady"]
+  }
+];
 const BEGINNER_FINAL_REWARD = {
   coins: 1000,
   diamonds: 50,
@@ -948,7 +962,53 @@ const ADVENTURER_RARITY_RATES = [
   { rarity: "SSS", rate: 1 }
 ];
 const ADVENTURER_SUMMON_DIAMOND_COST = 30;
-const ADVENTURER_SELL_PRICES = { C: 50, B: 100, A: 200, S: 400, SS: 800, SSS: 1500 };
+const ADVENTURER_SELL_PRICES = { C: 100, B: 200, A: 500, S: 1200, SS: 3000, SSS: 8000 };
+const ADVENTURER_MAX_LEVEL = 100;
+const ADVENTURER_TEAM_SIZE = 4;
+const EQUIPMENT_SHOP_REFRESH_MS = 2 * 60 * 60 * 1000;
+const EQUIPMENT_SLOTS = ["head", "body", "legs", "weapon", "offhand", "ring", "necklace", "petContract"];
+const EQUIPMENT_SLOT_LABELS = {
+  head: "頭部",
+  body: "身體",
+  legs: "褲子",
+  weapon: "武器",
+  offhand: "副手",
+  ring: "戒指",
+  necklace: "項鍊",
+  petContract: "寵物契約"
+};
+const EQUIPMENT_SLOT_FOLDERS = { petContract: "pet-contract" };
+const EQUIPMENT_SHOP_RARITY_RATES = [
+  { rarity: "A", rate: 70 },
+  { rarity: "S", rate: 22 },
+  { rarity: "SS", rate: 7 },
+  { rarity: "SSS", rate: 1 }
+];
+const EQUIPMENT_BASE_PRICES = { A: 800, S: 1800, SS: 4500, SSS: 12000 };
+const EQUIPMENT_SLOT_PRICE_MULTIPLIERS = {
+  head: 1,
+  body: 1.2,
+  legs: 1,
+  weapon: 1.4,
+  offhand: 1.2,
+  ring: 1.1,
+  necklace: 1.1,
+  petContract: 1.5
+};
+const EQUIPMENT_RARITY_STAT_RANGES = {
+  A: [8, 16],
+  S: [18, 28],
+  SS: [30, 48],
+  SSS: [55, 85]
+};
+const EQUIPMENT_ELEMENTS = ["fire", "water", "wood", "light", "dark"];
+const EQUIPMENT_NAMES = {
+  fire: { head: "赤焰頭盔", body: "熔岩戰甲", legs: "火紋戰褲", weapon: "烈焰長劍", offhand: "炎龍護盾", ring: "火晶戒指", necklace: "赤紅項鍊", petContract: "火靈契約" },
+  water: { head: "潮汐冠冕", body: "深海法袍", legs: "流水護腿", weapon: "滄浪法杖", offhand: "海晶副手", ring: "藍潮戒指", necklace: "海洋項鍊", petContract: "水靈契約" },
+  wood: { head: "森語兜帽", body: "古木護甲", legs: "藤蔓長褲", weapon: "翠葉短弓", offhand: "樹靈圖騰", ring: "綠芽戒指", necklace: "生命項鍊", petContract: "森靈契約" },
+  light: { head: "晨曦聖冠", body: "聖耀鎧甲", legs: "光羽護腿", weapon: "日輪聖劍", offhand: "光明法典", ring: "星光戒指", necklace: "曙光項鍊", petContract: "天使契約" },
+  dark: { head: "深淵面具", body: "暗夜長袍", legs: "影行護腿", weapon: "黑月匕首", offhand: "虛空魔典", ring: "暗影戒指", necklace: "黑曜項鍊", petContract: "魔獸契約" }
+};
 const ADVENTURER_POOL = [
   { templateId: "newbie-swordman-c-fire", name: "新人劍士", rarity: "C", element: "fire", job: "戰士", basePower: 28 },
   { templateId: "apprentice-archer-c-wood", name: "見習弓手", rarity: "C", element: "wood", job: "弓手", basePower: 26 },
@@ -1052,6 +1112,9 @@ let mimiDialogueTimer = null;
 let mimiDialogueHideTimer = null;
 let mimiPageIntroTimer = null;
 let lastMimiIntroPage = null;
+let mimiProgrammaticPageId = null;
+let mimiProgrammaticPageTimer = null;
+const completingMissionIds = new Set();
 let gameHasStarted = false;
 let startGameTransitioning = false;
 let audioManager;
@@ -1068,6 +1131,8 @@ let restDragonSuppressClickId = null;
 let currentGachaResult = null;
 let currentAdventurerGachaResult = null;
 let selectedAdventurerId = null;
+let equipmentShopCountdownTimer = null;
+const equipmentShopPurchaseLocks = new Set();
 let currentWorldPage = 0;
 let lastWorldScrollDebugAt = 0;
 let lastWorldScrollDebugPage = -1;
@@ -1557,6 +1622,10 @@ function createNewState() {
     eggs: starterEggs,
     dragons: [],
     adventurers: [],
+    equipmentInventory: [],
+    equipmentShop: { refreshAt: 0, items: [] },
+    adventurerTeams: createDefaultAdventurerTeams(),
+    marketListings: [],
     characterTickets: 0,
     soldDragonIds: [],
     dragonHouse: normalizeDragonHouse(),
@@ -1565,6 +1634,13 @@ function createNewState() {
     tutorialStep: 0,
     beginnerQuestStarted: true,
     missions: normalizeMissions(),
+    ui: {
+      missionChapterExpanded: {},
+      missionChapterCompleted: {},
+      activeAdventurerPanel: null,
+      activeAdventurerEquipmentSlot: "weapon",
+      activeAdventurerTradeTab: "sell"
+    },
     tutorial: normalizeTutorial({ tutorialSeen: false, step: 0, beginnerQuestStarted: true }),
     characterCards: initializeCardCollection(characterCardCatalog, ["char_flame_knight"], "char_flame_knight"),
     petCards: initializeCardCollection(petCardCatalog, ["pet_fire_wisp"], "pet_fire_wisp"),
@@ -1597,9 +1673,29 @@ function ensureValidState() {
   state.eggs = state.eggInventory;
   state.dragons = Array.isArray(state.dragons) ? state.dragons.map(normalizeDragon) : [];
   state.adventurers = Array.isArray(state.adventurers) ? state.adventurers.map(normalizeAdventurer) : [];
+  state.equipmentInventory = Array.isArray(state.equipmentInventory) ? state.equipmentInventory.map(normalizeEquipment) : [];
+  state.equipmentShop = normalizeEquipmentShop(state.equipmentShop);
+  state.adventurerTeams = normalizeAdventurerTeams(state.adventurerTeams, state.adventurers);
+  state.marketListings = Array.isArray(state.marketListings) ? state.marketListings : [];
   state.characterTickets = normalizedNonNegative(state.characterTickets, 0);
   state.soldDragonIds = Array.isArray(state.soldDragonIds) ? state.soldDragonIds.filter(Boolean) : [];
   state.dragonHouse = normalizeDragonHouse(state.dragonHouse);
+  state.ui = state.ui && typeof state.ui === "object" ? state.ui : {};
+  state.ui.missionChapterExpanded = state.ui.missionChapterExpanded && typeof state.ui.missionChapterExpanded === "object"
+    ? state.ui.missionChapterExpanded
+    : {};
+  state.ui.missionChapterCompleted = state.ui.missionChapterCompleted && typeof state.ui.missionChapterCompleted === "object"
+    ? state.ui.missionChapterCompleted
+    : {};
+  state.ui.activeAdventurerPanel = ["team", "upgrade", "equipment", "trade"].includes(state.ui.activeAdventurerPanel)
+    ? state.ui.activeAdventurerPanel
+    : null;
+  state.ui.activeAdventurerEquipmentSlot = EQUIPMENT_SLOTS.includes(state.ui.activeAdventurerEquipmentSlot)
+    ? state.ui.activeAdventurerEquipmentSlot
+    : "weapon";
+  state.ui.activeAdventurerTradeTab = state.ui.activeAdventurerTradeTab === "market" ? "market" : "sell";
+  syncAdventurerEquipmentState();
+  syncAdventurerTeamFlags();
   state.battleTeam = normalizeBattleTeam(state.battleTeam, state.dragons);
   syncDragonTeamFlags();
   const savedRestDragonIds = Array.isArray(state.homeIsland?.restDragons)
@@ -3708,6 +3804,222 @@ function handleHomeV2Click(event) {
   }
 }
 
+function createEmptyAdventurerEquipment() {
+  return EQUIPMENT_SLOTS.reduce((slots, slot) => {
+    slots[slot] = null;
+    return slots;
+  }, {});
+}
+
+function createDefaultAdventurerTeams() {
+  return {
+    activeTeamId: "team1",
+    teams: [1, 2, 3].map((number) => ({
+      id: `team${number}`,
+      name: `隊伍 ${number}`,
+      memberIds: []
+    }))
+  };
+}
+
+function normalizeEquipmentStats(stats = {}) {
+  return {
+    hp: normalizedNonNegative(stats.hp, 0),
+    attack: normalizedNonNegative(stats.attack, 0),
+    defense: normalizedNonNegative(stats.defense, 0),
+    speed: normalizedNonNegative(stats.speed, 0)
+  };
+}
+
+function calculateEquipmentItemPower(stats = {}) {
+  const normalized = normalizeEquipmentStats(stats);
+  return Math.max(1, Math.round(
+    normalized.hp * 0.25
+    + normalized.attack * 2
+    + normalized.defense * 1.5
+    + normalized.speed * 1.2
+  ));
+}
+
+function normalizeEquipment(equipment) {
+  const source = equipment && typeof equipment === "object" ? equipment : {};
+  const slot = EQUIPMENT_SLOTS.includes(source.slot) ? source.slot : "weapon";
+  const rarity = ["A", "S", "SS", "SSS"].includes(String(source.rarity || "").toUpperCase())
+    ? String(source.rarity).toUpperCase()
+    : "A";
+  const element = EQUIPMENT_ELEMENTS.includes(normalizeDragonElement(source.element))
+    ? normalizeDragonElement(source.element)
+    : "fire";
+  const stats = normalizeEquipmentStats(source.stats);
+  const folder = EQUIPMENT_SLOT_FOLDERS[slot] || slot;
+  return {
+    ...source,
+    id: source.id || createId("equip"),
+    templateId: source.templateId || `${element}_${slot}_${rarity.toLowerCase()}_001`,
+    name: source.name || EQUIPMENT_NAMES[element]?.[slot] || "冒險裝備",
+    slot,
+    rarity,
+    element,
+    level: positiveNumber(source.level, 1),
+    requiredLevel: positiveNumber(source.requiredLevel, 1),
+    stats,
+    power: positiveNumber(source.power, calculateEquipmentItemPower(stats)),
+    iconAsset: source.iconAsset || `assets/equipment/icons/${folder}/${folder}-${rarity.toLowerCase()}-001.png`,
+    equippedBy: source.equippedBy || null,
+    locked: Boolean(source.locked),
+    obtainedAt: positiveNumber(source.obtainedAt, Date.now()),
+    source: source.source || "shop"
+  };
+}
+
+function normalizeEquipmentShop(equipmentShop) {
+  const source = equipmentShop && typeof equipmentShop === "object" ? equipmentShop : {};
+  return {
+    refreshAt: normalizedNonNegative(source.refreshAt, 0),
+    items: Array.isArray(source.items) ? source.items.map((item) => ({
+      shopItemId: item?.shopItemId || createId("shop"),
+      equipment: normalizeEquipment(item?.equipment),
+      price: positiveNumber(item?.price, 800),
+      sold: Boolean(item?.sold)
+    })) : []
+  };
+}
+
+function normalizeAdventurerTeams(adventurerTeams, adventurers = []) {
+  const defaults = createDefaultAdventurerTeams();
+  const source = adventurerTeams && typeof adventurerTeams === "object" ? adventurerTeams : {};
+  const savedTeams = Array.isArray(source.teams) ? source.teams : [];
+  const validIds = new Set(adventurers.map((adventurer) => adventurer.id));
+  const assignedIds = new Set();
+  const teams = defaults.teams.map((defaultTeam) => {
+    const saved = savedTeams.find((team) => team?.id === defaultTeam.id) || {};
+    const memberIds = [];
+    (Array.isArray(saved.memberIds) ? saved.memberIds : []).forEach((id) => {
+      if (validIds.has(id) && !assignedIds.has(id) && memberIds.length < ADVENTURER_TEAM_SIZE) {
+        memberIds.push(id);
+        assignedIds.add(id);
+      }
+    });
+    return {
+      id: defaultTeam.id,
+      name: String(saved.name || defaultTeam.name),
+      memberIds
+    };
+  });
+
+  adventurers.forEach((adventurer) => {
+    if (!adventurer.isInTeam || assignedIds.has(adventurer.id)) return;
+    const preferred = teams.find((team) => team.id === adventurer.teamId) || teams[0];
+    if (preferred.memberIds.length < ADVENTURER_TEAM_SIZE) {
+      preferred.memberIds.push(adventurer.id);
+      assignedIds.add(adventurer.id);
+    }
+  });
+
+  return {
+    activeTeamId: teams.some((team) => team.id === source.activeTeamId) ? source.activeTeamId : "team1",
+    teams
+  };
+}
+
+function syncAdventurerTeamFlags() {
+  if (!Array.isArray(state?.adventurers) || !Array.isArray(state?.adventurerTeams?.teams)) return;
+  const teamByMember = new Map();
+  state.adventurerTeams.teams.forEach((team) => {
+    team.memberIds = team.memberIds.filter((id, index, ids) => (
+      ids.indexOf(id) === index && !teamByMember.has(id) && Boolean(getAdventurerById(id))
+    )).slice(0, ADVENTURER_TEAM_SIZE);
+    team.memberIds.forEach((id) => teamByMember.set(id, team.id));
+  });
+  state.adventurers.forEach((adventurer) => {
+    adventurer.teamId = teamByMember.get(adventurer.id) || null;
+    adventurer.isInTeam = Boolean(adventurer.teamId);
+  });
+}
+
+function calculateEquipmentStats(adventurer) {
+  const totals = { hp: 0, attack: 0, defense: 0, speed: 0, power: 0 };
+  if (!adventurer) return totals;
+  EQUIPMENT_SLOTS.forEach((slot) => {
+    const equipmentId = adventurer.equipment?.[slot];
+    const item = (state.equipmentInventory || []).find((equipment) => equipment.id === equipmentId);
+    if (!item || item.equippedBy !== adventurer.id) return;
+    totals.hp += item.stats.hp;
+    totals.attack += item.stats.attack;
+    totals.defense += item.stats.defense;
+    totals.speed += item.stats.speed;
+    totals.power += item.power;
+  });
+  return totals;
+}
+
+function calculateFinalStats(adventurer) {
+  const base = adventurer?.baseStats || { hp: 100, attack: 10, defense: 10, speed: 10 };
+  const equipment = calculateEquipmentStats(adventurer);
+  return {
+    hp: base.hp + equipment.hp,
+    attack: base.attack + equipment.attack,
+    defense: base.defense + equipment.defense,
+    speed: base.speed + equipment.speed,
+    equipment
+  };
+}
+
+function calculateAdventurerPower(adventurer) {
+  const finalStats = calculateFinalStats(adventurer);
+  return Math.max(1, Math.round(
+    finalStats.hp * 0.25
+    + finalStats.attack * 2
+    + finalStats.defense * 1.5
+    + finalStats.speed * 1.2
+    + finalStats.equipment.power
+  ));
+}
+
+function recalculateAdventurerDerivedStats(adventurer) {
+  if (!adventurer) return;
+  const finalStats = calculateFinalStats(adventurer);
+  adventurer.hp = finalStats.hp;
+  adventurer.attack = finalStats.attack;
+  adventurer.defense = finalStats.defense;
+  adventurer.speed = finalStats.speed;
+  adventurer.equipmentPower = finalStats.equipment.power;
+  adventurer.power = calculateAdventurerPower(adventurer);
+}
+
+function syncAdventurerEquipmentState() {
+  if (!Array.isArray(state?.adventurers) || !Array.isArray(state?.equipmentInventory)) return;
+  const equipmentById = new Map(state.equipmentInventory.map((item) => [item.id, item]));
+  const savedOwners = new Map(state.equipmentInventory.map((item) => [item.id, item.equippedBy]));
+  const assigned = new Set();
+  state.equipmentInventory.forEach((item) => { item.equippedBy = null; });
+
+  state.adventurers.forEach((adventurer) => {
+    adventurer.equipment = { ...createEmptyAdventurerEquipment(), ...(adventurer.equipment || {}) };
+    EQUIPMENT_SLOTS.forEach((slot) => {
+      const equipmentId = adventurer.equipment[slot];
+      const item = equipmentById.get(equipmentId);
+      if (!item || item.slot !== slot || assigned.has(item.id)) {
+        adventurer.equipment[slot] = null;
+        return;
+      }
+      item.equippedBy = adventurer.id;
+      assigned.add(item.id);
+    });
+  });
+
+  state.equipmentInventory.forEach((item) => {
+    if (assigned.has(item.id)) return;
+    const owner = getAdventurerById(savedOwners.get(item.id));
+    if (!owner || owner.equipment[item.slot]) return;
+    owner.equipment[item.slot] = item.id;
+    item.equippedBy = owner.id;
+    assigned.add(item.id);
+  });
+
+  state.adventurers.forEach(recalculateAdventurerDerivedStats);
+}
+
 function normalizeAdventurer(adventurer) {
   const source = adventurer && typeof adventurer === "object" ? adventurer : {};
   const template = ADVENTURER_POOL.find((item) => item.templateId === source.templateId)
@@ -3715,6 +4027,17 @@ function normalizeAdventurer(adventurer) {
     || ADVENTURER_POOL[0];
   const rarity = String(source.rarity || template.rarity || "C").toUpperCase();
   const rarityRank = Math.max(0, ["C", "B", "A", "S", "SS", "SSS"].indexOf(rarity));
+  const baseStatsSource = source.baseStats && typeof source.baseStats === "object" ? source.baseStats : {};
+  const baseStats = {
+    hp: positiveNumber(baseStatsSource.hp, source.hp || 80 + rarityRank * 22),
+    attack: positiveNumber(baseStatsSource.attack, source.attack || 18 + rarityRank * 7),
+    defense: positiveNumber(baseStatsSource.defense, source.defense || 14 + rarityRank * 5),
+    speed: positiveNumber(baseStatsSource.speed, source.speed || 14 + rarityRank * 3)
+  };
+  const equipment = { ...createEmptyAdventurerEquipment() };
+  EQUIPMENT_SLOTS.forEach((slot) => {
+    equipment[slot] = source.equipment?.[slot] || null;
+  });
 
   return {
     ...template,
@@ -3728,12 +4051,16 @@ function normalizeAdventurer(adventurer) {
     level: positiveNumber(source.level, 1),
     exp: normalizedNonNegative(source.exp, 0),
     power: positiveNumber(source.power, template.basePower || 20),
-    hp: positiveNumber(source.hp, 80 + rarityRank * 22),
-    attack: positiveNumber(source.attack, 18 + rarityRank * 7),
-    defense: positiveNumber(source.defense, 14 + rarityRank * 5),
-    speed: positiveNumber(source.speed, 14 + rarityRank * 3),
+    hp: positiveNumber(source.hp, baseStats.hp),
+    attack: positiveNumber(source.attack, baseStats.attack),
+    defense: positiveNumber(source.defense, baseStats.defense),
+    speed: positiveNumber(source.speed, baseStats.speed),
+    baseStats,
+    equipment,
+    equipmentPower: normalizedNonNegative(source.equipmentPower, 0),
     locked: Boolean(source.locked),
     isInTeam: Boolean(source.isInTeam),
+    teamId: source.teamId || null,
     shards: normalizedNonNegative(source.shards, 0),
     obtainedAt: positiveNumber(source.obtainedAt, Date.now()),
     cardAsset: source.cardAsset || template.cardAsset,
@@ -4003,36 +4330,215 @@ function summonAdventurerAgain() {
   summonAdventurer();
 }
 
+function renderEquipmentIcon(equipment, className = "equipment-icon") {
+  if (!equipment) return `<span class="${className} is-empty" aria-hidden="true">＋</span>`;
+  return renderAdventurerImage(
+    equipment.iconAsset,
+    "assets/equipment/placeholders/equipment-fallback.png",
+    className,
+    equipment.name
+  );
+}
+
+function renderAdventurerTeamSubpanel(adventurer) {
+  const teamState = state.adventurerTeams;
+  const activeTeam = teamState.teams.find((team) => team.id === teamState.activeTeamId) || teamState.teams[0];
+  const isActiveMember = activeTeam.memberIds.includes(adventurer.id);
+  const isMemberElsewhere = Boolean(adventurer.teamId && adventurer.teamId !== activeTeam.id);
+  return `
+    <div class="adventurer-team-tabs" role="tablist" aria-label="切換冒險者隊伍">
+      ${teamState.teams.map((team) => `
+        <button type="button" data-v2-action="select-adventurer-team" data-team-id="${team.id}" class="${team.id === activeTeam.id ? "is-active" : ""}">${escapeHtml(team.name)}</button>
+      `).join("")}
+    </div>
+    <div class="adventurer-team-summary">
+      <b>${escapeHtml(activeTeam.name)}</b>
+      <span>${activeTeam.memberIds.length}/${ADVENTURER_TEAM_SIZE}</span>
+    </div>
+    <div class="adventurer-team-slots">
+      ${Array.from({ length: ADVENTURER_TEAM_SIZE }, (_, index) => {
+        const member = getAdventurerById(activeTeam.memberIds[index]);
+        return member ? `
+          <div class="adventurer-team-slot is-filled">
+            ${renderAdventurerImage(getAdventurerSpriteAsset(member), "assets/adventurers/placeholders/pixel-character.png", "adventurer-team-avatar", member.name)}
+            <small>${escapeHtml(member.name)}</small>
+          </div>
+        ` : `<div class="adventurer-team-slot"><span>${index + 1}</span><small>空位</small></div>`;
+      }).join("")}
+    </div>
+    <div class="adventurer-selected-member">
+      ${renderAdventurerImage(getAdventurerSpriteAsset(adventurer), "assets/adventurers/placeholders/pixel-character.png", "adventurer-selected-avatar", adventurer.name)}
+      <div><b>${escapeHtml(adventurer.name)}</b><small>${adventurer.teamId ? `目前：${escapeHtml(state.adventurerTeams.teams.find((team) => team.id === adventurer.teamId)?.name || "已編隊")}` : "尚未加入隊伍"}</small></div>
+      <button type="button" data-v2-action="toggle-adventurer-team" ${isMemberElsewhere ? "disabled" : ""}>${isActiveMember ? "移出隊伍" : isMemberElsewhere ? "已在其他隊伍" : "加入隊伍"}</button>
+    </div>
+  `;
+}
+
+function getAdventurerUpgradeCost(adventurer) {
+  return 100 + positiveNumber(adventurer?.level, 1) * 80;
+}
+
+function getAdventurerExpRequired(adventurer) {
+  return 100 + positiveNumber(adventurer?.level, 1) * 50;
+}
+
+function renderAdventurerUpgradeSubpanel(adventurer) {
+  const cost = getAdventurerUpgradeCost(adventurer);
+  const expRequired = getAdventurerExpRequired(adventurer);
+  const atMaxLevel = adventurer.level >= ADVENTURER_MAX_LEVEL;
+  return `
+    <div class="adventurer-upgrade-level">
+      <span>目前等級</span><b>Lv.${formatNumber(adventurer.level)}</b>
+      <small>經驗 ${formatNumber(adventurer.exp)} / ${formatNumber(expRequired)}</small>
+    </div>
+    <div class="adventurer-upgrade-preview">
+      <div><span>生命</span><b>${formatNumber(adventurer.baseStats.hp)}</b><i>+10</i></div>
+      <div><span>攻擊</span><b>${formatNumber(adventurer.baseStats.attack)}</b><i>+4</i></div>
+      <div><span>防禦</span><b>${formatNumber(adventurer.baseStats.defense)}</b><i>+3</i></div>
+      <div><span>速度</span><b>${formatNumber(adventurer.baseStats.speed)}</b><i>+1</i></div>
+    </div>
+    <button class="adventurer-upgrade-button" type="button" data-v2-action="upgrade-adventurer" ${atMaxLevel ? "disabled" : ""}>
+      ${atMaxLevel ? "已達最高等級" : `升級・${formatNumber(cost)} 金幣`}
+    </button>
+  `;
+}
+
+function renderEquipmentStatSummary(equipment) {
+  if (!equipment) return "空";
+  return Object.entries(equipment.stats)
+    .filter(([, value]) => value > 0)
+    .map(([key, value]) => `${({ hp: "生命", attack: "攻擊", defense: "防禦", speed: "速度" })[key]} +${value}`)
+    .join("・");
+}
+
+function renderAdventurerEquipmentSubpanel(adventurer) {
+  const selectedSlot = EQUIPMENT_SLOTS.includes(state.ui.activeAdventurerEquipmentSlot)
+    ? state.ui.activeAdventurerEquipmentSlot
+    : "weapon";
+  const equipmentById = new Map(state.equipmentInventory.map((item) => [item.id, item]));
+  const currentEquipment = equipmentById.get(adventurer.equipment[selectedSlot]) || null;
+  const available = state.equipmentInventory
+    .filter((item) => item.slot === selectedSlot && (!item.equippedBy || item.equippedBy === adventurer.id))
+    .sort((left, right) => right.power - left.power);
+  const equipmentBonus = calculateEquipmentStats(adventurer);
+  return `
+    <div class="adventurer-equipment-stats">
+      <span>基礎＋裝備</span>
+      <b>生命 ${adventurer.baseStats.hp} +${equipmentBonus.hp}</b><b>攻擊 ${adventurer.baseStats.attack} +${equipmentBonus.attack}</b><b>防禦 ${adventurer.baseStats.defense} +${equipmentBonus.defense}</b><b>速度 ${adventurer.baseStats.speed} +${equipmentBonus.speed}</b>
+    </div>
+    <div class="adventurer-equipment-slots">
+      ${EQUIPMENT_SLOTS.map((slot) => {
+        const item = equipmentById.get(adventurer.equipment[slot]);
+        return `
+          <button type="button" data-v2-action="select-adventurer-equipment-slot" data-slot="${slot}" class="equipment-slot-button${slot === selectedSlot ? " is-active" : ""}">
+            <small>${EQUIPMENT_SLOT_LABELS[slot]}</small>
+            ${renderEquipmentIcon(item, "equipment-slot-icon")}
+            <b>${escapeHtml(item?.name || "空")}</b>
+          </button>
+        `;
+      }).join("")}
+    </div>
+    <div class="adventurer-equipment-list-heading">
+      <b>${EQUIPMENT_SLOT_LABELS[selectedSlot]}背包</b>
+      <span>${available.length} 件</span>
+    </div>
+    <div class="adventurer-equipment-list">
+      ${available.length ? available.map((item) => {
+        const equippedHere = currentEquipment?.id === item.id;
+        const levelBlocked = adventurer.level < item.requiredLevel;
+        return `
+          <article class="adventurer-equipment-item rarity-${item.rarity.toLowerCase()}${equippedHere ? " is-equipped" : ""}">
+            ${renderEquipmentIcon(item, "adventurer-equipment-icon")}
+            <b>${escapeHtml(item.name)}</b>
+            <small>${item.rarity}・戰力 ${formatNumber(item.power)}</small>
+            <em>${escapeHtml(renderEquipmentStatSummary(item))}</em>
+            <button type="button" data-v2-action="${equippedHere ? "unequip-adventurer-equipment" : "equip-adventurer-equipment"}" data-equipment-id="${item.id}" ${levelBlocked ? "disabled" : ""}>${equippedHere ? "卸下" : levelBlocked ? `Lv.${item.requiredLevel}` : "穿戴"}</button>
+          </article>
+        `;
+      }).join("") : `<div class="adventurer-equipment-empty">目前沒有可穿戴的${EQUIPMENT_SLOT_LABELS[selectedSlot]}裝備</div>`}
+    </div>
+  `;
+}
+
+function renderAdventurerTradeSubpanel(adventurer) {
+  const activeTab = state.ui.activeAdventurerTradeTab === "market" ? "market" : "sell";
+  const price = ADVENTURER_SELL_PRICES[adventurer.rarity] || 100;
+  return `
+    <div class="adventurer-trade-tabs">
+      <button type="button" data-v2-action="select-adventurer-trade-tab" data-trade-tab="sell" class="${activeTab === "sell" ? "is-active" : ""}">賣出</button>
+      <button type="button" data-v2-action="select-adventurer-trade-tab" data-trade-tab="market" class="${activeTab === "market" ? "is-active" : ""}">市場</button>
+    </div>
+    ${activeTab === "sell" ? `
+      <div class="adventurer-sell-panel">
+        <div><span>出售價格</span><b>${formatNumber(price)} 金幣</b></div>
+        <p>${adventurer.locked ? "這位冒險者已鎖定。" : adventurer.isInTeam ? "這位冒險者正在隊伍中。" : "出售後將從冒險者名冊移除，裝備會自動卸下。"}</p>
+        <div class="adventurer-sell-panel-actions">
+          <button type="button" data-v2-action="toggle-adventurer-lock" data-adventurer-id="${adventurer.id}">${adventurer.locked ? "解除鎖定" : "鎖定角色"}</button>
+          <button type="button" data-v2-action="open-adventurer-sell" data-adventurer-id="${adventurer.id}" ${adventurer.locked || adventurer.isInTeam ? "disabled" : ""}>出售角色</button>
+        </div>
+      </div>
+    ` : `
+      <div class="adventurer-market-placeholder">
+        <b>冒險者市場尚未開放</b>
+        <p>玩家交易需要伺服器與帳號資料，現在不會建立假的線上市場。</p>
+      </div>
+    `}
+  `;
+}
+
+function renderAdventurerDetailSubpanel(adventurer) {
+  const activePanel = state.ui.activeAdventurerPanel;
+  if (!activePanel) return "";
+  const titles = { team: "隊伍編排", upgrade: "冒險者升級", equipment: "裝備管理", trade: "交易" };
+  const content = activePanel === "team"
+    ? renderAdventurerTeamSubpanel(adventurer)
+    : activePanel === "upgrade"
+      ? renderAdventurerUpgradeSubpanel(adventurer)
+      : activePanel === "equipment"
+        ? renderAdventurerEquipmentSubpanel(adventurer)
+        : renderAdventurerTradeSubpanel(adventurer);
+  return `
+    <section class="adventurer-detail-subpanel" aria-label="${titles[activePanel]}">
+      <header><b>${titles[activePanel]}</b><button type="button" data-v2-action="toggle-adventurer-panel" data-panel="${activePanel}" aria-label="收合">−</button></header>
+      <div class="adventurer-subpanel-content">${content}</div>
+    </section>
+  `;
+}
+
 function renderAdventurerDetailModal(adventurer) {
+  recalculateAdventurerDerivedStats(adventurer);
+  const equipmentBonus = calculateEquipmentStats(adventurer);
+  const activePanel = state.ui.activeAdventurerPanel;
   return `
     <div class="adventurer-detail-backdrop" data-adventurer-backdrop="detail">
-      <section class="adventurer-detail-modal rarity-${adventurer.rarity.toLowerCase()}" role="dialog" aria-modal="true" aria-label="${escapeHtml(adventurer.name)}詳細資訊">
-        <button class="adventurer-modal-close" type="button" data-v2-action="close-adventurer-detail" aria-label="關閉">×</button>
-        <div class="adventurer-detail-visual">
-          ${renderAdventurerImage(getAdventurerCardAsset(adventurer), getAdventurerCardFallback(adventurer.rarity), "adventurer-detail-card-art", adventurer.name)}
-          ${renderAdventurerImage(getAdventurerSpriteAsset(adventurer), "assets/adventurers/placeholders/pixel-character.png", "adventurer-detail-pixel", adventurer.name)}
-        </div>
-        <div class="adventurer-detail-info">
-          <span class="adventurer-detail-rarity">${escapeHtml(adventurer.rarity)}</span>
-          <h2>${escapeHtml(adventurer.name)}</h2>
-          <p>${escapeHtml(adventurerElementLabel(adventurer.element))}屬性・${escapeHtml(adventurer.job)}・Lv.${formatNumber(adventurer.level)}</p>
-          <dl>
-            <div><dt>戰力</dt><dd>${formatNumber(adventurer.power)}</dd></div>
-            <div><dt>生命</dt><dd>${formatNumber(adventurer.hp)}</dd></div>
-            <div><dt>攻擊</dt><dd>${formatNumber(adventurer.attack)}</dd></div>
-            <div><dt>防禦</dt><dd>${formatNumber(adventurer.defense)}</dd></div>
-            <div><dt>速度</dt><dd>${formatNumber(adventurer.speed)}</dd></div>
-            <div><dt>碎片</dt><dd>${formatNumber(adventurer.shards)}</dd></div>
-          </dl>
-          <div class="adventurer-detail-actions">
-            <button type="button" data-v2-action="adventurer-team-placeholder">編隊</button>
-            <button type="button" data-v2-action="adventurer-upgrade-placeholder">升級</button>
-            <button type="button" data-v2-action="toggle-adventurer-lock" data-adventurer-id="${adventurer.id}">${adventurer.locked ? "解除鎖定" : "鎖定"}</button>
-            <button type="button" data-v2-action="open-adventurer-sell" data-adventurer-id="${adventurer.id}" ${adventurer.locked ? "disabled" : ""}>出售</button>
-            <button type="button" data-v2-action="close-adventurer-detail">關閉</button>
+      <div class="adventurer-detail-stack">
+        <section class="adventurer-detail-panel rarity-${adventurer.rarity.toLowerCase()}" role="dialog" aria-modal="false" aria-label="${escapeHtml(adventurer.name)}詳細資訊">
+          <button class="adventurer-modal-close" type="button" data-v2-action="close-adventurer-detail" aria-label="關閉">×</button>
+          <div class="adventurer-detail-visual">
+            ${renderAdventurerImage(getAdventurerCardAsset(adventurer), getAdventurerCardFallback(adventurer.rarity), "adventurer-detail-card-art", adventurer.name)}
+            ${renderAdventurerImage(getAdventurerSpriteAsset(adventurer), "assets/adventurers/placeholders/pixel-character.png", "adventurer-detail-pixel", adventurer.name)}
           </div>
-        </div>
-      </section>
+          <div class="adventurer-detail-info">
+            <span class="adventurer-detail-rarity">${escapeHtml(adventurer.rarity)}${adventurer.locked ? "・已鎖定" : ""}</span>
+            <h2>${escapeHtml(adventurer.name)}</h2>
+            <p>${escapeHtml(adventurerElementLabel(adventurer.element))}屬性・${escapeHtml(adventurer.job)}・Lv.${formatNumber(adventurer.level)}${adventurer.teamId ? "・出戰中" : ""}</p>
+            <dl>
+              <div><dt>戰力</dt><dd>${formatNumber(adventurer.power)}</dd></div>
+              <div><dt>生命</dt><dd>${formatNumber(adventurer.hp)} <i>裝+${equipmentBonus.hp}</i></dd></div>
+              <div><dt>攻擊</dt><dd>${formatNumber(adventurer.attack)} <i>裝+${equipmentBonus.attack}</i></dd></div>
+              <div><dt>防禦</dt><dd>${formatNumber(adventurer.defense)} <i>裝+${equipmentBonus.defense}</i></dd></div>
+              <div><dt>速度</dt><dd>${formatNumber(adventurer.speed)} <i>裝+${equipmentBonus.speed}</i></dd></div>
+              <div><dt>碎片</dt><dd>${formatNumber(adventurer.shards)}</dd></div>
+            </dl>
+            <div class="adventurer-main-actions">
+              ${[["team", "加入隊伍"], ["upgrade", "升級"], ["equipment", "裝備"], ["trade", "交易"]].map(([panel, label]) => `
+                <button type="button" data-v2-action="toggle-adventurer-panel" data-panel="${panel}" class="${activePanel === panel ? "is-active" : ""}">${label}</button>
+              `).join("")}
+            </div>
+          </div>
+        </section>
+        ${renderAdventurerDetailSubpanel(adventurer)}
+      </div>
     </div>
   `;
 }
@@ -4045,12 +4551,355 @@ function openAdventurerDetail(adventurerId) {
     return;
   }
   selectedAdventurerId = adventurer.id;
-  closeAdventurerDetail();
+  state.ui.activeAdventurerPanel = null;
+  if (mimiPageIntroTimer) {
+    clearTimeout(mimiPageIntroTimer);
+    mimiPageIntroTimer = null;
+  }
+  hideMimiDialogue();
+  document.querySelector(".adventurer-detail-backdrop")?.remove();
   mountHomeV2Overlay(renderAdventurerDetailModal(adventurer));
+  saveGame();
+}
+
+function refreshAdventurerDetailPanel() {
+  const adventurer = getAdventurerById(selectedAdventurerId);
+  const backdrop = document.querySelector(".adventurer-detail-backdrop");
+  if (!adventurer) {
+    closeAdventurerDetail();
+    return;
+  }
+  if (backdrop) backdrop.outerHTML = renderAdventurerDetailModal(adventurer);
 }
 
 function closeAdventurerDetail() {
   document.querySelector(".adventurer-detail-backdrop")?.remove();
+  state.ui.activeAdventurerPanel = null;
+  selectedAdventurerId = null;
+}
+
+function toggleAdventurerSubpanel(panel) {
+  if (!["team", "upgrade", "equipment", "trade"].includes(panel)) return;
+  const adventurer = getAdventurerById(selectedAdventurerId);
+  if (!adventurer) return;
+  state.ui.activeAdventurerPanel = state.ui.activeAdventurerPanel === panel ? null : panel;
+  if (panel === "team" && adventurer.teamId) state.adventurerTeams.activeTeamId = adventurer.teamId;
+  saveGame();
+  refreshAdventurerDetailPanel();
+}
+
+function selectAdventurerTeam(teamId) {
+  if (!state.adventurerTeams.teams.some((team) => team.id === teamId)) return;
+  state.adventurerTeams.activeTeamId = teamId;
+  saveGame();
+  refreshAdventurerDetailPanel();
+}
+
+function toggleAdventurerTeamMembership() {
+  const adventurer = getAdventurerById(selectedAdventurerId);
+  const activeTeam = state.adventurerTeams.teams.find((team) => team.id === state.adventurerTeams.activeTeamId);
+  if (!adventurer || !activeTeam) return;
+  if (adventurer.teamId && adventurer.teamId !== activeTeam.id) {
+    showToast("這位冒險者已在其他隊伍中");
+    return;
+  }
+  if (activeTeam.memberIds.includes(adventurer.id)) {
+    activeTeam.memberIds = activeTeam.memberIds.filter((id) => id !== adventurer.id);
+    syncAdventurerTeamFlags();
+    saveGame();
+    refreshAdventurerGuildPage();
+    refreshAdventurerDetailPanel();
+    showToast(`${adventurer.name} 已移出隊伍`);
+    return;
+  }
+  if (activeTeam.memberIds.length >= ADVENTURER_TEAM_SIZE) {
+    showToast("隊伍已滿");
+    return;
+  }
+  activeTeam.memberIds.push(adventurer.id);
+  syncAdventurerTeamFlags();
+  saveGame();
+  refreshAdventurerGuildPage();
+  refreshAdventurerDetailPanel();
+  showToast(`${adventurer.name} 已加入 ${activeTeam.name}`);
+}
+
+function upgradeAdventurer() {
+  const adventurer = getAdventurerById(selectedAdventurerId);
+  if (!adventurer) return;
+  if (adventurer.level >= ADVENTURER_MAX_LEVEL) {
+    showToast("已達最高等級");
+    return;
+  }
+  const cost = getAdventurerUpgradeCost(adventurer);
+  if (state.coins < cost) {
+    showToast("金幣不足");
+    return;
+  }
+  state.coins -= cost;
+  adventurer.level += 1;
+  adventurer.baseStats.hp += 10;
+  adventurer.baseStats.attack += 4;
+  adventurer.baseStats.defense += 3;
+  adventurer.baseStats.speed += 1;
+  recalculateAdventurerDerivedStats(adventurer);
+  saveGame();
+  updateHomeV2HudResources();
+  refreshAdventurerGuildPage();
+  refreshAdventurerDetailPanel();
+  showToast(`${adventurer.name} 升級至 Lv.${adventurer.level}`);
+}
+
+function selectAdventurerEquipmentSlot(slot) {
+  if (!EQUIPMENT_SLOTS.includes(slot)) return;
+  state.ui.activeAdventurerEquipmentSlot = slot;
+  saveGame();
+  refreshAdventurerDetailPanel();
+}
+
+function equipAdventurerEquipment(equipmentId) {
+  const adventurer = getAdventurerById(selectedAdventurerId);
+  const equipment = state.equipmentInventory.find((item) => item.id === equipmentId);
+  if (!adventurer || !equipment) {
+    showToast("找不到這件裝備");
+    return;
+  }
+  if (equipment.equippedBy && equipment.equippedBy !== adventurer.id) {
+    showToast("這件裝備已由其他冒險者穿戴");
+    return;
+  }
+  if (adventurer.level < equipment.requiredLevel) {
+    showToast(`需要 Lv.${equipment.requiredLevel}`);
+    return;
+  }
+  const oldEquipment = state.equipmentInventory.find((item) => item.id === adventurer.equipment[equipment.slot]);
+  if (oldEquipment) oldEquipment.equippedBy = null;
+  adventurer.equipment[equipment.slot] = equipment.id;
+  equipment.equippedBy = adventurer.id;
+  recalculateAdventurerDerivedStats(adventurer);
+  saveGame();
+  refreshAdventurerGuildPage();
+  refreshAdventurerDetailPanel();
+  showToast(`已穿戴 ${equipment.name}`);
+}
+
+function unequipAdventurerEquipment(equipmentId) {
+  const adventurer = getAdventurerById(selectedAdventurerId);
+  const equipment = state.equipmentInventory.find((item) => item.id === equipmentId);
+  if (!adventurer || !equipment || equipment.equippedBy !== adventurer.id) return;
+  adventurer.equipment[equipment.slot] = null;
+  equipment.equippedBy = null;
+  recalculateAdventurerDerivedStats(adventurer);
+  saveGame();
+  refreshAdventurerGuildPage();
+  refreshAdventurerDetailPanel();
+  showToast(`已卸下 ${equipment.name}`);
+}
+
+function selectAdventurerTradeTab(tab) {
+  state.ui.activeAdventurerTradeTab = tab === "market" ? "market" : "sell";
+  saveGame();
+  refreshAdventurerDetailPanel();
+}
+
+function rollEquipmentShopRarity() {
+  let roll = Math.random() * 100;
+  for (const entry of EQUIPMENT_SHOP_RARITY_RATES) {
+    roll -= entry.rate;
+    if (roll < 0) return entry.rarity;
+  }
+  return "A";
+}
+
+function shuffledEquipmentSlots() {
+  const slots = [...EQUIPMENT_SLOTS];
+  for (let index = slots.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [slots[index], slots[swapIndex]] = [slots[swapIndex], slots[index]];
+  }
+  return slots;
+}
+
+function generateEquipmentStats(slot, rarity) {
+  const [minimum, maximum] = EQUIPMENT_RARITY_STAT_RANGES[rarity] || EQUIPMENT_RARITY_STAT_RANGES.A;
+  let points = randomInt(minimum, maximum);
+  const stats = { hp: 0, attack: 0, defense: 0, speed: 0 };
+  const preferences = {
+    head: ["hp", "defense"],
+    body: ["hp", "defense"],
+    legs: ["hp", "speed", "defense"],
+    weapon: ["attack", "speed"],
+    offhand: ["attack", "defense"],
+    ring: ["attack", "speed"],
+    necklace: ["hp", "attack", "defense"],
+    petContract: ["hp", "attack", "defense", "speed"]
+  };
+  const preferredStats = preferences[slot] || ["hp", "attack", "defense", "speed"];
+  while (points > 0) {
+    const stat = randomItem(preferredStats);
+    const amount = Math.min(points, randomInt(1, Math.max(2, Math.ceil(maximum / 8))));
+    stats[stat] += amount;
+    points -= amount;
+  }
+  return stats;
+}
+
+function generateEquipmentShopItem(slot) {
+  const rarity = rollEquipmentShopRarity();
+  const element = randomItem(EQUIPMENT_ELEMENTS);
+  const stats = generateEquipmentStats(slot, rarity);
+  const folder = EQUIPMENT_SLOT_FOLDERS[slot] || slot;
+  const equipment = normalizeEquipment({
+    id: createId("equip"),
+    templateId: `${element}_${slot}_${rarity.toLowerCase()}_${randomInt(1, 999).toString().padStart(3, "0")}`,
+    name: EQUIPMENT_NAMES[element]?.[slot] || "冒險裝備",
+    slot,
+    rarity,
+    element,
+    level: 1,
+    requiredLevel: { A: 1, S: 10, SS: 20, SSS: 35 }[rarity],
+    stats,
+    power: calculateEquipmentItemPower(stats),
+    iconAsset: `assets/equipment/icons/${folder}/${folder}-${rarity.toLowerCase()}-001.png`,
+    equippedBy: null,
+    locked: false,
+    obtainedAt: Date.now(),
+    source: "shop"
+  });
+  const price = Math.round(
+    (EQUIPMENT_BASE_PRICES[rarity] || EQUIPMENT_BASE_PRICES.A)
+    * (EQUIPMENT_SLOT_PRICE_MULTIPLIERS[slot] || 1)
+  );
+  return {
+    shopItemId: createId("shop"),
+    equipment,
+    price,
+    sold: false
+  };
+}
+
+function refreshEquipmentShopInventory(options = {}) {
+  state.equipmentShop = {
+    refreshAt: Date.now() + EQUIPMENT_SHOP_REFRESH_MS,
+    items: shuffledEquipmentSlots().map(generateEquipmentShopItem)
+  };
+  if (options.save !== false) saveGame();
+}
+
+function ensureEquipmentShopFresh(options = {}) {
+  state.equipmentShop = normalizeEquipmentShop(state.equipmentShop);
+  const expired = state.equipmentShop.refreshAt <= Date.now();
+  const incomplete = state.equipmentShop.items.length !== EQUIPMENT_SLOTS.length;
+  if (expired || incomplete) refreshEquipmentShopInventory(options);
+  return state.equipmentShop;
+}
+
+function formatEquipmentShopCountdown(ms) {
+  const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function renderEquipmentShopCard(shopItem) {
+  const equipment = shopItem.equipment;
+  return `
+    <article class="equipment-shop-card rarity-${equipment.rarity.toLowerCase()}${shopItem.sold ? " is-sold" : ""}" data-shop-item-id="${shopItem.shopItemId}">
+      <header><span>${EQUIPMENT_SLOT_LABELS[equipment.slot]}</span><b>${equipment.rarity}</b></header>
+      ${renderEquipmentIcon(equipment, "equipment-shop-icon")}
+      <h3>${escapeHtml(equipment.name)}</h3>
+      <p>${escapeHtml(renderEquipmentStatSummary(equipment))}</p>
+      <div><span>戰力 ${formatNumber(equipment.power)}</span><b>${formatNumber(shopItem.price)} 金幣</b></div>
+      <button type="button" data-v2-action="buy-equipment-shop-item" data-shop-item-id="${shopItem.shopItemId}" ${shopItem.sold ? "disabled" : ""}>${shopItem.sold ? "已售出" : "購買"}</button>
+    </article>
+  `;
+}
+
+function renderEquipmentShopPageInner() {
+  const shop = ensureEquipmentShopFresh();
+  const availableCount = shop.items.filter((item) => !item.sold).length;
+  return `
+    <div class="equipment-shop-page-scroll">
+      <section class="equipment-shop-heading">
+        <div><h1>裝備商店</h1><p>為冒險者挑選更強大的裝備</p></div>
+        <span>金幣 ${formatNumber(state.coins)}</span>
+      </section>
+      <section class="equipment-shop-status">
+        <div><small>下次更新</small><b data-equipment-shop-countdown>${formatEquipmentShopCountdown(shop.refreshAt - Date.now())}</b></div>
+        <span>商品 ${availableCount}/${EQUIPMENT_SLOTS.length}</span>
+      </section>
+      <section class="equipment-shop-grid" aria-label="裝備商品">
+        ${shop.items.map(renderEquipmentShopCard).join("")}
+      </section>
+    </div>
+  `;
+}
+
+function renderWorldEquipmentShopPage(index) {
+  ensureEquipmentShopFresh();
+  window.setTimeout(startEquipmentShopCountdown, 0);
+  return `
+    <section class="worldPage equipmentShopPage" data-world-index="${index}" aria-label="裝備商店">
+      ${renderEquipmentShopPageInner()}
+    </section>
+  `;
+}
+
+function refreshEquipmentShopPage() {
+  const page = document.querySelector(".equipmentShopPage");
+  if (!page) return;
+  const scrollTop = page.querySelector(".equipment-shop-page-scroll")?.scrollTop || 0;
+  page.innerHTML = renderEquipmentShopPageInner();
+  const nextScroll = page.querySelector(".equipment-shop-page-scroll");
+  if (nextScroll) nextScroll.scrollTop = scrollTop;
+  startEquipmentShopCountdown();
+}
+
+function startEquipmentShopCountdown() {
+  if (equipmentShopCountdownTimer) window.clearInterval(equipmentShopCountdownTimer);
+  const tick = () => {
+    if (!state?.equipmentShop) return;
+    const remaining = state.equipmentShop.refreshAt - Date.now();
+    if (remaining <= 0) {
+      refreshEquipmentShopInventory();
+      refreshEquipmentShopPage();
+      return;
+    }
+    document.querySelectorAll("[data-equipment-shop-countdown]").forEach((element) => {
+      element.textContent = formatEquipmentShopCountdown(remaining);
+    });
+  };
+  tick();
+  equipmentShopCountdownTimer = window.setInterval(tick, 1000);
+}
+
+function buyEquipmentShopItem(shopItemId) {
+  if (!shopItemId || equipmentShopPurchaseLocks.has(shopItemId)) return;
+  const shopItem = state.equipmentShop.items.find((item) => item.shopItemId === shopItemId);
+  if (!shopItem || shopItem.sold) {
+    showToast("這件商品已售出");
+    return;
+  }
+  if (state.coins < shopItem.price) {
+    showToast("金幣不足");
+    return;
+  }
+  equipmentShopPurchaseLocks.add(shopItemId);
+  state.coins -= shopItem.price;
+  const equipment = normalizeEquipment({
+    ...shopItem.equipment,
+    equippedBy: null,
+    obtainedAt: Date.now(),
+    source: "shop"
+  });
+  state.equipmentInventory.push(equipment);
+  shopItem.sold = true;
+  saveGame();
+  updateHomeV2HudResources();
+  refreshEquipmentShopPage();
+  equipmentShopPurchaseLocks.delete(shopItemId);
+  showToast(`已獲得裝備：${equipment.name}`);
 }
 
 function toggleAdventurerLock(adventurerId) {
@@ -4059,7 +4908,7 @@ function toggleAdventurerLock(adventurerId) {
   adventurer.locked = !adventurer.locked;
   saveGame();
   refreshAdventurerGuildPage();
-  openAdventurerDetail(adventurer.id);
+  refreshAdventurerDetailPanel();
   showToast(adventurer.locked ? "角色已鎖定" : "已解除角色鎖定");
 }
 
@@ -4073,12 +4922,17 @@ function openAdventurerSellConfirm(adventurerId) {
     showToast("已鎖定的角色不能出售");
     return;
   }
+  if (adventurer.isInTeam) {
+    showToast("隊伍中的角色不能出售");
+    return;
+  }
+  const price = ADVENTURER_SELL_PRICES[adventurer.rarity] || 100;
   document.querySelector(".adventurer-sell-backdrop")?.remove();
   mountHomeV2Overlay(`
     <div class="adventurer-sell-backdrop" data-adventurer-backdrop="sell">
       <section class="adventurer-sell-modal" role="dialog" aria-modal="true" aria-label="確認出售角色">
         <h2>出售角色</h2>
-        <p>確定要出售「${escapeHtml(adventurer.name)}」嗎？出售後無法復原。</p>
+        <p>確定要出售「${escapeHtml(adventurer.name)}」嗎？出售後無法復原，將獲得 ${formatNumber(price)} 金幣。</p>
         <div>
           <button type="button" data-v2-action="close-adventurer-sell">取消</button>
           <button type="button" data-v2-action="confirm-adventurer-sell" data-adventurer-id="${adventurer.id}">確認出售</button>
@@ -4105,8 +4959,20 @@ function confirmAdventurerSell(adventurerId) {
     showToast("已鎖定的角色不能出售");
     return;
   }
-  const price = ADVENTURER_SELL_PRICES[adventurer.rarity] || 50;
+  if (adventurer.isInTeam) {
+    showToast("隊伍中的角色不能出售");
+    return;
+  }
+  const price = ADVENTURER_SELL_PRICES[adventurer.rarity] || 100;
+  EQUIPMENT_SLOTS.forEach((slot) => {
+    const equipment = state.equipmentInventory.find((item) => item.id === adventurer.equipment?.[slot]);
+    if (equipment) equipment.equippedBy = null;
+    if (adventurer.equipment) adventurer.equipment[slot] = null;
+  });
   state.adventurers = state.adventurers.filter((item) => item.id !== adventurer.id);
+  state.adventurerTeams.teams.forEach((team) => {
+    team.memberIds = team.memberIds.filter((id) => id !== adventurer.id);
+  });
   state.coins = normalizedNonNegative(state.coins, 0) + price;
   selectedAdventurerId = null;
   closeAdventurerSellConfirm();
@@ -4122,9 +4988,11 @@ function handleAdventurerGuildClick(event) {
   const actionButton = event.target.closest("[data-v2-action]");
   const guildActions = new Set([
     "summon-adventurer", "accept-adventurer", "summon-adventurer-again",
-    "open-adventurer-detail", "close-adventurer-detail", "adventurer-team-placeholder",
-    "adventurer-upgrade-placeholder", "toggle-adventurer-lock", "open-adventurer-sell",
-    "close-adventurer-sell", "confirm-adventurer-sell"
+    "open-adventurer-detail", "close-adventurer-detail", "toggle-adventurer-panel",
+    "select-adventurer-team", "toggle-adventurer-team", "upgrade-adventurer",
+    "select-adventurer-equipment-slot", "equip-adventurer-equipment", "unequip-adventurer-equipment",
+    "select-adventurer-trade-tab", "toggle-adventurer-lock", "open-adventurer-sell",
+    "close-adventurer-sell", "confirm-adventurer-sell", "buy-equipment-shop-item"
   ]);
   const action = actionButton?.dataset.v2Action;
   if (!backdrop && (!action || !guildActions.has(action))) return;
@@ -4145,12 +5013,19 @@ function handleAdventurerGuildClick(event) {
   if (action === "summon-adventurer-again") summonAdventurerAgain();
   if (action === "open-adventurer-detail") openAdventurerDetail(adventurerId);
   if (action === "close-adventurer-detail") closeAdventurerDetail();
-  if (action === "adventurer-team-placeholder") showToast("冒險者編隊功能開發中");
-  if (action === "adventurer-upgrade-placeholder") showToast("冒險者升級功能開發中");
+  if (action === "toggle-adventurer-panel") toggleAdventurerSubpanel(actionButton.dataset.panel);
+  if (action === "select-adventurer-team") selectAdventurerTeam(actionButton.dataset.teamId);
+  if (action === "toggle-adventurer-team") toggleAdventurerTeamMembership();
+  if (action === "upgrade-adventurer") upgradeAdventurer();
+  if (action === "select-adventurer-equipment-slot") selectAdventurerEquipmentSlot(actionButton.dataset.slot);
+  if (action === "equip-adventurer-equipment") equipAdventurerEquipment(actionButton.dataset.equipmentId);
+  if (action === "unequip-adventurer-equipment") unequipAdventurerEquipment(actionButton.dataset.equipmentId);
+  if (action === "select-adventurer-trade-tab") selectAdventurerTradeTab(actionButton.dataset.tradeTab);
   if (action === "toggle-adventurer-lock") toggleAdventurerLock(adventurerId);
   if (action === "open-adventurer-sell") openAdventurerSellConfirm(adventurerId);
   if (action === "close-adventurer-sell") closeAdventurerSellConfirm();
   if (action === "confirm-adventurer-sell") confirmAdventurerSell(adventurerId);
+  if (action === "buy-equipment-shop-item") buyEquipmentShopItem(actionButton.dataset.shopItemId);
 }
 
 function attachAdventurerGuildEventBridge() {
@@ -8567,7 +9442,17 @@ function updateHomeV2ActiveSlide() {
   if (!pager) return;
   const page = clamp(Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth)), 0, (pager.children.length || 1) - 1);
   currentWorldPage = page;
-  queueMimiPageIntro(getWorldPages()[page]?.id || "home");
+  const pageId = getWorldPages()[page]?.id || "home";
+  if (!mimiProgrammaticPageId || pageId === mimiProgrammaticPageId) {
+    if (pageId === mimiProgrammaticPageId) {
+      mimiProgrammaticPageId = null;
+      if (mimiProgrammaticPageTimer) {
+        clearTimeout(mimiProgrammaticPageTimer);
+        mimiProgrammaticPageTimer = null;
+      }
+    }
+    queueMimiPageIntro(pageId);
+  }
 
   if (page !== 0 && (selectedRestDragonId || state.selectedRestDragonId)) {
     selectedRestDragonId = null;
@@ -9360,6 +10245,20 @@ function syncPersistentAliases() {
   state.eggs = state.eggInventory;
   state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
   state.adventurers = Array.isArray(state.adventurers) ? state.adventurers.map(normalizeAdventurer) : [];
+  state.equipmentInventory = Array.isArray(state.equipmentInventory) ? state.equipmentInventory.map(normalizeEquipment) : [];
+  state.equipmentShop = normalizeEquipmentShop(state.equipmentShop);
+  state.adventurerTeams = normalizeAdventurerTeams(state.adventurerTeams, state.adventurers);
+  state.marketListings = Array.isArray(state.marketListings) ? state.marketListings : [];
+  state.ui = state.ui && typeof state.ui === "object" ? state.ui : {};
+  state.ui.activeAdventurerPanel = ["team", "upgrade", "equipment", "trade"].includes(state.ui.activeAdventurerPanel)
+    ? state.ui.activeAdventurerPanel
+    : null;
+  state.ui.activeAdventurerEquipmentSlot = EQUIPMENT_SLOTS.includes(state.ui.activeAdventurerEquipmentSlot)
+    ? state.ui.activeAdventurerEquipmentSlot
+    : "weapon";
+  state.ui.activeAdventurerTradeTab = state.ui.activeAdventurerTradeTab === "market" ? "market" : "sell";
+  syncAdventurerEquipmentState();
+  syncAdventurerTeamFlags();
   state.characterTickets = normalizedNonNegative(state.characterTickets, 0);
   state.tutorial = normalizeTutorial(state.tutorial);
   state.tutorialSeen = state.tutorial.tutorialSeen;
@@ -9403,6 +10302,76 @@ function getBeginnerMissionCompletedCount() {
   }).length;
 }
 
+function getMissionChapterProgress(chapter, beginner = getBeginnerMissionState()) {
+  const missions = chapter.missionIds
+    .map((id) => BEGINNER_MISSION_DEFS.find((mission) => mission.id === id))
+    .filter(Boolean);
+  const claimedCount = missions.filter((mission) => Boolean(beginner.steps[mission.id]?.claimed)).length;
+  const hasCompletingMission = missions.some((mission) => completingMissionIds.has(mission.id));
+  return {
+    missions,
+    completed: claimedCount,
+    total: missions.length,
+    isComplete: missions.length > 0 && claimedCount >= missions.length && !hasCompletingMission
+  };
+}
+
+function isMissionChapterUnlocked(chapterId, beginner = getBeginnerMissionState()) {
+  const chapterIndex = MISSION_CHAPTERS.findIndex((chapter) => chapter.id === chapterId);
+  if (chapterIndex <= 0) return chapterIndex === 0;
+  return getMissionChapterProgress(MISSION_CHAPTERS[chapterIndex - 1], beginner).isComplete;
+}
+
+function syncMissionChapterUiState(beginner = getBeginnerMissionState(), options = {}) {
+  state.ui = state.ui && typeof state.ui === "object" ? state.ui : {};
+  const expanded = state.ui.missionChapterExpanded && typeof state.ui.missionChapterExpanded === "object"
+    ? state.ui.missionChapterExpanded
+    : {};
+  const completion = state.ui.missionChapterCompleted && typeof state.ui.missionChapterCompleted === "object"
+    ? state.ui.missionChapterCompleted
+    : {};
+  let changed = false;
+
+  MISSION_CHAPTERS.forEach((chapter, index) => {
+    const progress = getMissionChapterProgress(chapter, beginner);
+    const unlocked = index === 0 || getMissionChapterProgress(MISSION_CHAPTERS[index - 1], beginner).isComplete;
+    if (!Object.prototype.hasOwnProperty.call(expanded, chapter.id)) {
+      expanded[chapter.id] = unlocked && !progress.isComplete;
+      changed = true;
+    }
+    if (!unlocked && expanded[chapter.id]) {
+      expanded[chapter.id] = false;
+      changed = true;
+    }
+    if (completion[chapter.id] !== progress.isComplete) {
+      completion[chapter.id] = progress.isComplete;
+      expanded[chapter.id] = progress.isComplete ? false : unlocked;
+      const nextChapter = MISSION_CHAPTERS[index + 1];
+      if (progress.isComplete && nextChapter) expanded[nextChapter.id] = true;
+      changed = true;
+    }
+  });
+
+  state.ui.missionChapterExpanded = expanded;
+  state.ui.missionChapterCompleted = completion;
+  if (changed && options.save !== false) saveGame();
+  return state.ui;
+}
+
+function toggleMissionChapter(chapterId) {
+  const chapter = MISSION_CHAPTERS.find((item) => item.id === chapterId);
+  if (!chapter) return;
+  const beginner = getBeginnerMissionState();
+  if (!isMissionChapterUnlocked(chapterId, beginner)) {
+    showToast("完成上一章後解鎖");
+    return;
+  }
+  const ui = syncMissionChapterUiState(beginner, { save: false });
+  ui.missionChapterExpanded[chapterId] = !ui.missionChapterExpanded[chapterId];
+  saveGame();
+  refreshMissionPage();
+}
+
 function applyMissionReward(reward = {}) {
   if (!reward || typeof reward !== "object") return;
   state.coins = normalizedNonNegative(state.coins, 0) + normalizedNonNegative(reward.coins, 0);
@@ -9440,10 +10409,17 @@ function claimBeginnerMissionReward(id) {
   }
   applyMissionReward(mission.reward);
   step.claimed = true;
+  completingMissionIds.add(id);
   saveGame();
   updateHomeV2HudResources();
   refreshMissionPage();
   showToast(`已領取：${renderMissionRewardLabel(mission.reward)}`);
+  window.setTimeout(() => {
+    completingMissionIds.delete(id);
+    syncMissionChapterUiState(getBeginnerMissionState(), { save: false });
+    saveGame();
+    refreshMissionPage();
+  }, 620);
 }
 
 function claimBeginnerFinalReward() {
@@ -9482,7 +10458,11 @@ function checkGrowBattleReadyMission(options = {}) {
 function refreshMissionPage() {
   const page = document.querySelector(".questPage");
   if (!page) return;
-  page.outerHTML = renderWorldQuestPage(Number(page.dataset.worldIndex) || 6);
+  const scrollTop = page.querySelector(".mission-scroll")?.scrollTop || 0;
+  const worldIndex = Number(page.dataset.worldIndex) || 6;
+  page.outerHTML = renderWorldQuestPage(worldIndex);
+  const nextScroll = document.querySelector(".questPage .mission-scroll");
+  if (nextScroll) nextScroll.scrollTop = scrollTop;
   updateHomeV2ActiveSlide();
 }
 
@@ -9850,47 +10830,91 @@ function renderWorldExplorePage(index) {
 
 function renderWorldQuestPage(index) {
   const beginner = getBeginnerMissionState();
+  const missionUi = syncMissionChapterUiState(beginner);
   const completedCount = getBeginnerMissionCompletedCount();
   const allReady = completedCount >= BEGINNER_MISSION_DEFS.length;
+  const chaptersHtml = MISSION_CHAPTERS.map((chapter) => {
+    const progress = getMissionChapterProgress(chapter, beginner);
+    const unlocked = isMissionChapterUnlocked(chapter.id, beginner);
+    const expanded = unlocked && Boolean(missionUi.missionChapterExpanded[chapter.id]);
+    const chapterStatus = !unlocked
+      ? "完成上一章後解鎖"
+      : progress.isComplete
+        ? "✓ 已完成"
+        : "進行中";
+    const missionsHtml = progress.missions.map((mission) => {
+      const missionIndex = BEGINNER_MISSION_DEFS.findIndex((item) => item.id === mission.id) + 1;
+      const step = beginner.steps[mission.id];
+      const target = step?.target || mission.target;
+      const current = step?.current || 0;
+      const percent = clamp((current / target) * 100, 0, 100);
+      const ready = percent >= 100;
+      const claimed = Boolean(step?.claimed);
+      const completing = completingMissionIds.has(mission.id);
+
+      if (claimed && !completing) {
+        return `
+          <article class="mission-item mission-row is-completed" data-mission-id="${mission.id}">
+            <span class="mission-complete-check" aria-hidden="true">✓</span>
+            <div class="mission-complete-copy">
+              <h3>${escapeHtml(mission.title)}</h3>
+              <small>已完成</small>
+            </div>
+          </article>
+        `;
+      }
+
+      return `
+        <article class="mission-item mission-row${ready ? " is-ready" : ""}${completing ? " is-completing" : ""}" data-mission-id="${mission.id}">
+          <span class="mission-index">${missionIndex}</span>
+          <div class="mission-row-main">
+            <h3>${escapeHtml(mission.title)}</h3>
+            <div class="mission-row-progress"><i style="width:${percent}%"></i></div>
+            <small>${current}/${target}</small>
+          </div>
+          <div class="mission-reward">${renderMissionRewardLabel(mission.reward)}</div>
+          <button type="button" data-v2-action="claim-mission" data-mission-id="${mission.id}" ${!ready || claimed ? "disabled" : ""}>${claimed ? "已完成" : ready ? "領取" : "進行中"}</button>
+        </article>
+      `;
+    }).join("");
+
+    return `
+      <section class="mission-chapter${expanded ? " is-expanded" : ""}${progress.isComplete ? " is-complete" : ""}${!unlocked ? " is-locked" : ""}" data-chapter-id="${chapter.id}">
+        <button class="mission-chapter-header" type="button" data-v2-action="toggle-mission-chapter" data-chapter-id="${chapter.id}" aria-expanded="${expanded}" aria-disabled="${!unlocked}">
+          <span class="mission-chapter-heading">
+            <span class="mission-chapter-title">${escapeHtml(chapter.title)}</span>
+            <b>${escapeHtml(chapter.subtitle)}</b>
+          </span>
+          <span class="mission-chapter-meta">
+            <span>${progress.completed}/${progress.total}</span>
+            <small>${chapterStatus}</small>
+          </span>
+          <span class="mission-chapter-toggle" aria-hidden="true">${unlocked ? "⌄" : "🔒"}</span>
+        </button>
+        ${expanded ? `<div class="mission-chapter-body"><div class="mission-list">${missionsHtml}</div></div>` : ""}
+      </section>
+    `;
+  }).join("");
+
   return `
     <section class="worldPage questPage" data-world-index="${index}" aria-label="任務">
-      <div class="quest-page-shell">
-        <section class="quest-hero">
-          <div>
+      <div class="quest-page-shell mission-scroll">
+        <section class="mission-hero">
+          <div class="mission-hero-copy">
             <h1>任務</h1>
-            <p>完成任務，培養強大的龍寶寶吧！Mimi 會一直在你身邊幫助你喔～</p>
+            <p>完成任務，陪伴龍寶寶一步步成長吧！<br>Mimi 會一直在你身邊幫助你喔～</p>
           </div>
-          <img src="${ASSETS.characters.mimiFull}" alt="Mimi" onerror="this.hidden=true">
+          <img class="mission-hero-mimi" src="${ASSETS.characters.mimiGuide || ASSETS.characters.mimiFull}" alt="Mimi" onerror="this.hidden=true">
         </section>
         <section class="quest-main-card">
           <header>
             <div>
               <b>新手任務</b>
-              <h2>請照顧你的龍寶寶直到牠長大可以出戰</h2>
             </div>
             <span>${completedCount}/${BEGINNER_MISSION_DEFS.length} 完成</span>
           </header>
           <div class="quest-overall-progress"><i style="width:${clamp((completedCount / BEGINNER_MISSION_DEFS.length) * 100, 0, 100)}%"></i></div>
-          <div class="mission-list">
-            ${BEGINNER_MISSION_DEFS.map((mission, index) => {
-              const step = beginner.steps[mission.id];
-              const percent = clamp(((step?.current || 0) / (step?.target || mission.target)) * 100, 0, 100);
-              const ready = percent >= 100;
-              const claimed = Boolean(step?.claimed);
-              return `
-                <article class="mission-row${ready ? " is-ready" : ""}${claimed ? " is-claimed" : ""}">
-                  <span class="mission-index">${index + 1}</span>
-                  <div class="mission-row-main">
-                    <h3>${escapeHtml(mission.title)}</h3>
-                    <div class="mission-row-progress"><i style="width:${percent}%"></i></div>
-                    <small>${step?.current || 0}/${step?.target || mission.target}</small>
-                  </div>
-                  <div class="mission-reward">${renderMissionRewardLabel(mission.reward)}</div>
-                  <button type="button" data-v2-action="claim-mission" data-mission-id="${mission.id}" ${!ready || claimed ? "disabled" : ""}>${claimed ? "已完成" : ready ? "領取" : "進行中"}</button>
-                </article>
-              `;
-            }).join("")}
-          </div>
+          <div class="mission-chapters">${chaptersHtml}</div>
         </section>
         <section class="quest-final-reward">
           <div>
@@ -9909,12 +10933,7 @@ function getWorldPages() {
     { id: "home", label: "家", title: "休息島", icon: "家", assetKey: "navHome", className: "homePage", render: renderWorldHomePage },
     { id: "dragonHouse", label: "龍舍", title: "龍舍", icon: "龍", assetKey: "navDragonHouse", className: "dragonHousePage", render: renderWorldDragonHousePage },
     { id: "dragonCave", label: "孵蛋島", title: "孵蛋島", icon: "蛋", assetKey: "navDragonCave", className: "dragonCavePage", render: renderWorldDragonCavePage },
-    { id: "equipment", label: "裝備店", title: "裝備店", icon: "裝", assetKey: "navEquipmentShop", className: "equipmentShopPage", render: (index) => renderWorldPlaceholderPage(index, "equipmentShopPage", "裝備店", "寵物裝備與傭兵裝備之後會放在這裡。", [
-      ["寵物頭盔", "提升龍寶寶守護力"],
-      ["寵物胸甲", "提升龍寶寶耐久"],
-      ["傭兵武器", "提升冒險角色攻擊"],
-      ["傭兵靴子", "提升速度"]
-    ]) },
+    { id: "equipment", label: "裝備店", title: "裝備店", icon: "裝", assetKey: "navEquipmentShop", className: "equipmentShopPage", render: renderWorldEquipmentShopPage },
     { id: "items", label: "道具店", title: "道具店", icon: "物", assetKey: "navItemShop", className: "itemShopPage", render: (index) => renderWorldPlaceholderPage(index, "itemShopPage", "道具店", "探險券、恢復藥、食物與孵化道具之後會放在這裡。", [
       ["探險券", "用來前往探索取得龍蛋"],
       ["恢復藥", "戰鬥後恢復狀態"],
@@ -9936,6 +10955,22 @@ function goToWorldPage(index) {
   const targetIndex = clamp(Number(index) || 0, 0, pageCount - 1);
   currentWorldPage = targetIndex;
   const pageId = getWorldPages()[targetIndex]?.id;
+  if (pageId && pageId !== "adventurerGuild" && document.querySelector(".adventurer-detail-backdrop")) {
+    closeAdventurerDetail();
+  }
+  if (pageId) {
+    if (mimiPageIntroTimer) {
+      clearTimeout(mimiPageIntroTimer);
+      mimiPageIntroTimer = null;
+    }
+    if (mimiProgrammaticPageTimer) clearTimeout(mimiProgrammaticPageTimer);
+    mimiProgrammaticPageId = pageId;
+    showMimiPageIntro(pageId);
+    mimiProgrammaticPageTimer = window.setTimeout(() => {
+      mimiProgrammaticPageId = null;
+      mimiProgrammaticPageTimer = null;
+    }, 1400);
+  }
   if (pageId === "dragonCave") {
     updateBeginnerMissionProgress("goHatchIsland", 1, { render: false });
   }
@@ -10176,6 +11211,10 @@ function handleHomeV2Click(event) {
     }
     if (action === "claim-final-mission") {
       claimBeginnerFinalReward();
+      return;
+    }
+    if (action === "toggle-mission-chapter") {
+      toggleMissionChapter(actionButton.dataset.chapterId);
       return;
     }
     if (action === "settings") {

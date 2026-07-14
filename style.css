@@ -13,6 +13,8 @@
   --shadow: 0 12px 28px rgba(8, 18, 48, 0.28);
   --hard-shadow: 0 5px 0 var(--line);
   --radius: 8px;
+  --adventurer-detail-top: calc(64px + env(safe-area-inset-top));
+  --bottom-nav-height: 92px;
 }
 
 * {

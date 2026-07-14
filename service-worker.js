@@ -1,4 +1,4 @@
-const CACHE_NAME = "dragon-adventure-v65";
+const CACHE_NAME = "dragon-adventure-v69";
 
 const CORE_ASSETS = [
   "./",
@@ -13,6 +13,7 @@ const CORE_ASSETS = [
   "./style.css?v=20",
   "./style.css?v=21",
   "./style.css?v=22",
+  "./style.css?v=23",
   "./home-v2.css",
   "./home-v2.css?v=15",
   "./home-v2.css?v=17",
@@ -48,6 +49,9 @@ const CORE_ASSETS = [
   "./home-v2.css?v=47",
   "./home-v2.css?v=48",
   "./home-v2.css?v=49",
+  "./home-v2.css?v=50",
+  "./home-v2.css?v=51",
+  "./home-v2.css?v=52",
   "./app.js",
   "./app.js?v=14",
   "./app.js?v=15",
@@ -94,6 +98,9 @@ const CORE_ASSETS = [
   "./app.js?v=57",
   "./app.js?v=58",
   "./app.js?v=59",
+  "./app.js?v=60",
+  "./app.js?v=61",
+  "./app.js?v=62",
   "./home-v2-overrides.js",
   "./home-v2-overrides.js?v=1",
   "./home-v2-overrides.js?v=2",
@@ -193,6 +200,9 @@ const CORE_ASSETS = [
   "./assets/adventurers/pixel/star-dragonlord-sss-light-idle.png",
   "./assets/adventurers/pixel/star-dragonlord-sss-light-walk.png",
   "./assets/adventurers/pixel/star-dragonlord-sss-light-attack.png",
+  "./assets/equipment/placeholders/equipment-fallback.png",
+  "./assets/equipment/shop/shop-placeholder.png",
+  "./assets/equipment/ui/slot-empty.png",
   "./assets/tutorial/tutorial-bg-dark.png",
   "./assets/tutorial/tutorial-panel.png",
   "./assets/tutorial/tutorial-step-badge.png",

@@ -188,6 +188,16 @@
       "pattern": "assets/adventurers/placeholders/card-{c|b|a|s|ss|sss}.png"
     }
   },
+  "equipment": {
+    "iconPattern": "assets/equipment/icons/{slot}/{slot}-{rarity}-001.png",
+    "slots": ["head", "body", "legs", "weapon", "offhand", "ring", "necklace", "pet-contract"],
+    "shopRarities": ["a", "s", "ss", "sss"],
+    "placeholderCount": 32,
+    "fallback": "assets/equipment/placeholders/equipment-fallback.png",
+    "shopPlaceholder": "assets/equipment/shop/shop-placeholder.png",
+    "emptySlot": "assets/equipment/ui/slot-empty.png",
+    "purpose": "Replaceable pixel-style equipment icons for adventurer equipment slots, inventory, and the two-hour rotating shop."
+  },
   "tutorial": {
     "bgDark": {
       "path": "assets/tutorial/tutorial-bg-dark.png",
