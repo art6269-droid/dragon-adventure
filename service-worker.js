@@ -1,4 +1,4 @@
-const CACHE_NAME = "dragon-adventure-v72";
+const CACHE_NAME = "dragon-adventure-v73";
 
 const CORE_ASSETS = [
   "./",
@@ -54,6 +54,7 @@ const CORE_ASSETS = [
   "./home-v2.css?v=52",
   "./home-v2.css?v=53",
   "./home-v2.css?v=54",
+  "./home-v2.css?v=55",
   "./app.js",
   "./app.js?v=14",
   "./app.js?v=15",
@@ -106,10 +107,22 @@ const CORE_ASSETS = [
   "./app.js?v=63",
   "./app.js?v=64",
   "./app.js?v=65",
+  "./app.js?v=66",
   "./home-v2-overrides.js",
   "./home-v2-overrides.js?v=1",
   "./home-v2-overrides.js?v=2",
   "./manifest.json",
+  "./assets/data/content-catalog.json",
+  "./assets/dragons/baby/fire/C/0001/data.json",
+  "./assets/dragons/baby/fire/C/0001/icon.png",
+  "./assets/dragons/baby/fire/C/0001/portrait.png",
+  "./assets/dragons/baby/fire/C/0001/idle/01.png",
+  "./assets/dragons/youth/fire/C/0001/data.json",
+  "./assets/dragons/adult/fire/C/0001/data.json",
+  "./assets/dragons/evolution/fire/C/0001/data.json",
+  "./assets/eggs/fire/C/0001/data.json",
+  "./assets/eggs/fire/C/0001/icon.png",
+  "./assets/adventurers/fire/C/0001/data.json",
   "./assets/icons/icon-192.svg",
   "./assets/icons/icon-512.svg",
   "./assets/icons/icon-coin.png",
@@ -403,7 +416,8 @@ self.addEventListener("fetch", (event) => {
     || requestUrl.pathname.endsWith("/index.html")
     || requestUrl.pathname.endsWith("/app.js")
     || requestUrl.pathname.endsWith("/style.css")
-    || requestUrl.pathname.endsWith("/service-worker.js");
+    || requestUrl.pathname.endsWith("/service-worker.js")
+    || requestUrl.pathname.endsWith("/content-catalog.json");
 
   if (isFreshCoreFile) {
     event.respondWith(

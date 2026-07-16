@@ -264,6 +264,16 @@
       "purpose": "Mission mystery bag reward icon."
     }
   },
+  "dataDrivenContent": {
+    "catalog": {
+      "path": "assets/data/content-catalog.json",
+      "purpose": "Generated catalog loaded by the game for dragons, eggs, adventurers, and islands."
+    },
+    "dragonConvention": "assets/dragons/{stage}/{element}/{rarity}/{id}",
+    "eggConvention": "assets/eggs/{element}/{rarity}/{id}",
+    "adventurerConvention": "assets/adventurers/{element}/{rarity}/{id}",
+    "generator": "tools/build-content-catalog.mjs"
+  },
   "placeholders": {
     "mimiPlaceholder": {
       "path": "assets/ui/mimi-placeholder.png",

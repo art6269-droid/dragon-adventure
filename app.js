@@ -1202,6 +1202,7 @@ let audioManager;
 let eggSelectionSlotId = null;
 let hatchTimerId = null;
 let restDragonBehaviorTimer = null;
+let dragonFrameAnimationTimer = null;
 let selectedRestDragonId = state?.selectedRestDragonId || null;
 let lastClickedDragonId = null;
 let dragonClickCount = 0;
@@ -1998,9 +1999,13 @@ function normalizeDragon(dragon) {
     restScale: Number.isFinite(Number(dragon?.restScale)) ? Number(dragon.restScale) : null,
     image: getDragonAsset({
       element,
+      rarity,
       stage,
       currentAction,
-      assetBase
+      assetBase,
+      templateId: dragon?.templateId || template?.id,
+      speciesId: dragon?.speciesId || template?.speciesId,
+      animationFrames: dragon?.animationFrames || template?.actions || {}
     })
   };
 }
@@ -2252,6 +2257,7 @@ function normalizeInventoryEgg(egg) {
   const durationFromMs = Math.ceil(Number(egg?.requiredMs || egg?.remainingTime || 0) / 1000);
   const rarity = rarities.includes(egg?.rarity) ? egg.rarity : (rarities.includes(egg?.eggRarity) ? egg.eggRarity : definition.rarity);
   const element = normalizeEggElement(egg);
+  const template = findEggCatalogTemplate({ ...egg, element, rarity });
   return {
     id: egg?.id || createId("egg"),
     type: definition.type,
@@ -2262,9 +2268,14 @@ function normalizeInventoryEgg(egg) {
     elementHint: element,
     attribute: element,
     elementBias: element === "neutral" ? (egg?.elementBias || definition.elementBias || "random") : element,
-    hatchDuration: positiveNumber(egg?.hatchDuration, durationFromMs || definition.hatchDuration),
-    hatchTime: positiveNumber(egg?.hatchTime, durationFromMs || definition.hatchDuration),
-    image: getEggAsset({ ...egg, element, rarity }),
+    templateId: egg?.templateId || template?.id || null,
+    dragonTemplateId: egg?.dragonTemplateId || template?.dragonTemplateId || null,
+    assetRoot: egg?.assetRoot || template?.assetRoot || null,
+    animationFrames: egg?.animationFrames || template?.actions || {},
+    iconAsset: egg?.iconAsset || template?.iconAsset || null,
+    hatchDuration: positiveNumber(egg?.hatchDuration, durationFromMs || template?.hatchTime || definition.hatchDuration),
+    hatchTime: positiveNumber(egg?.hatchTime, durationFromMs || template?.hatchTime || definition.hatchDuration),
+    image: getEggAsset({ ...egg, element, rarity, templateId: egg?.templateId || template?.id }),
     assignedIncubatorId: egg?.assignedIncubatorId || null,
     hatched: Boolean(egg?.hatched),
     locked: Boolean(egg?.locked),
@@ -2307,6 +2318,10 @@ function normalizeEggElement(egg) {
 }
 
 function getEggAsset(egg) {
+  const template = findEggCatalogTemplate(egg || {});
+  if (egg?.iconAsset || template?.iconAsset) return egg?.iconAsset || template.iconAsset;
+  const frames = egg?.animationFrames?.idle || template?.actions?.idle;
+  if (Array.isArray(frames) && frames.length > 0) return frames[0];
   const element = normalizeEggElement(egg);
   const rarity = String(egg?.rarity || egg?.eggRarity || "C").toLowerCase();
   if (!["fire", "water", "wood", "light", "dark"].includes(element)) {
@@ -3075,9 +3090,13 @@ function refreshRestIslandInteractionLayer() {
   const restPage = document.querySelector(".restIsland");
   if (restPage) {
     restPage.querySelector(".rest-dragon-status-panel")?.remove();
+    restPage.querySelector(".dragon-evolution-backdrop")?.remove();
     const panelHtml = renderRestDragonStatusPanel();
     const stage = restPage.querySelector(".rest-island-stage");
     if (panelHtml && stage) stage.insertAdjacentHTML("beforebegin", panelHtml);
+    restPage.classList.toggle("has-selected-dragon", Boolean(panelHtml));
+    const evolutionHtml = renderDragonEvolutionModal();
+    if (evolutionHtml) restPage.insertAdjacentHTML("beforeend", evolutionHtml);
   }
 
   if (pager) pager.scrollLeft = currentScrollLeft;
@@ -4219,9 +4238,10 @@ function syncAdventurerEquipmentState() {
 
 function normalizeAdventurer(adventurer) {
   const source = adventurer && typeof adventurer === "object" ? adventurer : {};
-  const template = ADVENTURER_POOL.find((item) => item.templateId === source.templateId)
-    || ADVENTURER_POOL.find((item) => item.name === source.name)
-    || ADVENTURER_POOL[0];
+  const templatePool = getAdventurerTemplatePool();
+  const template = templatePool.find((item) => item.templateId === source.templateId)
+    || templatePool.find((item) => item.name === source.name)
+    || templatePool[0];
   const rarity = String(source.rarity || template.rarity || "C").toUpperCase();
   const rarityRank = Math.max(0, ["C", "B", "A", "S", "SS", "SSS"].indexOf(rarity));
   const baseStatsSource = source.baseStats && typeof source.baseStats === "object" ? source.baseStats : {};
@@ -4262,8 +4282,11 @@ function normalizeAdventurer(adventurer) {
     teamId: source.teamId || null,
     shards: normalizedNonNegative(source.shards, 0),
     obtainedAt: positiveNumber(source.obtainedAt, Date.now()),
+    assetRoot: source.assetRoot || template.assetRoot || null,
+    animationFrames: source.animationFrames || template.actions || {},
+    portraitAsset: source.portraitAsset || template.portraitAsset || template.cardAsset,
     cardAsset: source.cardAsset || template.cardAsset,
-    spriteAsset: source.spriteAsset || template.spriteAsset
+    spriteAsset: source.spriteAsset || template.actions?.idle?.[0] || template.spriteAsset
   };
 }
 
@@ -4280,6 +4303,8 @@ function getAdventurerCardAsset(adventurer) {
 }
 
 function getAdventurerSpriteAsset(adventurer, action = "idle") {
+  const frames = adventurer?.animationFrames?.[action];
+  if (Array.isArray(frames) && frames.length > 0) return frames[0];
   const base = String(adventurer.spriteAsset || `assets/adventurers/pixel/${adventurer.templateId}-idle.png`);
   return action === "idle" ? base : base.replace(/-idle\.png$/i, `-${action}.png`);
 }
@@ -4788,7 +4813,7 @@ function renderAdventurerGuildPageInner() {
   const adventurers = getFilteredAdventurers();
   const total = (state.adventurers || []).length;
   const tickets = normalizedNonNegative(state.characterTickets, 0);
-  const jobs = [...new Set(ADVENTURER_POOL.map((item) => item.job))];
+  const jobs = [...new Set(getAdventurerTemplatePool().map((item) => item.job))];
   const summonCostText = tickets > 0 ? "角色券 x1" : `${ADVENTURER_SUMMON_DIAMOND_COST} 鑽石`;
   const bulk = getBulkManageState();
   const isManaging = bulk.type === "adventurer";
@@ -4903,8 +4928,9 @@ function summonAdventurer() {
   if (!paidWith) return false;
 
   const rarity = rollAdventurerRarity();
-  const candidates = ADVENTURER_POOL.filter((item) => item.rarity === rarity);
-  const template = candidates[Math.floor(Math.random() * candidates.length)] || ADVENTURER_POOL[0];
+  const templatePool = getAdventurerTemplatePool();
+  const candidates = templatePool.filter((item) => item.rarity === rarity);
+  const template = candidates[Math.floor(Math.random() * candidates.length)] || templatePool[0];
   const adventurer = createAdventurerInstance(template);
   state.adventurers.push(adventurer);
   currentAdventurerGachaResult = { adventurer, paidWith, claimed: false };
@@ -9251,10 +9277,11 @@ function findHatchSlotElement(slotId) {
 // worldPager intact while giving dragons room to stand on the enlarged island.
 function renderHomeV2Dragon(dragon, index) {
   ensureRestDragonPosition(dragon, index);
+  const stageScale = getDragonStageScale(dragon.stage);
   const pos = {
     x: dragon.restX,
     y: dragon.restY,
-    s: dragon.restScale || getDefaultRestDragonPosition(dragon, index).s
+    s: (dragon.restScale || getDefaultRestDragonPosition(dragon, index).s) * stageScale
   };
   const rarity = String(dragon.rarity || "C");
   const action = DRAGON_ACTIONS.includes(dragon.currentAction) ? dragon.currentAction : "idle";
@@ -9268,7 +9295,8 @@ function renderHomeV2Dragon(dragon, index) {
       type="button"
       data-v2-action="select-dragon"
       data-dragon-id="${dragon.id}"
-      style="--x:${pos.x}%;--y:${pos.y}%;--s:${pos.s};--idle-delay:${index * -0.45}s;"
+      data-dragon-stage="${normalizeDragonStage(dragon.stage)}"
+      style="--x:${pos.x}%;--y:${pos.y}%;--s:${pos.s};--stage-scale:${stageScale};--idle-delay:${index * -0.45}s;"
       aria-label="${escapeHtml(dragon.name || "龍夥伴")}"
     >
       <span class="dragon-ground-shadow" aria-hidden="true"></span>
@@ -9802,6 +9830,24 @@ function startRestDragonBehaviorLoop() {
   restDragonBehaviorTimer = window.setTimeout(tick, randomInt(5000, 8000));
 }
 
+function startDragonFrameAnimationLoop() {
+  if (dragonFrameAnimationTimer) return;
+  let frameIndex = 0;
+  dragonFrameAnimationTimer = window.setInterval(() => {
+    frameIndex += 1;
+    document.querySelectorAll(".restIsland .home-v2-dragon[data-dragon-id] img").forEach((image) => {
+      const dragonId = image.closest(".home-v2-dragon")?.dataset.dragonId;
+      const dragon = getDragonById(dragonId);
+      if (!dragon || dragon.isDragging) return;
+      const nextSource = getDragonAsset(dragon, dragon.currentAction, frameIndex);
+      if (nextSource && image.getAttribute("src") !== nextSource) {
+        image.dataset.fallback = "";
+        image.src = nextSource;
+      }
+    });
+  }, 180);
+}
+
 function randomizeRestDragonActions() {
   const restDragons = getRestIslandDragons();
   let changed = false;
@@ -9876,8 +9922,12 @@ function renderWorldHomePage(index) {
   const readySlots = (state.hatchIsland?.hatchSlots || []).filter((slot) => slot.currentEgg && getHatchSlotStatus(slot).ready).length;
   const taskText = readySlots > 0 ? `${readySlots} 顆龍蛋可以領取` : "讓龍寶們在島上休息";
 
+  const selectedDragon = getDragonById(selectedRestDragonId || state.selectedRestDragonId);
+  const activeIsland = state.archipelago?.islands?.find((island) => island.id === state.archipelago.activeIslandId)
+    || state.archipelago?.islands?.[0]
+    || createDefaultArchipelago().islands[0];
   return `
-    <section class="worldPage homePage restIsland" data-world-index="${index}" aria-label="休息島">
+    <section class="worldPage homePage restIsland dragon-archipelago-page${selectedDragon ? " has-selected-dragon" : ""}" data-world-index="${index}" data-island-id="${escapeHtml(activeIsland.id)}" aria-label="龍之島">
       <div class="rest-ambient" aria-hidden="true">
         <span class="rest-cloud rest-cloud-a"></span>
         <span class="rest-cloud rest-cloud-b"></span>
@@ -9889,8 +9939,8 @@ function renderWorldHomePage(index) {
         <span class="rest-particle particle-d"></span>
       </div>
       <div class="home-v2-title">
-        <h1>休息島</h1>
-        <p>龍的休憩花園</p>
+        <h1>${escapeHtml(activeIsland.name || "龍之島")}</h1>
+        <p>龍之群島 · 休憩主島</p>
       </div>
       <aside class="home-v2-task">
         <b>今日任務</b>
@@ -9901,8 +9951,8 @@ function renderWorldHomePage(index) {
         <div class="rest-island-glow" aria-hidden="true"></div>
         <img
           class="rest-island-art"
-          src="${ASSETS.islands.rest}"
-          alt="休息島"
+          src="${escapeHtml(activeIsland.asset || ASSETS.islands.rest)}"
+          alt="${escapeHtml(activeIsland.name || "龍之島")}"
           decoding="async"
           onerror="this.hidden=true;this.nextElementSibling.hidden=false"
         >
@@ -9916,6 +9966,11 @@ function renderWorldHomePage(index) {
           <span class="rest-decor decor-sparkle decor-sparkle-a"></span>
           <span class="rest-decor decor-sparkle decor-sparkle-b"></span>
         </div>
+        <div class="archipelago-building-layer" aria-hidden="true">
+          ${Array.from({ length: Math.min(12, positiveNumber(activeIsland.buildingSlots, 12)) }, (_, slotIndex) => (
+            `<span class="archipelago-building-slot slot-${slotIndex + 1}" data-building-slot="${slotIndex + 1}"></span>`
+          )).join("")}
+        </div>
         <div class="rest-island-characters">
           <div class="home-v2-dragons">
             ${renderRestIslandDragonsMarkup()}
@@ -9927,6 +9982,7 @@ function renderWorldHomePage(index) {
           </div>
         </div>
       </div>
+      ${renderDragonEvolutionModal()}
     </section>
   `;
 }
@@ -9964,12 +10020,190 @@ function renderRestDragonStatusPanel() {
           <button type="button" data-v2-action="feed-dragon" data-dragon-id="${dragon.id}">餵食</button>
           <button type="button" data-v2-action="train-dragon" data-dragon-id="${dragon.id}">訓練</button>
           <button type="button" data-v2-action="open-team-modal" data-dragon-id="${dragon.id}">出戰</button>
+          <button type="button" data-v2-action="open-dragon-evolution" data-dragon-id="${dragon.id}">進化</button>
           <button type="button" data-v2-action="open-sell-dragon" data-dragon-id="${dragon.id}">出售</button>
           <button type="button" data-v2-action="send-dragon-back-to-house" data-action="backToHouse" data-dragon-id="${dragon.id}">回龍舍</button>
         </div>
       </div>
     </section>
   `;
+}
+
+function getDragonEvolutionTemplate(dragon) {
+  if (!dragon) return null;
+  const currentTemplate = findDragonCatalogTemplate(dragon);
+  if (currentTemplate?.nextEvolution) {
+    const exact = contentCatalog.dragons.find((item) => item.id === currentTemplate.nextEvolution);
+    if (exact) return exact;
+  }
+  const order = ["baby", "youth", "adult", "evolution"];
+  const nextStage = order[order.indexOf(normalizeDragonStage(dragon.stage)) + 1];
+  if (!nextStage) return null;
+  if (dragon.speciesId || currentTemplate?.speciesId) {
+    const sameSpecies = contentCatalog.dragons.find((item) => (
+      item.speciesId === (dragon.speciesId || currentTemplate.speciesId) &&
+      normalizeDragonStage(item.stage) === nextStage
+    ));
+    if (sameSpecies) return sameSpecies;
+  }
+  return findDragonCatalogTemplate({ ...dragon, stage: nextStage, templateId: null });
+}
+
+function getDragonEvolutionRequirements(dragon) {
+  const stage = normalizeDragonStage(dragon?.stage);
+  const defaults = {
+    baby: { coins: 300, fragments: 5, materials: { evolutionStone: 1 } },
+    youth: { coins: 1200, fragments: 15, materials: { evolutionStone: 2 } },
+    adult: { coins: 5000, fragments: 40, materials: { evolutionStone: 5 } }
+  };
+  const template = findDragonCatalogTemplate(dragon || {});
+  return template?.evolution || dragon?.evolution || defaults[stage] || null;
+}
+
+function getDragonFragmentKey(dragon) {
+  return dragon?.speciesId || findDragonCatalogTemplate(dragon || {})?.speciesId || dragon?.templateId || dragon?.id;
+}
+
+function getEvolutionPreviewStats(dragon, nextTemplate) {
+  return {
+    hp: positiveNumber(nextTemplate?.hp, dragon.hp + positiveNumber(dragon.growth?.hp, 8) * 10),
+    attack: positiveNumber(nextTemplate?.atk || nextTemplate?.attack, dragon.attack + positiveNumber(dragon.growth?.atk, 2) * 10),
+    defense: positiveNumber(nextTemplate?.def || nextTemplate?.defense, dragon.defense + positiveNumber(dragon.growth?.def, 1) * 10),
+    speed: positiveNumber(nextTemplate?.speed, dragon.speed + positiveNumber(dragon.growth?.speed, 1) * 5)
+  };
+}
+
+function renderDragonEvolutionModal() {
+  const dragonId = state?.ui?.activeDragonEvolutionId;
+  const dragon = getDragonById(dragonId);
+  if (!dragon) return "";
+  const nextTemplate = getDragonEvolutionTemplate(dragon);
+  const requirements = getDragonEvolutionRequirements(dragon);
+  const fragmentKey = getDragonFragmentKey(dragon);
+  const fragments = normalizedNonNegative(state.dragonResources?.fragments?.[fragmentKey], 0);
+  const stones = normalizedNonNegative(state.dragonResources?.materials?.evolutionStone, 0);
+  const preview = nextTemplate ? getEvolutionPreviewStats(dragon, nextTemplate) : null;
+  const canEvolve = Boolean(nextTemplate && requirements && state.coins >= requirements.coins && fragments >= requirements.fragments && stones >= requirements.materials.evolutionStone);
+  return `
+    <div class="dragon-evolution-backdrop" data-v2-backdrop="dragon-evolution">
+      <section class="dragon-evolution-modal" role="dialog" aria-modal="true" aria-label="龍進化">
+        <header>
+          <div>
+            <small>龍成長</small>
+            <h2>進化</h2>
+          </div>
+          <button type="button" data-v2-action="close-dragon-evolution" aria-label="關閉">×</button>
+        </header>
+        ${nextTemplate && requirements ? `
+          <div class="dragon-evolution-path">
+            <article>
+              <img src="${getDragonAvatarAsset(dragon)}" alt="" onerror="this.src='${DRAGON_FALLBACK_ASSET}'">
+              <b>${escapeHtml(dragonStageText(dragon.stage))}</b>
+              <span>${escapeHtml(dragon.name)}</span>
+            </article>
+            <i aria-hidden="true">→</i>
+            <article class="is-next">
+              <img src="${escapeHtml(nextTemplate.portraitAsset || nextTemplate.iconAsset || getDragonAsset({ ...dragon, templateId: nextTemplate.id, stage: nextTemplate.stage }, "idle"))}" alt="">
+              <b>${escapeHtml(dragonStageText(nextTemplate.stage))}</b>
+              <span>${escapeHtml(nextTemplate.name || dragon.name)}</span>
+            </article>
+          </div>
+          <div class="dragon-evolution-stats">
+            <span>生命 <b>${formatNumber(dragon.hp)} → ${formatNumber(preview.hp)}</b></span>
+            <span>攻擊 <b>${formatNumber(dragon.attack)} → ${formatNumber(preview.attack)}</b></span>
+            <span>防禦 <b>${formatNumber(dragon.defense)} → ${formatNumber(preview.defense)}</b></span>
+            <span>速度 <b>${formatNumber(dragon.speed)} → ${formatNumber(preview.speed)}</b></span>
+          </div>
+          <div class="dragon-evolution-costs">
+            <span class="${state.coins >= requirements.coins ? "is-ready" : ""}">金幣 ${formatNumber(state.coins)} / ${formatNumber(requirements.coins)}</span>
+            <span class="${fragments >= requirements.fragments ? "is-ready" : ""}">龍碎片 ${formatNumber(fragments)} / ${formatNumber(requirements.fragments)}</span>
+            <span class="${stones >= requirements.materials.evolutionStone ? "is-ready" : ""}">進化石 ${formatNumber(stones)} / ${formatNumber(requirements.materials.evolutionStone)}</span>
+          </div>
+          <button class="dragon-evolution-confirm" type="button" data-v2-action="confirm-dragon-evolution" data-dragon-id="${dragon.id}" ${canEvolve ? "" : "aria-disabled=\"true\""}>進化</button>
+        ` : `
+          <div class="dragon-evolution-max">
+            <img src="${getDragonAvatarAsset(dragon)}" alt="">
+            <h3>已達最高階段</h3>
+            <p>這隻龍目前沒有下一階段資料。</p>
+          </div>
+        `}
+      </section>
+    </div>
+  `;
+}
+
+function openDragonEvolution(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) {
+    showToast("找不到這隻龍");
+    return;
+  }
+  state.ui.activeDragonEvolutionId = dragon.id;
+  document.querySelector(".dragon-evolution-backdrop")?.remove();
+  mountHomeV2Overlay(renderDragonEvolutionModal());
+}
+
+function closeDragonEvolution() {
+  if (state?.ui) state.ui.activeDragonEvolutionId = null;
+  document.querySelectorAll(".dragon-evolution-backdrop").forEach((element) => element.remove());
+}
+
+function confirmDragonEvolution(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) {
+    closeDragonEvolution();
+    showToast("找不到這隻龍");
+    return;
+  }
+  const nextTemplate = getDragonEvolutionTemplate(dragon);
+  const requirements = getDragonEvolutionRequirements(dragon);
+  if (!nextTemplate || !requirements) {
+    showToast("這隻龍已達最高階段");
+    return;
+  }
+  const fragmentKey = getDragonFragmentKey(dragon);
+  const fragments = normalizedNonNegative(state.dragonResources.fragments[fragmentKey], 0);
+  const stones = normalizedNonNegative(state.dragonResources.materials.evolutionStone, 0);
+  if (state.coins < requirements.coins) return showToast("金幣不足");
+  if (fragments < requirements.fragments) return showToast("龍碎片不足");
+  if (stones < requirements.materials.evolutionStone) return showToast("進化石不足");
+
+  const stats = getEvolutionPreviewStats(dragon, nextTemplate);
+  state.coins -= requirements.coins;
+  state.dragonResources.fragments[fragmentKey] = fragments - requirements.fragments;
+  state.dragonResources.materials.evolutionStone = stones - requirements.materials.evolutionStone;
+  Object.assign(dragon, {
+    templateId: nextTemplate.id,
+    speciesId: nextTemplate.speciesId || dragon.speciesId,
+    stage: normalizeDragonStage(nextTemplate.stage),
+    level: Math.max(dragon.level || 1, growthStageLevel[normalizeDragonStage(nextTemplate.stage)] || 1),
+    hp: stats.hp,
+    attack: stats.attack,
+    defense: stats.defense,
+    speed: stats.speed,
+    power: Math.round(stats.hp * 0.25 + stats.attack * 2 + stats.defense * 1.5 + stats.speed * 1.2),
+    assetBase: nextTemplate.assetRoot,
+    assetRoot: nextTemplate.assetRoot,
+    avatarAsset: nextTemplate.portraitAsset || nextTemplate.iconAsset,
+    animationFrames: nextTemplate.actions || {},
+    growth: nextTemplate.growth || {},
+    nextEvolution: nextTemplate.nextEvolution || null,
+    evolution: nextTemplate.evolution || null,
+    skills: nextTemplate.skills || dragon.skills || [],
+    talents: nextTemplate.talents || dragon.talents || [],
+    tags: nextTemplate.tags || dragon.tags || [],
+    variant: nextTemplate.variant || dragon.variant || "normal",
+    glow: Boolean(nextTemplate.glow),
+    boss: Boolean(nextTemplate.boss),
+    mythical: Boolean(nextTemplate.mythical),
+    currentAction: "idle"
+  });
+  closeDragonEvolution();
+  saveGame();
+  updateHomeV2HudResources();
+  refreshRestIslandInteractionLayer();
+  refreshDragonHousePage();
+  showToast(`${dragon.name} 進化成功！`);
 }
 
 function handleRestDragonClick(dragonId, event = null) {
@@ -10464,6 +10698,7 @@ function renderDragonHouseDetailModal(dragon) {
           <button type="button" data-v2-action="open-dragon-rename" data-dragon-id="${dragon.id}">改名</button>
           <button type="button" data-v2-action="show-dragon-info" data-dragon-id="${dragon.id}">查看</button>
           <button type="button" data-v2-action="${isTeam ? "remove-from-team" : "open-team-modal"}" data-dragon-id="${dragon.id}">${isTeam ? "移出隊伍" : "出戰"}</button>
+          <button type="button" data-v2-action="open-dragon-evolution" data-dragon-id="${dragon.id}">進化</button>
           <button type="button" data-v2-action="open-sell-dragon" data-dragon-id="${dragon.id}">出售</button>
           <button type="button" data-v2-action="trade-dragon-placeholder" data-dragon-id="${dragon.id}">交易</button>
           <button type="button" class="is-muted" data-v2-action="send-dragon-home" data-dragon-id="${dragon.id}">回家</button>
@@ -10608,6 +10843,12 @@ function handleHomeV2Click(event) {
     closeDragonRenameModal();
     return;
   }
+  if (event.target.matches("[data-v2-backdrop='dragon-evolution']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDragonEvolution();
+    return;
+  }
 
   const actionButton = event.target.closest("[data-v2-action]");
   if (actionButton) {
@@ -10706,6 +10947,19 @@ function handleHomeV2Click(event) {
     if (action === "open-team-modal") {
       closeDragonHouseDetail();
       openTeamModal(dragonId);
+      return;
+    }
+    if (action === "open-dragon-evolution") {
+      closeDragonHouseDetail();
+      openDragonEvolution(dragonId);
+      return;
+    }
+    if (action === "close-dragon-evolution") {
+      closeDragonEvolution();
+      return;
+    }
+    if (action === "confirm-dragon-evolution") {
+      confirmDragonEvolution(dragonId);
       return;
     }
     if (action === "open-sell-dragon") {
@@ -11310,10 +11564,14 @@ function createExplorationEgg(area) {
   const rarity = rollExploreEggRarity();
   const element = rollExploreElement(area);
   const type = getEggTypeForExploreResult(rarity, element);
+  const candidates = contentCatalog.eggs.filter((item) => (
+    normalizeEggElement(item) === element && String(item.rarity || "C").toUpperCase() === rarity
+  ));
+  const template = randomItem(candidates.filter((item) => !item.legacy)) || randomItem(candidates) || null;
   return normalizeInventoryEgg({
     id: createId("egg"),
     type,
-    name: `${dragonElementText(element)}屬性 ${rarity} 級龍蛋`,
+    name: template?.name || `${dragonElementText(element)}屬性 ${rarity} 級龍蛋`,
     element,
     elementHint: element,
     attribute: element,
@@ -11323,6 +11581,11 @@ function createExplorationEgg(area) {
     hatchDuration: getHatchDurationForRarity(rarity),
     image: getEggImageForExploreResult(rarity, element),
     rarityRates: [{ rarity, rate: 100 }],
+    templateId: template?.id || null,
+    dragonTemplateId: template?.dragonTemplateId || null,
+    assetRoot: template?.assetRoot || null,
+    animationFrames: template?.actions || {},
+    iconAsset: template?.iconAsset || null,
     createdAt: Date.now()
   });
 }
@@ -11669,17 +11932,25 @@ function hatchEggToDragon(egg) {
   const rarity = rollWeightedHatchRarity(rates);
   const element = normalizeDragonElement(pickHatchElement(normalizedEgg.elementBias || definition.elementBias));
   const stage = "baby";
+  const template = findDragonCatalogTemplate({
+    templateId: normalizedEgg.dragonTemplateId,
+    element,
+    rarity,
+    stage
+  });
   const dragon = {
     id: createId("dragon"),
-    name: generateDragonName(rarity, dragonElementText(element)),
+    name: template?.name || generateDragonName(rarity, dragonElementText(element)),
     rarity,
     element,
     stage,
     level: 1,
-    hp: calculateHatchDragonStat(rarity, 88, 28),
-    attack: calculateHatchDragonStat(rarity, 24, 11),
-    defense: calculateHatchDragonStat(rarity, 18, 8),
-    speed: calculateHatchDragonStat(rarity, 14, 7),
+    templateId: template?.id || null,
+    speciesId: template?.speciesId || null,
+    hp: positiveNumber(template?.hp, calculateHatchDragonStat(rarity, 88, 28)),
+    attack: positiveNumber(template?.atk || template?.attack, calculateHatchDragonStat(rarity, 24, 11)),
+    defense: positiveNumber(template?.def || template?.defense, calculateHatchDragonStat(rarity, 18, 8)),
+    speed: positiveNumber(template?.speed, calculateHatchDragonStat(rarity, 14, 7)),
     hunger: 100,
     mood: 90,
     exp: 0,
@@ -11687,8 +11958,20 @@ function hatchEggToDragon(egg) {
     isInTeam: false,
     isOnRestIsland: false,
     currentAction: "idle",
-    assetBase: `assets/dragons/${element}/${stage}/`,
-    avatarAsset: `assets/dragons/${element}/${stage}/avatar.png`,
+    assetBase: template?.assetRoot || normalizeDragonAssetBase(null, element, stage),
+    assetRoot: template?.assetRoot || normalizeDragonAssetBase(null, element, stage),
+    avatarAsset: template?.portraitAsset || template?.iconAsset || null,
+    animationFrames: template?.actions || {},
+    growth: template?.growth || {},
+    nextEvolution: template?.nextEvolution || null,
+    evolution: template?.evolution || null,
+    skills: template?.skills || [],
+    talents: template?.talents || [],
+    tags: template?.tags || [],
+    variant: template?.variant || "normal",
+    glow: Boolean(template?.glow),
+    boss: Boolean(template?.boss),
+    mythical: Boolean(template?.mythical),
     costumeId: null,
     skinId: null,
     isAngry: false,
@@ -11813,6 +12096,27 @@ function trainRestDragon(dragonId) {
 }
 
 function handleHomeV2Click(event) {
+  if (event.target.matches("[data-v2-backdrop='dragon-evolution']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDragonEvolution();
+    return;
+  }
+  const evolutionButton = event.target.closest("[data-v2-action='open-dragon-evolution'], [data-v2-action='close-dragon-evolution'], [data-v2-action='confirm-dragon-evolution']");
+  if (evolutionButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    const evolutionAction = evolutionButton.dataset.v2Action;
+    if (evolutionAction === "open-dragon-evolution") {
+      closeDragonHouseDetail();
+      openDragonEvolution(evolutionButton.dataset.dragonId);
+    } else if (evolutionAction === "close-dragon-evolution") {
+      closeDragonEvolution();
+    } else {
+      confirmDragonEvolution(evolutionButton.dataset.dragonId);
+    }
+    return;
+  }
   if (homeV2Drag.moved) {
     homeV2Drag.moved = false;
     return;

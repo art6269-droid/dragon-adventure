@@ -2783,6 +2783,350 @@ body.home-v2-active #toastLayer #toast.is-visible {
   margin-bottom: 18px !important;
 }
 
+/* Data-driven Dragon Archipelago ----------------------------------------- */
+.home-v2-hud {
+  top: calc(8px + env(safe-area-inset-top)) !important;
+  gap: 6px !important;
+}
+
+.home-v2-resource,
+.home-v2-settings {
+  min-height: 36px !important;
+  border-radius: 14px !important;
+}
+
+.home-v2-resource {
+  grid-template-columns: 24px minmax(0, 1fr) 22px !important;
+  padding: 3px 5px !important;
+}
+
+.home-v2-resource i,
+.home-v2-settings i {
+  width: 23px !important;
+  height: 23px !important;
+  font-size: 0.72rem !important;
+}
+
+.home-v2-plus {
+  width: 21px !important;
+  height: 21px !important;
+}
+
+.home-v2-resource b,
+.home-v2-settings {
+  font-size: 0.78rem !important;
+}
+
+.home-v2-settings {
+  grid-template-columns: 23px auto !important;
+  padding: 3px 7px 3px 5px !important;
+}
+
+.dragon-archipelago-page {
+  isolation: isolate;
+  background:
+    linear-gradient(180deg, rgba(117, 208, 255, 0.18) 0 58%, rgba(40, 143, 187, 0.26) 59% 74%, rgba(14, 83, 125, 0.36) 75% 100%);
+}
+
+.dragon-archipelago-page::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: -8%;
+  right: -8%;
+  bottom: -2%;
+  height: 29%;
+  background:
+    repeating-linear-gradient(176deg, rgba(255, 255, 255, 0.13) 0 2px, transparent 2px 18px),
+    linear-gradient(180deg, rgba(91, 200, 228, 0.42), rgba(12, 73, 124, 0.58));
+  transform: perspective(360px) rotateX(58deg);
+  transform-origin: center bottom;
+  pointer-events: none;
+}
+
+.dragon-archipelago-page .home-v2-title {
+  width: min(220px, 64%) !important;
+  padding: 7px 12px 8px !important;
+  border-radius: 15px !important;
+}
+
+.dragon-archipelago-page .home-v2-title h1 {
+  font-size: 1.22rem !important;
+}
+
+.dragon-archipelago-page .home-v2-title p {
+  font-size: 0.68rem !important;
+}
+
+.dragon-archipelago-page.has-selected-dragon .home-v2-title,
+.dragon-archipelago-page.has-selected-dragon .home-v2-task {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.dragon-archipelago-page .rest-island-stage {
+  z-index: 2 !important;
+  height: clamp(420px, 66vh, 500px) !important;
+  min-height: 420px !important;
+  margin-top: 74px !important;
+  margin-bottom: -18px !important;
+}
+
+.dragon-archipelago-page.has-selected-dragon .rest-island-stage {
+  margin-top: 150px !important;
+}
+
+.dragon-archipelago-page .rest-island-art {
+  width: 138% !important;
+  max-width: 560px !important;
+  transform: translateY(84px) scaleY(0.79) !important;
+  transform-origin: center 68% !important;
+  filter: saturate(0.96) contrast(0.96) drop-shadow(0 14px 18px rgba(21, 45, 68, 0.24));
+}
+
+.dragon-archipelago-page .rest-island-glow {
+  opacity: 0.3 !important;
+  transform: translateY(90px) scale(1.38, 0.72) !important;
+}
+
+.dragon-archipelago-page .rest-island-decor {
+  transform: translateY(30px) scaleY(0.88);
+  transform-origin: center bottom;
+}
+
+.archipelago-building-layer {
+  position: absolute;
+  z-index: 3;
+  inset: 21% 11% 20%;
+  pointer-events: none;
+}
+
+.archipelago-building-slot {
+  position: absolute;
+  display: block;
+  width: 22px;
+  height: 14px;
+  border: 1px dashed rgba(255, 242, 171, 0.24);
+  border-radius: 50%;
+  opacity: 0.28;
+}
+
+.archipelago-building-slot:nth-child(1) { left: 20%; top: 42%; }
+.archipelago-building-slot:nth-child(2) { left: 36%; top: 31%; }
+.archipelago-building-slot:nth-child(3) { left: 56%; top: 29%; }
+.archipelago-building-slot:nth-child(4) { left: 72%; top: 42%; }
+.archipelago-building-slot:nth-child(5) { left: 29%; top: 59%; }
+.archipelago-building-slot:nth-child(6) { left: 63%; top: 58%; }
+.archipelago-building-slot:nth-child(n + 7) { display: none; }
+
+.dragon-archipelago-page .home-v2-dragons {
+  z-index: 6 !important;
+}
+
+.dragon-archipelago-page .home-v2-dragon[data-dragon-stage="baby"] .dragon-nameplate,
+.dragon-archipelago-page .home-v2-dragon[data-dragon-stage="youth"] .dragon-nameplate {
+  transform: scale(0.88);
+  transform-origin: center top;
+}
+
+.rest-dragon-status-panel {
+  top: 58px !important;
+  width: min(90%, 370px) !important;
+  min-height: 128px !important;
+  max-height: 152px;
+}
+
+.dragon-status-actions {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.dragon-evolution-backdrop {
+  position: absolute;
+  z-index: 180;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 60px 16px 112px;
+  box-sizing: border-box;
+  background: rgba(5, 12, 31, 0.68);
+  backdrop-filter: blur(5px);
+}
+
+.dragon-evolution-modal {
+  width: min(100%, 380px);
+  max-height: 100%;
+  overflow: auto;
+  padding: 14px;
+  border: 2px solid rgba(255, 218, 112, 0.95);
+  border-radius: 18px;
+  box-sizing: border-box;
+  color: #fff;
+  background: rgba(10, 28, 67, 0.96);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.42), inset 0 0 20px rgba(255, 217, 110, 0.08);
+  scrollbar-width: none;
+}
+
+.dragon-evolution-modal::-webkit-scrollbar {
+  display: none;
+}
+
+.dragon-evolution-modal > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.dragon-evolution-modal h2,
+.dragon-evolution-modal h3,
+.dragon-evolution-modal p {
+  margin: 0;
+}
+
+.dragon-evolution-modal > header small {
+  color: #c9dcff;
+  font-weight: 800;
+}
+
+.dragon-evolution-modal > header button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #f5d477;
+  border-radius: 50%;
+  color: #fff;
+  background: #243f7d;
+  font-weight: 900;
+}
+
+.dragon-evolution-path {
+  display: grid;
+  grid-template-columns: 1fr 24px 1fr;
+  align-items: center;
+  gap: 7px;
+}
+
+.dragon-evolution-path article {
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid rgba(255, 224, 139, 0.45);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dragon-evolution-path img {
+  width: 76px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.dragon-evolution-path b {
+  color: #ffe69b;
+}
+
+.dragon-evolution-path span {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dragon-evolution-path > i {
+  color: #ffde7b;
+  font-size: 1.25rem;
+  font-style: normal;
+  text-align: center;
+}
+
+.dragon-evolution-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.dragon-evolution-stats span,
+.dragon-evolution-costs span {
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 0.72rem;
+}
+
+.dragon-evolution-stats b {
+  display: block;
+  color: #aee7ff;
+}
+
+.dragon-evolution-costs {
+  display: grid;
+  gap: 5px;
+  margin-top: 9px;
+}
+
+.dragon-evolution-costs span {
+  color: #ffb6ac;
+}
+
+.dragon-evolution-costs span.is-ready {
+  color: #b8f6bb;
+}
+
+.dragon-evolution-confirm {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 11px;
+  border: 1px solid #fff0ae;
+  border-radius: 10px;
+  color: #18244b;
+  background: linear-gradient(#ffe99d, #eeb04e);
+  font-weight: 900;
+}
+
+.dragon-evolution-confirm[aria-disabled="true"] {
+  filter: grayscale(0.72);
+  opacity: 0.68;
+}
+
+.dragon-evolution-max {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 18px;
+  text-align: center;
+}
+
+.dragon-evolution-max img {
+  width: 112px;
+  height: 104px;
+  object-fit: contain;
+}
+
+@media (max-width: 390px) {
+  .dragon-archipelago-page .rest-island-stage {
+    height: clamp(400px, 64vh, 455px) !important;
+    min-height: 400px !important;
+    margin-top: 62px !important;
+  }
+
+  .dragon-archipelago-page.has-selected-dragon .rest-island-stage {
+    margin-top: 142px !important;
+  }
+
+  .dragon-archipelago-page .rest-island-art {
+    width: 134% !important;
+    transform: translateY(78px) scaleY(0.79) !important;
+  }
+
+  .rest-dragon-status-panel {
+    top: 54px !important;
+    width: 90% !important;
+    min-height: 122px !important;
+  }
+}
+
 /* Mission chapters: compact completed work while preserving the existing mission data. */
 .questPage .quest-page-shell.mission-scroll {
   height: 100%;
