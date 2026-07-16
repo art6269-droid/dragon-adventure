@@ -1,0 +1,26 @@
+{
+  "id": "fire_c_0001_baby",
+  "speciesId": "fire_c_0001",
+  "name": "赤焰幼龍",
+  "element": "fire",
+  "rank": "C",
+  "stage": "baby",
+  "hp": 120,
+  "atk": 30,
+  "def": 18,
+  "speed": 16,
+  "growth": { "hp": 8, "atk": 2, "def": 1, "speed": 1 },
+  "nextEvolution": "fire_c_0001_youth",
+  "evolution": {
+    "coins": 300,
+    "fragments": 5,
+    "materials": { "evolutionStone": 1 }
+  },
+  "skills": [],
+  "talents": [],
+  "tags": ["starter"],
+  "variant": "normal",
+  "glow": false,
+  "boss": false,
+  "mythical": false
+}

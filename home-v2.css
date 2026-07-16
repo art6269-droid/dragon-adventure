@@ -3322,6 +3322,228 @@ body.home-v2-active #toastLayer #toast.is-visible {
   font-size: 0.7rem;
 }
 
+/* Shared bulk management for adventurers, eggs, and future collection pages. */
+.adventurer-heading-actions,
+.egg-modal-header-actions,
+.egg-inventory-manage-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.adventurer-heading-actions {
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  max-width: 126px;
+}
+
+.bulk-manage-entry,
+.egg-inventory-manage-row button {
+  min-width: 54px;
+  min-height: 30px;
+  padding: 4px 9px;
+  border: 1px solid rgba(255, 232, 163, 0.92);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #284f98, #142b62);
+  color: #fff3b2;
+  box-shadow: inset 0 0 8px rgba(255, 220, 121, 0.12);
+  font: inherit;
+  font-size: 0.66rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.egg-modal-header-actions > span,
+.egg-inventory-manage-row > span {
+  color: #fff0a7;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.egg-modal-header-actions > button[data-v2-action="close-egg-modal"] {
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+}
+
+.egg-inventory-manage-row {
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  padding: 7px 9px;
+  border: 1px solid rgba(255, 222, 137, 0.62);
+  border-radius: 8px;
+  background: rgba(10, 28, 67, 0.88);
+}
+
+.bulk-selectable {
+  position: relative;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.bulk-selectable.bulk-selected {
+  border-color: #ffe277 !important;
+  box-shadow: 0 0 0 2px rgba(255, 211, 76, 0.42), 0 0 18px rgba(79, 164, 255, 0.48) !important;
+}
+
+.bulk-selectable.bulk-protected {
+  opacity: 0.58;
+  filter: saturate(0.72);
+}
+
+.bulk-selection-indicator {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 8;
+  display: grid;
+  width: 23px;
+  height: 23px;
+  place-items: center;
+  border: 2px solid rgba(255, 226, 128, 0.96);
+  border-radius: 50%;
+  background: rgba(8, 24, 59, 0.92);
+  color: #ffe373;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.35);
+  font-size: 0.65rem;
+  font-weight: 950;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.bulk-selected .bulk-selection-indicator {
+  background: linear-gradient(180deg, #ffd864, #d99624);
+  color: #13234c;
+}
+
+.bulk-protected .bulk-selection-indicator {
+  border-color: rgba(194, 207, 232, 0.9);
+  background: rgba(42, 53, 80, 0.95);
+  color: #e5ecfa;
+}
+
+.egg-bulk-state {
+  display: grid;
+  min-height: 34px;
+  place-items: center;
+  border: 1px solid rgba(255, 226, 143, 0.6);
+  border-radius: 999px;
+  background: rgba(7, 23, 58, 0.72);
+  color: #fff0ae;
+  font-size: 0.66rem;
+  font-weight: 900;
+}
+
+.is-bulk-hidden {
+  display: none !important;
+}
+
+.is-bulk-managing .adventurer-guild-page,
+.is-bulk-managing .egg-choice-list,
+.is-bulk-managing #eggInventoryList {
+  padding-bottom: 116px !important;
+}
+
+.is-bulk-managing #mimiDialogue.mimi-dialogue {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.bulk-manage-toolbar {
+  position: absolute;
+  right: 10px;
+  bottom: calc(var(--bottom-nav-height, 92px) + 10px);
+  left: 10px;
+  z-index: 1220;
+  padding: 7px;
+  border: 2px solid rgba(255, 218, 112, 0.96);
+  border-radius: 8px;
+  background: rgba(8, 24, 58, 0.96);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.38), inset 0 0 12px rgba(255, 222, 128, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.bulk-manage-count {
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.68rem;
+  text-align: center;
+}
+
+.bulk-manage-count b {
+  color: #ffe06e;
+  font-size: 0.84rem;
+}
+
+.bulk-manage-actions {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.bulk-manage-actions button,
+.bulk-confirm-modal button {
+  min-width: 0;
+  min-height: 34px;
+  padding: 5px 3px;
+  border: 1px solid rgba(255, 229, 151, 0.82);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #2b559d, #152e68);
+  color: #fff3bb;
+  font: inherit;
+  font-size: 0.61rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.bulk-manage-actions button.is-danger,
+.bulk-confirm-modal button.is-danger {
+  background: linear-gradient(180deg, #b74f54, #762a36);
+  color: #fff;
+}
+
+.bulk-confirm-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1320;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(3, 8, 24, 0.78);
+  backdrop-filter: blur(5px);
+}
+
+.bulk-confirm-modal {
+  width: min(100%, 340px);
+  padding: 18px;
+  border: 2px solid rgba(255, 216, 111, 0.96);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(22, 46, 94, 0.98), rgba(8, 23, 59, 0.99));
+  color: #fff;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.46);
+  text-align: center;
+}
+
+.bulk-confirm-modal h2 {
+  margin: 0;
+  color: #ffe18a;
+  font-size: 1.08rem;
+}
+
+.bulk-confirm-modal p {
+  margin: 10px 0 16px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.bulk-confirm-modal > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
 .adventurer-gacha-backdrop,
 .adventurer-detail-backdrop,
 .adventurer-sell-backdrop {

@@ -1,0 +1,26 @@
+{
+  "id": "fire_c_0001_adult",
+  "speciesId": "fire_c_0001",
+  "name": "赤焰成龍",
+  "element": "fire",
+  "rank": "C",
+  "stage": "adult",
+  "hp": 320,
+  "atk": 78,
+  "def": 45,
+  "speed": 32,
+  "growth": { "hp": 13, "atk": 4, "def": 3, "speed": 2 },
+  "nextEvolution": "fire_c_0001_evolution",
+  "evolution": {
+    "coins": 5000,
+    "fragments": 40,
+    "materials": { "evolutionStone": 5 }
+  },
+  "skills": [],
+  "talents": [],
+  "tags": [],
+  "variant": "normal",
+  "glow": false,
+  "boss": false,
+  "mythical": false
+}

@@ -1,0 +1,26 @@
+{
+  "id": "fire_c_0001_youth",
+  "speciesId": "fire_c_0001",
+  "name": "赤焰青年龍",
+  "element": "fire",
+  "rank": "C",
+  "stage": "youth",
+  "hp": 200,
+  "atk": 50,
+  "def": 28,
+  "speed": 24,
+  "growth": { "hp": 10, "atk": 3, "def": 2, "speed": 1 },
+  "nextEvolution": "fire_c_0001_adult",
+  "evolution": {
+    "coins": 1200,
+    "fragments": 15,
+    "materials": { "evolutionStone": 2 }
+  },
+  "skills": [],
+  "talents": [],
+  "tags": [],
+  "variant": "normal",
+  "glow": false,
+  "boss": false,
+  "mythical": false
+}

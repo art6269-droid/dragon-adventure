@@ -1,0 +1,9 @@
+{
+  "id": "egg_fire_c_0001",
+  "name": "赤焰紋龍蛋",
+  "element": "fire",
+  "rarity": "C",
+  "hatchTime": 60,
+  "dragonTemplateId": "fire_c_0001_baby",
+  "tags": ["starter"]
+}

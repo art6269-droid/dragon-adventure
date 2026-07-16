@@ -1,0 +1,22 @@
+{
+  "id": "fire_c_0001_evolution",
+  "speciesId": "fire_c_0001",
+  "name": "赤焰神龍",
+  "element": "fire",
+  "rank": "C",
+  "stage": "evolution",
+  "hp": 520,
+  "atk": 122,
+  "def": 72,
+  "speed": 45,
+  "growth": { "hp": 16, "atk": 6, "def": 4, "speed": 2 },
+  "nextEvolution": null,
+  "evolution": null,
+  "skills": [],
+  "talents": [],
+  "tags": ["evolved"],
+  "variant": "normal",
+  "glow": true,
+  "boss": false,
+  "mythical": false
+}

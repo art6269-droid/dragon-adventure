@@ -1,0 +1,6378 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-16T05:08:20.280Z",
+  "conventions": {
+    "dragons": "assets/dragons/{stage}/{element}/{rarity}/{id}",
+    "eggs": "assets/eggs/{element}/{rarity}/{id}",
+    "adventurers": "assets/adventurers/{element}/{rarity}/{id}"
+  },
+  "dragons": [
+    {
+      "id": "fire_c_0001_baby",
+      "speciesId": "fire_c_0001",
+      "name": "赤焰幼龍",
+      "element": "fire",
+      "rank": "C",
+      "stage": "baby",
+      "hp": 120,
+      "atk": 30,
+      "def": 18,
+      "speed": 16,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "nextEvolution": "fire_c_0001_youth",
+      "evolution": {
+        "coins": 300,
+        "fragments": 5,
+        "materials": {
+          "evolutionStone": 1
+        }
+      },
+      "skills": [],
+      "talents": [],
+      "tags": [
+        "starter"
+      ],
+      "variant": "normal",
+      "glow": false,
+      "boss": false,
+      "mythical": false,
+      "rarity": "C",
+      "assetRoot": "assets/dragons/baby/fire/C/0001/",
+      "iconAsset": "assets/dragons/baby/fire/C/0001/icon.png",
+      "portraitAsset": "assets/dragons/baby/fire/C/0001/portrait.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/baby/fire/C/0001/idle/01.png",
+          "assets/dragons/baby/fire/C/0001/idle/02.png",
+          "assets/dragons/baby/fire/C/0001/idle/03.png",
+          "assets/dragons/baby/fire/C/0001/idle/04.png",
+          "assets/dragons/baby/fire/C/0001/idle/05.png",
+          "assets/dragons/baby/fire/C/0001/idle/06.png"
+        ],
+        "walk": [
+          "assets/dragons/baby/fire/C/0001/walk/01.png",
+          "assets/dragons/baby/fire/C/0001/walk/02.png",
+          "assets/dragons/baby/fire/C/0001/walk/03.png",
+          "assets/dragons/baby/fire/C/0001/walk/04.png",
+          "assets/dragons/baby/fire/C/0001/walk/05.png",
+          "assets/dragons/baby/fire/C/0001/walk/06.png"
+        ],
+        "attack": [
+          "assets/dragons/baby/fire/C/0001/attack/01.png",
+          "assets/dragons/baby/fire/C/0001/attack/02.png",
+          "assets/dragons/baby/fire/C/0001/attack/03.png",
+          "assets/dragons/baby/fire/C/0001/attack/04.png",
+          "assets/dragons/baby/fire/C/0001/attack/05.png",
+          "assets/dragons/baby/fire/C/0001/attack/06.png"
+        ]
+      }
+    },
+    {
+      "id": "fire_c_0001_youth",
+      "speciesId": "fire_c_0001",
+      "name": "赤焰青年龍",
+      "element": "fire",
+      "rank": "C",
+      "stage": "youth",
+      "hp": 200,
+      "atk": 50,
+      "def": 28,
+      "speed": 24,
+      "growth": {
+        "hp": 10,
+        "atk": 3,
+        "def": 2,
+        "speed": 1
+      },
+      "nextEvolution": "fire_c_0001_adult",
+      "evolution": {
+        "coins": 1200,
+        "fragments": 15,
+        "materials": {
+          "evolutionStone": 2
+        }
+      },
+      "skills": [],
+      "talents": [],
+      "tags": [],
+      "variant": "normal",
+      "glow": false,
+      "boss": false,
+      "mythical": false,
+      "rarity": "C",
+      "assetRoot": "assets/dragons/youth/fire/C/0001/",
+      "iconAsset": "assets/dragons/youth/fire/C/0001/icon.png",
+      "portraitAsset": "assets/dragons/youth/fire/C/0001/portrait.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/youth/fire/C/0001/idle/01.png",
+          "assets/dragons/youth/fire/C/0001/idle/02.png",
+          "assets/dragons/youth/fire/C/0001/idle/03.png",
+          "assets/dragons/youth/fire/C/0001/idle/04.png",
+          "assets/dragons/youth/fire/C/0001/idle/05.png",
+          "assets/dragons/youth/fire/C/0001/idle/06.png"
+        ],
+        "walk": [
+          "assets/dragons/youth/fire/C/0001/walk/01.png",
+          "assets/dragons/youth/fire/C/0001/walk/02.png",
+          "assets/dragons/youth/fire/C/0001/walk/03.png",
+          "assets/dragons/youth/fire/C/0001/walk/04.png",
+          "assets/dragons/youth/fire/C/0001/walk/05.png",
+          "assets/dragons/youth/fire/C/0001/walk/06.png"
+        ],
+        "attack": [
+          "assets/dragons/youth/fire/C/0001/attack/01.png",
+          "assets/dragons/youth/fire/C/0001/attack/02.png",
+          "assets/dragons/youth/fire/C/0001/attack/03.png",
+          "assets/dragons/youth/fire/C/0001/attack/04.png",
+          "assets/dragons/youth/fire/C/0001/attack/05.png",
+          "assets/dragons/youth/fire/C/0001/attack/06.png"
+        ]
+      }
+    },
+    {
+      "id": "fire_c_0001_adult",
+      "speciesId": "fire_c_0001",
+      "name": "赤焰成龍",
+      "element": "fire",
+      "rank": "C",
+      "stage": "adult",
+      "hp": 320,
+      "atk": 78,
+      "def": 45,
+      "speed": 32,
+      "growth": {
+        "hp": 13,
+        "atk": 4,
+        "def": 3,
+        "speed": 2
+      },
+      "nextEvolution": "fire_c_0001_evolution",
+      "evolution": {
+        "coins": 5000,
+        "fragments": 40,
+        "materials": {
+          "evolutionStone": 5
+        }
+      },
+      "skills": [],
+      "talents": [],
+      "tags": [],
+      "variant": "normal",
+      "glow": false,
+      "boss": false,
+      "mythical": false,
+      "rarity": "C",
+      "assetRoot": "assets/dragons/adult/fire/C/0001/",
+      "iconAsset": "assets/dragons/adult/fire/C/0001/icon.png",
+      "portraitAsset": "assets/dragons/adult/fire/C/0001/portrait.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/adult/fire/C/0001/idle/01.png",
+          "assets/dragons/adult/fire/C/0001/idle/02.png",
+          "assets/dragons/adult/fire/C/0001/idle/03.png",
+          "assets/dragons/adult/fire/C/0001/idle/04.png",
+          "assets/dragons/adult/fire/C/0001/idle/05.png",
+          "assets/dragons/adult/fire/C/0001/idle/06.png"
+        ],
+        "walk": [
+          "assets/dragons/adult/fire/C/0001/walk/01.png",
+          "assets/dragons/adult/fire/C/0001/walk/02.png",
+          "assets/dragons/adult/fire/C/0001/walk/03.png",
+          "assets/dragons/adult/fire/C/0001/walk/04.png",
+          "assets/dragons/adult/fire/C/0001/walk/05.png",
+          "assets/dragons/adult/fire/C/0001/walk/06.png"
+        ],
+        "attack": [
+          "assets/dragons/adult/fire/C/0001/attack/01.png",
+          "assets/dragons/adult/fire/C/0001/attack/02.png",
+          "assets/dragons/adult/fire/C/0001/attack/03.png",
+          "assets/dragons/adult/fire/C/0001/attack/04.png",
+          "assets/dragons/adult/fire/C/0001/attack/05.png",
+          "assets/dragons/adult/fire/C/0001/attack/06.png"
+        ]
+      }
+    },
+    {
+      "id": "fire_c_0001_evolution",
+      "speciesId": "fire_c_0001",
+      "name": "赤焰神龍",
+      "element": "fire",
+      "rank": "C",
+      "stage": "evolution",
+      "hp": 520,
+      "atk": 122,
+      "def": 72,
+      "speed": 45,
+      "growth": {
+        "hp": 16,
+        "atk": 6,
+        "def": 4,
+        "speed": 2
+      },
+      "nextEvolution": null,
+      "evolution": null,
+      "skills": [],
+      "talents": [],
+      "tags": [
+        "evolved"
+      ],
+      "variant": "normal",
+      "glow": true,
+      "boss": false,
+      "mythical": false,
+      "rarity": "C",
+      "assetRoot": "assets/dragons/evolution/fire/C/0001/",
+      "iconAsset": "assets/dragons/evolution/fire/C/0001/icon.png",
+      "portraitAsset": "assets/dragons/evolution/fire/C/0001/portrait.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/evolution/fire/C/0001/idle/01.png",
+          "assets/dragons/evolution/fire/C/0001/idle/02.png",
+          "assets/dragons/evolution/fire/C/0001/idle/03.png",
+          "assets/dragons/evolution/fire/C/0001/idle/04.png",
+          "assets/dragons/evolution/fire/C/0001/idle/05.png",
+          "assets/dragons/evolution/fire/C/0001/idle/06.png"
+        ],
+        "walk": [
+          "assets/dragons/evolution/fire/C/0001/walk/01.png",
+          "assets/dragons/evolution/fire/C/0001/walk/02.png",
+          "assets/dragons/evolution/fire/C/0001/walk/03.png",
+          "assets/dragons/evolution/fire/C/0001/walk/04.png",
+          "assets/dragons/evolution/fire/C/0001/walk/05.png",
+          "assets/dragons/evolution/fire/C/0001/walk/06.png"
+        ],
+        "attack": [
+          "assets/dragons/evolution/fire/C/0001/attack/01.png",
+          "assets/dragons/evolution/fire/C/0001/attack/02.png",
+          "assets/dragons/evolution/fire/C/0001/attack/03.png",
+          "assets/dragons/evolution/fire/C/0001/attack/04.png",
+          "assets/dragons/evolution/fire/C/0001/attack/05.png",
+          "assets/dragons/evolution/fire/C/0001/attack/06.png"
+        ]
+      }
+    },
+    {
+      "id": "legacy_fire_c_baby",
+      "speciesId": "legacy_fire_c",
+      "name": "fire-C-baby",
+      "element": "fire",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/baby/",
+      "iconAsset": "assets/dragons/fire/baby/avatar.png",
+      "portraitAsset": "assets/dragons/fire/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/fire/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_b_baby",
+      "speciesId": "legacy_fire_b",
+      "name": "fire-B-baby",
+      "element": "fire",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/baby/",
+      "iconAsset": "assets/dragons/fire/baby/avatar.png",
+      "portraitAsset": "assets/dragons/fire/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/fire/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_a_baby",
+      "speciesId": "legacy_fire_a",
+      "name": "fire-A-baby",
+      "element": "fire",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/baby/",
+      "iconAsset": "assets/dragons/fire/baby/avatar.png",
+      "portraitAsset": "assets/dragons/fire/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/fire/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_s_baby",
+      "speciesId": "legacy_fire_s",
+      "name": "fire-S-baby",
+      "element": "fire",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/baby/",
+      "iconAsset": "assets/dragons/fire/baby/avatar.png",
+      "portraitAsset": "assets/dragons/fire/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/fire/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_ss_baby",
+      "speciesId": "legacy_fire_ss",
+      "name": "fire-SS-baby",
+      "element": "fire",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/baby/",
+      "iconAsset": "assets/dragons/fire/baby/avatar.png",
+      "portraitAsset": "assets/dragons/fire/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/fire/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_sss_baby",
+      "speciesId": "legacy_fire_sss",
+      "name": "fire-SSS-baby",
+      "element": "fire",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/baby/",
+      "iconAsset": "assets/dragons/fire/baby/avatar.png",
+      "portraitAsset": "assets/dragons/fire/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/fire/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_c_baby",
+      "speciesId": "legacy_water_c",
+      "name": "water-C-baby",
+      "element": "water",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/baby/",
+      "iconAsset": "assets/dragons/water/baby/avatar.png",
+      "portraitAsset": "assets/dragons/water/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/water/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_b_baby",
+      "speciesId": "legacy_water_b",
+      "name": "water-B-baby",
+      "element": "water",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/baby/",
+      "iconAsset": "assets/dragons/water/baby/avatar.png",
+      "portraitAsset": "assets/dragons/water/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/water/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_a_baby",
+      "speciesId": "legacy_water_a",
+      "name": "water-A-baby",
+      "element": "water",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/baby/",
+      "iconAsset": "assets/dragons/water/baby/avatar.png",
+      "portraitAsset": "assets/dragons/water/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/water/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_s_baby",
+      "speciesId": "legacy_water_s",
+      "name": "water-S-baby",
+      "element": "water",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/baby/",
+      "iconAsset": "assets/dragons/water/baby/avatar.png",
+      "portraitAsset": "assets/dragons/water/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/water/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_ss_baby",
+      "speciesId": "legacy_water_ss",
+      "name": "water-SS-baby",
+      "element": "water",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/baby/",
+      "iconAsset": "assets/dragons/water/baby/avatar.png",
+      "portraitAsset": "assets/dragons/water/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/water/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_sss_baby",
+      "speciesId": "legacy_water_sss",
+      "name": "water-SSS-baby",
+      "element": "water",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/baby/",
+      "iconAsset": "assets/dragons/water/baby/avatar.png",
+      "portraitAsset": "assets/dragons/water/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/water/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_c_baby",
+      "speciesId": "legacy_wood_c",
+      "name": "wood-C-baby",
+      "element": "wood",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/baby/",
+      "iconAsset": "assets/dragons/wood/baby/avatar.png",
+      "portraitAsset": "assets/dragons/wood/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/wood/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_b_baby",
+      "speciesId": "legacy_wood_b",
+      "name": "wood-B-baby",
+      "element": "wood",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/baby/",
+      "iconAsset": "assets/dragons/wood/baby/avatar.png",
+      "portraitAsset": "assets/dragons/wood/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/wood/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_a_baby",
+      "speciesId": "legacy_wood_a",
+      "name": "wood-A-baby",
+      "element": "wood",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/baby/",
+      "iconAsset": "assets/dragons/wood/baby/avatar.png",
+      "portraitAsset": "assets/dragons/wood/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/wood/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_s_baby",
+      "speciesId": "legacy_wood_s",
+      "name": "wood-S-baby",
+      "element": "wood",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/baby/",
+      "iconAsset": "assets/dragons/wood/baby/avatar.png",
+      "portraitAsset": "assets/dragons/wood/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/wood/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_ss_baby",
+      "speciesId": "legacy_wood_ss",
+      "name": "wood-SS-baby",
+      "element": "wood",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/baby/",
+      "iconAsset": "assets/dragons/wood/baby/avatar.png",
+      "portraitAsset": "assets/dragons/wood/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/wood/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_sss_baby",
+      "speciesId": "legacy_wood_sss",
+      "name": "wood-SSS-baby",
+      "element": "wood",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/baby/",
+      "iconAsset": "assets/dragons/wood/baby/avatar.png",
+      "portraitAsset": "assets/dragons/wood/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/wood/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_c_baby",
+      "speciesId": "legacy_light_c",
+      "name": "light-C-baby",
+      "element": "light",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/baby/",
+      "iconAsset": "assets/dragons/light/baby/avatar.png",
+      "portraitAsset": "assets/dragons/light/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/light/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_b_baby",
+      "speciesId": "legacy_light_b",
+      "name": "light-B-baby",
+      "element": "light",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/baby/",
+      "iconAsset": "assets/dragons/light/baby/avatar.png",
+      "portraitAsset": "assets/dragons/light/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/light/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_a_baby",
+      "speciesId": "legacy_light_a",
+      "name": "light-A-baby",
+      "element": "light",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/baby/",
+      "iconAsset": "assets/dragons/light/baby/avatar.png",
+      "portraitAsset": "assets/dragons/light/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/light/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_s_baby",
+      "speciesId": "legacy_light_s",
+      "name": "light-S-baby",
+      "element": "light",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/baby/",
+      "iconAsset": "assets/dragons/light/baby/avatar.png",
+      "portraitAsset": "assets/dragons/light/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/light/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_ss_baby",
+      "speciesId": "legacy_light_ss",
+      "name": "light-SS-baby",
+      "element": "light",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/baby/",
+      "iconAsset": "assets/dragons/light/baby/avatar.png",
+      "portraitAsset": "assets/dragons/light/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/light/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_sss_baby",
+      "speciesId": "legacy_light_sss",
+      "name": "light-SSS-baby",
+      "element": "light",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/baby/",
+      "iconAsset": "assets/dragons/light/baby/avatar.png",
+      "portraitAsset": "assets/dragons/light/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/light/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_c_baby",
+      "speciesId": "legacy_dark_c",
+      "name": "dark-C-baby",
+      "element": "dark",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/baby/",
+      "iconAsset": "assets/dragons/dark/baby/avatar.png",
+      "portraitAsset": "assets/dragons/dark/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/dark/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_b_baby",
+      "speciesId": "legacy_dark_b",
+      "name": "dark-B-baby",
+      "element": "dark",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/baby/",
+      "iconAsset": "assets/dragons/dark/baby/avatar.png",
+      "portraitAsset": "assets/dragons/dark/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/dark/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_a_baby",
+      "speciesId": "legacy_dark_a",
+      "name": "dark-A-baby",
+      "element": "dark",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/baby/",
+      "iconAsset": "assets/dragons/dark/baby/avatar.png",
+      "portraitAsset": "assets/dragons/dark/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/dark/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_s_baby",
+      "speciesId": "legacy_dark_s",
+      "name": "dark-S-baby",
+      "element": "dark",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/baby/",
+      "iconAsset": "assets/dragons/dark/baby/avatar.png",
+      "portraitAsset": "assets/dragons/dark/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/dark/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_ss_baby",
+      "speciesId": "legacy_dark_ss",
+      "name": "dark-SS-baby",
+      "element": "dark",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/baby/",
+      "iconAsset": "assets/dragons/dark/baby/avatar.png",
+      "portraitAsset": "assets/dragons/dark/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/dark/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_sss_baby",
+      "speciesId": "legacy_dark_sss",
+      "name": "dark-SSS-baby",
+      "element": "dark",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "baby",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/baby/",
+      "iconAsset": "assets/dragons/dark/baby/avatar.png",
+      "portraitAsset": "assets/dragons/dark/baby/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/baby/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/baby/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/baby/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/baby/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/baby/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/baby/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/baby/attack.png"
+        ],
+        "angry": [
+          "assets/dragons/dark/baby/angry.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_c_youth",
+      "speciesId": "legacy_fire_c",
+      "name": "fire-C-youth",
+      "element": "fire",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/middle/",
+      "iconAsset": "assets/dragons/fire/middle/avatar.png",
+      "portraitAsset": "assets/dragons/fire/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_b_youth",
+      "speciesId": "legacy_fire_b",
+      "name": "fire-B-youth",
+      "element": "fire",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/middle/",
+      "iconAsset": "assets/dragons/fire/middle/avatar.png",
+      "portraitAsset": "assets/dragons/fire/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_a_youth",
+      "speciesId": "legacy_fire_a",
+      "name": "fire-A-youth",
+      "element": "fire",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/middle/",
+      "iconAsset": "assets/dragons/fire/middle/avatar.png",
+      "portraitAsset": "assets/dragons/fire/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_s_youth",
+      "speciesId": "legacy_fire_s",
+      "name": "fire-S-youth",
+      "element": "fire",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/middle/",
+      "iconAsset": "assets/dragons/fire/middle/avatar.png",
+      "portraitAsset": "assets/dragons/fire/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_ss_youth",
+      "speciesId": "legacy_fire_ss",
+      "name": "fire-SS-youth",
+      "element": "fire",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/middle/",
+      "iconAsset": "assets/dragons/fire/middle/avatar.png",
+      "portraitAsset": "assets/dragons/fire/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_sss_youth",
+      "speciesId": "legacy_fire_sss",
+      "name": "fire-SSS-youth",
+      "element": "fire",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/middle/",
+      "iconAsset": "assets/dragons/fire/middle/avatar.png",
+      "portraitAsset": "assets/dragons/fire/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_c_youth",
+      "speciesId": "legacy_water_c",
+      "name": "water-C-youth",
+      "element": "water",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/middle/",
+      "iconAsset": "assets/dragons/water/middle/avatar.png",
+      "portraitAsset": "assets/dragons/water/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_b_youth",
+      "speciesId": "legacy_water_b",
+      "name": "water-B-youth",
+      "element": "water",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/middle/",
+      "iconAsset": "assets/dragons/water/middle/avatar.png",
+      "portraitAsset": "assets/dragons/water/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_a_youth",
+      "speciesId": "legacy_water_a",
+      "name": "water-A-youth",
+      "element": "water",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/middle/",
+      "iconAsset": "assets/dragons/water/middle/avatar.png",
+      "portraitAsset": "assets/dragons/water/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_s_youth",
+      "speciesId": "legacy_water_s",
+      "name": "water-S-youth",
+      "element": "water",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/middle/",
+      "iconAsset": "assets/dragons/water/middle/avatar.png",
+      "portraitAsset": "assets/dragons/water/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_ss_youth",
+      "speciesId": "legacy_water_ss",
+      "name": "water-SS-youth",
+      "element": "water",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/middle/",
+      "iconAsset": "assets/dragons/water/middle/avatar.png",
+      "portraitAsset": "assets/dragons/water/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_sss_youth",
+      "speciesId": "legacy_water_sss",
+      "name": "water-SSS-youth",
+      "element": "water",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/middle/",
+      "iconAsset": "assets/dragons/water/middle/avatar.png",
+      "portraitAsset": "assets/dragons/water/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_c_youth",
+      "speciesId": "legacy_wood_c",
+      "name": "wood-C-youth",
+      "element": "wood",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/middle/",
+      "iconAsset": "assets/dragons/wood/middle/avatar.png",
+      "portraitAsset": "assets/dragons/wood/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_b_youth",
+      "speciesId": "legacy_wood_b",
+      "name": "wood-B-youth",
+      "element": "wood",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/middle/",
+      "iconAsset": "assets/dragons/wood/middle/avatar.png",
+      "portraitAsset": "assets/dragons/wood/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_a_youth",
+      "speciesId": "legacy_wood_a",
+      "name": "wood-A-youth",
+      "element": "wood",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/middle/",
+      "iconAsset": "assets/dragons/wood/middle/avatar.png",
+      "portraitAsset": "assets/dragons/wood/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_s_youth",
+      "speciesId": "legacy_wood_s",
+      "name": "wood-S-youth",
+      "element": "wood",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/middle/",
+      "iconAsset": "assets/dragons/wood/middle/avatar.png",
+      "portraitAsset": "assets/dragons/wood/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_ss_youth",
+      "speciesId": "legacy_wood_ss",
+      "name": "wood-SS-youth",
+      "element": "wood",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/middle/",
+      "iconAsset": "assets/dragons/wood/middle/avatar.png",
+      "portraitAsset": "assets/dragons/wood/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_sss_youth",
+      "speciesId": "legacy_wood_sss",
+      "name": "wood-SSS-youth",
+      "element": "wood",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/middle/",
+      "iconAsset": "assets/dragons/wood/middle/avatar.png",
+      "portraitAsset": "assets/dragons/wood/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_c_youth",
+      "speciesId": "legacy_light_c",
+      "name": "light-C-youth",
+      "element": "light",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/middle/",
+      "iconAsset": "assets/dragons/light/middle/avatar.png",
+      "portraitAsset": "assets/dragons/light/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_b_youth",
+      "speciesId": "legacy_light_b",
+      "name": "light-B-youth",
+      "element": "light",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/middle/",
+      "iconAsset": "assets/dragons/light/middle/avatar.png",
+      "portraitAsset": "assets/dragons/light/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_a_youth",
+      "speciesId": "legacy_light_a",
+      "name": "light-A-youth",
+      "element": "light",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/middle/",
+      "iconAsset": "assets/dragons/light/middle/avatar.png",
+      "portraitAsset": "assets/dragons/light/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_s_youth",
+      "speciesId": "legacy_light_s",
+      "name": "light-S-youth",
+      "element": "light",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/middle/",
+      "iconAsset": "assets/dragons/light/middle/avatar.png",
+      "portraitAsset": "assets/dragons/light/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_ss_youth",
+      "speciesId": "legacy_light_ss",
+      "name": "light-SS-youth",
+      "element": "light",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/middle/",
+      "iconAsset": "assets/dragons/light/middle/avatar.png",
+      "portraitAsset": "assets/dragons/light/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_sss_youth",
+      "speciesId": "legacy_light_sss",
+      "name": "light-SSS-youth",
+      "element": "light",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/middle/",
+      "iconAsset": "assets/dragons/light/middle/avatar.png",
+      "portraitAsset": "assets/dragons/light/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_c_youth",
+      "speciesId": "legacy_dark_c",
+      "name": "dark-C-youth",
+      "element": "dark",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/middle/",
+      "iconAsset": "assets/dragons/dark/middle/avatar.png",
+      "portraitAsset": "assets/dragons/dark/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_b_youth",
+      "speciesId": "legacy_dark_b",
+      "name": "dark-B-youth",
+      "element": "dark",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/middle/",
+      "iconAsset": "assets/dragons/dark/middle/avatar.png",
+      "portraitAsset": "assets/dragons/dark/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_a_youth",
+      "speciesId": "legacy_dark_a",
+      "name": "dark-A-youth",
+      "element": "dark",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/middle/",
+      "iconAsset": "assets/dragons/dark/middle/avatar.png",
+      "portraitAsset": "assets/dragons/dark/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_s_youth",
+      "speciesId": "legacy_dark_s",
+      "name": "dark-S-youth",
+      "element": "dark",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/middle/",
+      "iconAsset": "assets/dragons/dark/middle/avatar.png",
+      "portraitAsset": "assets/dragons/dark/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_ss_youth",
+      "speciesId": "legacy_dark_ss",
+      "name": "dark-SS-youth",
+      "element": "dark",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/middle/",
+      "iconAsset": "assets/dragons/dark/middle/avatar.png",
+      "portraitAsset": "assets/dragons/dark/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_sss_youth",
+      "speciesId": "legacy_dark_sss",
+      "name": "dark-SSS-youth",
+      "element": "dark",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "youth",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/middle/",
+      "iconAsset": "assets/dragons/dark/middle/avatar.png",
+      "portraitAsset": "assets/dragons/dark/middle/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/middle/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/middle/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/middle/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/middle/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/middle/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/middle/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/middle/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_c_adult",
+      "speciesId": "legacy_fire_c",
+      "name": "fire-C-adult",
+      "element": "fire",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/adult/",
+      "iconAsset": "assets/dragons/fire/adult/avatar.png",
+      "portraitAsset": "assets/dragons/fire/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_b_adult",
+      "speciesId": "legacy_fire_b",
+      "name": "fire-B-adult",
+      "element": "fire",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/adult/",
+      "iconAsset": "assets/dragons/fire/adult/avatar.png",
+      "portraitAsset": "assets/dragons/fire/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_a_adult",
+      "speciesId": "legacy_fire_a",
+      "name": "fire-A-adult",
+      "element": "fire",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/adult/",
+      "iconAsset": "assets/dragons/fire/adult/avatar.png",
+      "portraitAsset": "assets/dragons/fire/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_s_adult",
+      "speciesId": "legacy_fire_s",
+      "name": "fire-S-adult",
+      "element": "fire",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/adult/",
+      "iconAsset": "assets/dragons/fire/adult/avatar.png",
+      "portraitAsset": "assets/dragons/fire/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_ss_adult",
+      "speciesId": "legacy_fire_ss",
+      "name": "fire-SS-adult",
+      "element": "fire",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/adult/",
+      "iconAsset": "assets/dragons/fire/adult/avatar.png",
+      "portraitAsset": "assets/dragons/fire/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_sss_adult",
+      "speciesId": "legacy_fire_sss",
+      "name": "fire-SSS-adult",
+      "element": "fire",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/adult/",
+      "iconAsset": "assets/dragons/fire/adult/avatar.png",
+      "portraitAsset": "assets/dragons/fire/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_c_adult",
+      "speciesId": "legacy_water_c",
+      "name": "water-C-adult",
+      "element": "water",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/adult/",
+      "iconAsset": "assets/dragons/water/adult/avatar.png",
+      "portraitAsset": "assets/dragons/water/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_b_adult",
+      "speciesId": "legacy_water_b",
+      "name": "water-B-adult",
+      "element": "water",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/adult/",
+      "iconAsset": "assets/dragons/water/adult/avatar.png",
+      "portraitAsset": "assets/dragons/water/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_a_adult",
+      "speciesId": "legacy_water_a",
+      "name": "water-A-adult",
+      "element": "water",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/adult/",
+      "iconAsset": "assets/dragons/water/adult/avatar.png",
+      "portraitAsset": "assets/dragons/water/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_s_adult",
+      "speciesId": "legacy_water_s",
+      "name": "water-S-adult",
+      "element": "water",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/adult/",
+      "iconAsset": "assets/dragons/water/adult/avatar.png",
+      "portraitAsset": "assets/dragons/water/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_ss_adult",
+      "speciesId": "legacy_water_ss",
+      "name": "water-SS-adult",
+      "element": "water",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/adult/",
+      "iconAsset": "assets/dragons/water/adult/avatar.png",
+      "portraitAsset": "assets/dragons/water/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_sss_adult",
+      "speciesId": "legacy_water_sss",
+      "name": "water-SSS-adult",
+      "element": "water",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/adult/",
+      "iconAsset": "assets/dragons/water/adult/avatar.png",
+      "portraitAsset": "assets/dragons/water/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_c_adult",
+      "speciesId": "legacy_wood_c",
+      "name": "wood-C-adult",
+      "element": "wood",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/adult/",
+      "iconAsset": "assets/dragons/wood/adult/avatar.png",
+      "portraitAsset": "assets/dragons/wood/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_b_adult",
+      "speciesId": "legacy_wood_b",
+      "name": "wood-B-adult",
+      "element": "wood",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/adult/",
+      "iconAsset": "assets/dragons/wood/adult/avatar.png",
+      "portraitAsset": "assets/dragons/wood/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_a_adult",
+      "speciesId": "legacy_wood_a",
+      "name": "wood-A-adult",
+      "element": "wood",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/adult/",
+      "iconAsset": "assets/dragons/wood/adult/avatar.png",
+      "portraitAsset": "assets/dragons/wood/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_s_adult",
+      "speciesId": "legacy_wood_s",
+      "name": "wood-S-adult",
+      "element": "wood",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/adult/",
+      "iconAsset": "assets/dragons/wood/adult/avatar.png",
+      "portraitAsset": "assets/dragons/wood/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_ss_adult",
+      "speciesId": "legacy_wood_ss",
+      "name": "wood-SS-adult",
+      "element": "wood",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/adult/",
+      "iconAsset": "assets/dragons/wood/adult/avatar.png",
+      "portraitAsset": "assets/dragons/wood/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_sss_adult",
+      "speciesId": "legacy_wood_sss",
+      "name": "wood-SSS-adult",
+      "element": "wood",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/adult/",
+      "iconAsset": "assets/dragons/wood/adult/avatar.png",
+      "portraitAsset": "assets/dragons/wood/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_c_adult",
+      "speciesId": "legacy_light_c",
+      "name": "light-C-adult",
+      "element": "light",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/adult/",
+      "iconAsset": "assets/dragons/light/adult/avatar.png",
+      "portraitAsset": "assets/dragons/light/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_b_adult",
+      "speciesId": "legacy_light_b",
+      "name": "light-B-adult",
+      "element": "light",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/adult/",
+      "iconAsset": "assets/dragons/light/adult/avatar.png",
+      "portraitAsset": "assets/dragons/light/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_a_adult",
+      "speciesId": "legacy_light_a",
+      "name": "light-A-adult",
+      "element": "light",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/adult/",
+      "iconAsset": "assets/dragons/light/adult/avatar.png",
+      "portraitAsset": "assets/dragons/light/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_s_adult",
+      "speciesId": "legacy_light_s",
+      "name": "light-S-adult",
+      "element": "light",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/adult/",
+      "iconAsset": "assets/dragons/light/adult/avatar.png",
+      "portraitAsset": "assets/dragons/light/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_ss_adult",
+      "speciesId": "legacy_light_ss",
+      "name": "light-SS-adult",
+      "element": "light",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/adult/",
+      "iconAsset": "assets/dragons/light/adult/avatar.png",
+      "portraitAsset": "assets/dragons/light/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_sss_adult",
+      "speciesId": "legacy_light_sss",
+      "name": "light-SSS-adult",
+      "element": "light",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/adult/",
+      "iconAsset": "assets/dragons/light/adult/avatar.png",
+      "portraitAsset": "assets/dragons/light/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_c_adult",
+      "speciesId": "legacy_dark_c",
+      "name": "dark-C-adult",
+      "element": "dark",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/adult/",
+      "iconAsset": "assets/dragons/dark/adult/avatar.png",
+      "portraitAsset": "assets/dragons/dark/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_b_adult",
+      "speciesId": "legacy_dark_b",
+      "name": "dark-B-adult",
+      "element": "dark",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/adult/",
+      "iconAsset": "assets/dragons/dark/adult/avatar.png",
+      "portraitAsset": "assets/dragons/dark/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_a_adult",
+      "speciesId": "legacy_dark_a",
+      "name": "dark-A-adult",
+      "element": "dark",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/adult/",
+      "iconAsset": "assets/dragons/dark/adult/avatar.png",
+      "portraitAsset": "assets/dragons/dark/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_s_adult",
+      "speciesId": "legacy_dark_s",
+      "name": "dark-S-adult",
+      "element": "dark",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/adult/",
+      "iconAsset": "assets/dragons/dark/adult/avatar.png",
+      "portraitAsset": "assets/dragons/dark/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_ss_adult",
+      "speciesId": "legacy_dark_ss",
+      "name": "dark-SS-adult",
+      "element": "dark",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/adult/",
+      "iconAsset": "assets/dragons/dark/adult/avatar.png",
+      "portraitAsset": "assets/dragons/dark/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_sss_adult",
+      "speciesId": "legacy_dark_sss",
+      "name": "dark-SSS-adult",
+      "element": "dark",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "adult",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/adult/",
+      "iconAsset": "assets/dragons/dark/adult/avatar.png",
+      "portraitAsset": "assets/dragons/dark/adult/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/adult/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/adult/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/adult/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/adult/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/adult/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/adult/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/adult/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_c_evolution",
+      "speciesId": "legacy_fire_c",
+      "name": "fire-C-evolution",
+      "element": "fire",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/evolve/",
+      "iconAsset": "assets/dragons/fire/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/fire/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_b_evolution",
+      "speciesId": "legacy_fire_b",
+      "name": "fire-B-evolution",
+      "element": "fire",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/evolve/",
+      "iconAsset": "assets/dragons/fire/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/fire/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_a_evolution",
+      "speciesId": "legacy_fire_a",
+      "name": "fire-A-evolution",
+      "element": "fire",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/evolve/",
+      "iconAsset": "assets/dragons/fire/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/fire/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_s_evolution",
+      "speciesId": "legacy_fire_s",
+      "name": "fire-S-evolution",
+      "element": "fire",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/evolve/",
+      "iconAsset": "assets/dragons/fire/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/fire/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_ss_evolution",
+      "speciesId": "legacy_fire_ss",
+      "name": "fire-SS-evolution",
+      "element": "fire",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/evolve/",
+      "iconAsset": "assets/dragons/fire/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/fire/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_fire_sss_evolution",
+      "speciesId": "legacy_fire_sss",
+      "name": "fire-SSS-evolution",
+      "element": "fire",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/fire/evolve/",
+      "iconAsset": "assets/dragons/fire/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/fire/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/fire/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/fire/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/fire/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/fire/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/fire/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/fire/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/fire/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_c_evolution",
+      "speciesId": "legacy_water_c",
+      "name": "water-C-evolution",
+      "element": "water",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/evolve/",
+      "iconAsset": "assets/dragons/water/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/water/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_b_evolution",
+      "speciesId": "legacy_water_b",
+      "name": "water-B-evolution",
+      "element": "water",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/evolve/",
+      "iconAsset": "assets/dragons/water/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/water/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_a_evolution",
+      "speciesId": "legacy_water_a",
+      "name": "water-A-evolution",
+      "element": "water",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/evolve/",
+      "iconAsset": "assets/dragons/water/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/water/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_s_evolution",
+      "speciesId": "legacy_water_s",
+      "name": "water-S-evolution",
+      "element": "water",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/evolve/",
+      "iconAsset": "assets/dragons/water/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/water/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_ss_evolution",
+      "speciesId": "legacy_water_ss",
+      "name": "water-SS-evolution",
+      "element": "water",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/evolve/",
+      "iconAsset": "assets/dragons/water/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/water/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_water_sss_evolution",
+      "speciesId": "legacy_water_sss",
+      "name": "water-SSS-evolution",
+      "element": "water",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/water/evolve/",
+      "iconAsset": "assets/dragons/water/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/water/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/water/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/water/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/water/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/water/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/water/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/water/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/water/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_c_evolution",
+      "speciesId": "legacy_wood_c",
+      "name": "wood-C-evolution",
+      "element": "wood",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/evolve/",
+      "iconAsset": "assets/dragons/wood/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/wood/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_b_evolution",
+      "speciesId": "legacy_wood_b",
+      "name": "wood-B-evolution",
+      "element": "wood",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/evolve/",
+      "iconAsset": "assets/dragons/wood/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/wood/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_a_evolution",
+      "speciesId": "legacy_wood_a",
+      "name": "wood-A-evolution",
+      "element": "wood",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/evolve/",
+      "iconAsset": "assets/dragons/wood/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/wood/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_s_evolution",
+      "speciesId": "legacy_wood_s",
+      "name": "wood-S-evolution",
+      "element": "wood",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/evolve/",
+      "iconAsset": "assets/dragons/wood/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/wood/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_ss_evolution",
+      "speciesId": "legacy_wood_ss",
+      "name": "wood-SS-evolution",
+      "element": "wood",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/evolve/",
+      "iconAsset": "assets/dragons/wood/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/wood/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_wood_sss_evolution",
+      "speciesId": "legacy_wood_sss",
+      "name": "wood-SSS-evolution",
+      "element": "wood",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/wood/evolve/",
+      "iconAsset": "assets/dragons/wood/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/wood/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/wood/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/wood/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/wood/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/wood/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/wood/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/wood/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/wood/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_c_evolution",
+      "speciesId": "legacy_light_c",
+      "name": "light-C-evolution",
+      "element": "light",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/evolve/",
+      "iconAsset": "assets/dragons/light/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/light/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_b_evolution",
+      "speciesId": "legacy_light_b",
+      "name": "light-B-evolution",
+      "element": "light",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/evolve/",
+      "iconAsset": "assets/dragons/light/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/light/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_a_evolution",
+      "speciesId": "legacy_light_a",
+      "name": "light-A-evolution",
+      "element": "light",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/evolve/",
+      "iconAsset": "assets/dragons/light/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/light/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_s_evolution",
+      "speciesId": "legacy_light_s",
+      "name": "light-S-evolution",
+      "element": "light",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/evolve/",
+      "iconAsset": "assets/dragons/light/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/light/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_ss_evolution",
+      "speciesId": "legacy_light_ss",
+      "name": "light-SS-evolution",
+      "element": "light",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/evolve/",
+      "iconAsset": "assets/dragons/light/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/light/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_light_sss_evolution",
+      "speciesId": "legacy_light_sss",
+      "name": "light-SSS-evolution",
+      "element": "light",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/light/evolve/",
+      "iconAsset": "assets/dragons/light/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/light/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/light/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/light/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/light/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/light/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/light/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/light/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/light/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_c_evolution",
+      "speciesId": "legacy_dark_c",
+      "name": "dark-C-evolution",
+      "element": "dark",
+      "rarity": "C",
+      "rank": "C",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/evolve/",
+      "iconAsset": "assets/dragons/dark/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/dark/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_b_evolution",
+      "speciesId": "legacy_dark_b",
+      "name": "dark-B-evolution",
+      "element": "dark",
+      "rarity": "B",
+      "rank": "B",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/evolve/",
+      "iconAsset": "assets/dragons/dark/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/dark/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_a_evolution",
+      "speciesId": "legacy_dark_a",
+      "name": "dark-A-evolution",
+      "element": "dark",
+      "rarity": "A",
+      "rank": "A",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/evolve/",
+      "iconAsset": "assets/dragons/dark/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/dark/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_s_evolution",
+      "speciesId": "legacy_dark_s",
+      "name": "dark-S-evolution",
+      "element": "dark",
+      "rarity": "S",
+      "rank": "S",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/evolve/",
+      "iconAsset": "assets/dragons/dark/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/dark/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_ss_evolution",
+      "speciesId": "legacy_dark_ss",
+      "name": "dark-SS-evolution",
+      "element": "dark",
+      "rarity": "SS",
+      "rank": "SS",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/evolve/",
+      "iconAsset": "assets/dragons/dark/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/dark/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_dark_sss_evolution",
+      "speciesId": "legacy_dark_sss",
+      "name": "dark-SSS-evolution",
+      "element": "dark",
+      "rarity": "SSS",
+      "rank": "SSS",
+      "stage": "evolution",
+      "hp": 88,
+      "atk": 24,
+      "def": 18,
+      "speed": 14,
+      "growth": {
+        "hp": 8,
+        "atk": 2,
+        "def": 1,
+        "speed": 1
+      },
+      "assetRoot": "assets/dragons/dark/evolve/",
+      "iconAsset": "assets/dragons/dark/evolve/avatar.png",
+      "portraitAsset": "assets/dragons/dark/evolve/avatar.png",
+      "actions": {
+        "idle": [
+          "assets/dragons/dark/evolve/idle.png"
+        ],
+        "sleep": [
+          "assets/dragons/dark/evolve/sleep.png"
+        ],
+        "walk": [
+          "assets/dragons/dark/evolve/walk.png"
+        ],
+        "fly": [
+          "assets/dragons/dark/evolve/fly.png"
+        ],
+        "eat": [
+          "assets/dragons/dark/evolve/eat.png"
+        ],
+        "train": [
+          "assets/dragons/dark/evolve/train.png"
+        ],
+        "attack": [
+          "assets/dragons/dark/evolve/attack.png"
+        ]
+      },
+      "legacy": true
+    }
+  ],
+  "eggs": [
+    {
+      "id": "egg_fire_c_0001",
+      "name": "赤焰紋龍蛋",
+      "element": "fire",
+      "rarity": "C",
+      "hatchTime": 60,
+      "dragonTemplateId": "fire_c_0001_baby",
+      "tags": [
+        "starter"
+      ],
+      "assetRoot": "assets/eggs/fire/C/0001/",
+      "iconAsset": "assets/eggs/fire/C/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/fire/C/0001/idle/01.png",
+          "assets/eggs/fire/C/0001/idle/02.png",
+          "assets/eggs/fire/C/0001/idle/03.png",
+          "assets/eggs/fire/C/0001/idle/04.png",
+          "assets/eggs/fire/C/0001/idle/05.png",
+          "assets/eggs/fire/C/0001/idle/06.png"
+        ]
+      }
+    },
+    {
+      "id": "legacy_egg_fire_c",
+      "name": "fire-C-egg",
+      "element": "fire",
+      "rarity": "C",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/fire/c.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/fire/c.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_fire_b",
+      "name": "fire-B-egg",
+      "element": "fire",
+      "rarity": "B",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/fire/b.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/fire/b.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_fire_a",
+      "name": "fire-A-egg",
+      "element": "fire",
+      "rarity": "A",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/fire/a.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/fire/a.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_fire_s",
+      "name": "fire-S-egg",
+      "element": "fire",
+      "rarity": "S",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/fire/s.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/fire/s.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_fire_ss",
+      "name": "fire-SS-egg",
+      "element": "fire",
+      "rarity": "SS",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/fire/ss.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/fire/ss.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_fire_sss",
+      "name": "fire-SSS-egg",
+      "element": "fire",
+      "rarity": "SSS",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/fire/sss.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/fire/sss.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_water_c",
+      "name": "water-C-egg",
+      "element": "water",
+      "rarity": "C",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/water/c.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/water/c.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_water_b",
+      "name": "water-B-egg",
+      "element": "water",
+      "rarity": "B",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/water/b.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/water/b.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_water_a",
+      "name": "water-A-egg",
+      "element": "water",
+      "rarity": "A",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/water/a.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/water/a.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_water_s",
+      "name": "water-S-egg",
+      "element": "water",
+      "rarity": "S",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/water/s.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/water/s.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_water_ss",
+      "name": "water-SS-egg",
+      "element": "water",
+      "rarity": "SS",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/water/ss.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/water/ss.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_water_sss",
+      "name": "water-SSS-egg",
+      "element": "water",
+      "rarity": "SSS",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/water/sss.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/water/sss.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_wood_c",
+      "name": "wood-C-egg",
+      "element": "wood",
+      "rarity": "C",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/wood/c.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/wood/c.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_wood_b",
+      "name": "wood-B-egg",
+      "element": "wood",
+      "rarity": "B",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/wood/b.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/wood/b.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_wood_a",
+      "name": "wood-A-egg",
+      "element": "wood",
+      "rarity": "A",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/wood/a.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/wood/a.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_wood_s",
+      "name": "wood-S-egg",
+      "element": "wood",
+      "rarity": "S",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/wood/s.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/wood/s.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_wood_ss",
+      "name": "wood-SS-egg",
+      "element": "wood",
+      "rarity": "SS",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/wood/ss.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/wood/ss.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_wood_sss",
+      "name": "wood-SSS-egg",
+      "element": "wood",
+      "rarity": "SSS",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/wood/sss.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/wood/sss.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_light_c",
+      "name": "light-C-egg",
+      "element": "light",
+      "rarity": "C",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/light/c.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/light/c.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_light_b",
+      "name": "light-B-egg",
+      "element": "light",
+      "rarity": "B",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/light/b.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/light/b.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_light_a",
+      "name": "light-A-egg",
+      "element": "light",
+      "rarity": "A",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/light/a.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/light/a.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_light_s",
+      "name": "light-S-egg",
+      "element": "light",
+      "rarity": "S",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/light/s.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/light/s.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_light_ss",
+      "name": "light-SS-egg",
+      "element": "light",
+      "rarity": "SS",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/light/ss.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/light/ss.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_light_sss",
+      "name": "light-SSS-egg",
+      "element": "light",
+      "rarity": "SSS",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/light/sss.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/light/sss.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_dark_c",
+      "name": "dark-C-egg",
+      "element": "dark",
+      "rarity": "C",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/dark/c.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/dark/c.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_dark_b",
+      "name": "dark-B-egg",
+      "element": "dark",
+      "rarity": "B",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/dark/b.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/dark/b.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_dark_a",
+      "name": "dark-A-egg",
+      "element": "dark",
+      "rarity": "A",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/dark/a.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/dark/a.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_dark_s",
+      "name": "dark-S-egg",
+      "element": "dark",
+      "rarity": "S",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/dark/s.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/dark/s.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_dark_ss",
+      "name": "dark-SS-egg",
+      "element": "dark",
+      "rarity": "SS",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/dark/ss.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/dark/ss.png"
+        ]
+      },
+      "legacy": true
+    },
+    {
+      "id": "legacy_egg_dark_sss",
+      "name": "dark-SSS-egg",
+      "element": "dark",
+      "rarity": "SSS",
+      "hatchTime": 60,
+      "iconAsset": "assets/eggs/dark/sss.png",
+      "actions": {
+        "idle": [
+          "assets/eggs/dark/sss.png"
+        ]
+      },
+      "legacy": true
+    }
+  ],
+  "adventurers": [
+    {
+      "id": "adventurer_fire_c_0001",
+      "templateId": "newbie-swordman-c-fire",
+      "name": "新人劍士",
+      "element": "fire",
+      "rarity": "C",
+      "job": "戰士",
+      "basePower": 28,
+      "baseStats": {
+        "hp": 88,
+        "attack": 18,
+        "defense": 14,
+        "speed": 12
+      },
+      "skills": [],
+      "talents": [],
+      "tags": [
+        "starter"
+      ],
+      "assetRoot": "assets/adventurers/fire/C/0001/",
+      "cardAsset": "assets/adventurers/fire/C/0001/card.png",
+      "portraitAsset": "assets/adventurers/fire/C/0001/portrait.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/fire/C/0001/pixel/idle/01.png",
+          "assets/adventurers/fire/C/0001/pixel/idle/02.png",
+          "assets/adventurers/fire/C/0001/pixel/idle/03.png",
+          "assets/adventurers/fire/C/0001/pixel/idle/04.png",
+          "assets/adventurers/fire/C/0001/pixel/idle/05.png",
+          "assets/adventurers/fire/C/0001/pixel/idle/06.png"
+        ],
+        "walk": [
+          "assets/adventurers/fire/C/0001/pixel/walk/01.png",
+          "assets/adventurers/fire/C/0001/pixel/walk/02.png",
+          "assets/adventurers/fire/C/0001/pixel/walk/03.png",
+          "assets/adventurers/fire/C/0001/pixel/walk/04.png",
+          "assets/adventurers/fire/C/0001/pixel/walk/05.png",
+          "assets/adventurers/fire/C/0001/pixel/walk/06.png"
+        ],
+        "attack": [
+          "assets/adventurers/fire/C/0001/pixel/attack/01.png",
+          "assets/adventurers/fire/C/0001/pixel/attack/02.png",
+          "assets/adventurers/fire/C/0001/pixel/attack/03.png",
+          "assets/adventurers/fire/C/0001/pixel/attack/04.png",
+          "assets/adventurers/fire/C/0001/pixel/attack/05.png",
+          "assets/adventurers/fire/C/0001/pixel/attack/06.png"
+        ]
+      }
+    }
+  ],
+  "islands": [
+    {
+      "id": "rest",
+      "name": "龍之島",
+      "type": "rest",
+      "x": 0,
+      "y": 0,
+      "asset": "assets/island/island-rest.png",
+      "buildingSlots": 12
+    }
+  ]
+}

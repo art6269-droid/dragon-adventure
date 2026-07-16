@@ -827,7 +827,7 @@ const HATCH_EGG_DEFINITIONS = {
 };
 
 const DRAGON_GROWTH_ELEMENTS = ["fire", "water", "wood", "light", "dark"];
-const DRAGON_GROWTH_STAGES = ["baby", "middle", "adult", "evolve"];
+const DRAGON_GROWTH_STAGES = ["baby", "youth", "adult", "evolution"];
 const DRAGON_ACTIONS = ["idle", "sleep", "walk", "fly", "eat", "train", "attack", "angry"];
 const REST_RANDOM_ACTIONS = ["idle", "sleep", "walk", "fly"];
 const REST_ISLAND_BOUNDS = { minX: 15, maxX: 85, minY: 35, maxY: 72 };
@@ -1027,6 +1027,81 @@ const ADVENTURER_POOL = [
   cardAsset: `assets/adventurers/cards/${template.templateId}.png`,
   spriteAsset: `assets/adventurers/pixel/${template.templateId}-idle.png`
 }));
+const CONTENT_CATALOG_URL = "assets/data/content-catalog.json";
+const contentCatalog = {
+  loaded: false,
+  dragons: [],
+  eggs: [],
+  adventurers: [],
+  islands: []
+};
+
+async function loadContentCatalog() {
+  try {
+    const response = await fetch(CONTENT_CATALOG_URL, { cache: "no-cache" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const catalog = await response.json();
+    contentCatalog.dragons = Array.isArray(catalog.dragons) ? catalog.dragons : [];
+    contentCatalog.eggs = Array.isArray(catalog.eggs) ? catalog.eggs : [];
+    contentCatalog.adventurers = Array.isArray(catalog.adventurers) ? catalog.adventurers : [];
+    contentCatalog.islands = Array.isArray(catalog.islands) ? catalog.islands : [];
+    contentCatalog.loaded = true;
+  } catch (error) {
+    console.warn("內容目錄載入失敗，改用內建相容資料。", error);
+  }
+}
+
+function getAdventurerTemplatePool() {
+  const merged = new Map(ADVENTURER_POOL.map((item) => [item.templateId, item]));
+  contentCatalog.adventurers.forEach((item) => {
+    const templateId = item.templateId || item.id;
+    if (!templateId) return;
+    merged.set(templateId, {
+      ...merged.get(templateId),
+      ...item,
+      templateId,
+      basePower: positiveNumber(item.basePower, merged.get(templateId)?.basePower || 28),
+      cardAsset: item.cardAsset || merged.get(templateId)?.cardAsset,
+      spriteAsset: item.actions?.idle?.[0] || merged.get(templateId)?.spriteAsset
+    });
+  });
+  return [...merged.values()];
+}
+
+function findDragonCatalogTemplate(criteria = {}) {
+  const stage = normalizeDragonStage(criteria.stage, criteria.level);
+  const rarity = String(criteria.rarity || criteria.rank || "C").toUpperCase();
+  const element = normalizeDragonElement(criteria.element);
+  if (criteria.templateId) {
+    const exact = contentCatalog.dragons.find((item) => item.id === criteria.templateId);
+    if (exact) return exact;
+  }
+  if (criteria.speciesId) {
+    const sameSpecies = contentCatalog.dragons.find((item) => (
+      item.speciesId === criteria.speciesId && normalizeDragonStage(item.stage) === stage
+    ));
+    if (sameSpecies) return sameSpecies;
+  }
+  const candidates = contentCatalog.dragons.filter((item) => (
+    normalizeDragonElement(item.element) === element &&
+    normalizeDragonStage(item.stage) === stage &&
+    String(item.rarity || item.rank || "C").toUpperCase() === rarity
+  ));
+  return candidates.find((item) => !item.legacy) || candidates[0] || null;
+}
+
+function findEggCatalogTemplate(criteria = {}) {
+  if (criteria.templateId) {
+    const exact = contentCatalog.eggs.find((item) => item.id === criteria.templateId);
+    if (exact) return exact;
+  }
+  const element = normalizeEggElement(criteria);
+  const rarity = String(criteria.rarity || criteria.eggRarity || "C").toUpperCase();
+  const candidates = contentCatalog.eggs.filter((item) => (
+    normalizeEggElement(item) === element && String(item.rarity || "C").toUpperCase() === rarity
+  ));
+  return candidates.find((item) => !item.legacy) || candidates[0] || null;
+}
 const dragonElementLabels = {
   fire: "火",
   water: "水",
@@ -1041,8 +1116,10 @@ const dragonElementLabels = {
 };
 const dragonStageLabels = {
   baby: "幼龍",
-  middle: "中階",
+  youth: "青年",
   adult: "成龍",
+  evolution: "進化",
+  middle: "青年",
   evolve: "進化"
 };
 const dragonElementToGrowthKey = {
@@ -1070,14 +1147,18 @@ const growthDragonNames = {
 };
 const growthStageLevel = {
   baby: 1,
-  middle: 10,
+  youth: 10,
   adult: 22,
+  evolution: 40,
+  middle: 10,
   evolve: 40
 };
 const growthStageRarity = {
   baby: "C",
-  middle: "B",
+  youth: "B",
   adult: "A",
+  evolution: "S",
+  middle: "B",
   evolve: "S"
 };
 Object.assign(elementClass, {
@@ -1442,7 +1523,8 @@ class AudioManager {
 
 initialize();
 
-function initialize() {
+async function initialize() {
+  await loadContentCatalog();
   ensureValidState();
   audioManager = new AudioManager(MUSIC_TRACKS, "start", MUSIC_FALLBACKS);
   audioManager.onChange = renderAudioControls;
@@ -1462,6 +1544,7 @@ function initialize() {
   }, 5000);
   startHatchTimer();
   startRestDragonBehaviorLoop();
+  startDragonFrameAnimationLoop();
 }
 
 function attachAudioUnlockEvents() {
@@ -1598,6 +1681,74 @@ function normalizeTutorial(tutorial = {}) {
   };
 }
 
+function createDefaultArchipelago() {
+  const catalogIsland = contentCatalog.islands.find((island) => island.id === "rest");
+  return {
+    version: 1,
+    activeIslandId: "rest",
+    camera: { x: 0, y: 0, zoom: 1 },
+    islands: [{
+      id: "rest",
+      name: catalogIsland?.name || "龍之島",
+      type: "rest",
+      x: 0,
+      y: 0,
+      level: 1,
+      unlocked: true,
+      asset: catalogIsland?.asset || "assets/island/island-rest.png",
+      buildingSlots: positiveNumber(catalogIsland?.buildingSlots, 12),
+      buildings: []
+    }]
+  };
+}
+
+function normalizeArchipelago(value) {
+  const defaults = createDefaultArchipelago();
+  const source = value && typeof value === "object" ? value : {};
+  const islands = Array.isArray(source.islands) ? source.islands : defaults.islands;
+  const normalizedIslands = islands.map((island, index) => ({
+    id: String(island?.id || `island_${index + 1}`),
+    name: String(island?.name || `島嶼 ${index + 1}`),
+    type: String(island?.type || "custom"),
+    x: Number.isFinite(Number(island?.x)) ? Number(island.x) : 0,
+    y: Number.isFinite(Number(island?.y)) ? Number(island.y) : 0,
+    level: positiveNumber(island?.level, 1),
+    unlocked: island?.unlocked !== false,
+    asset: String(island?.asset || "assets/island/island-rest.png"),
+    buildingSlots: positiveNumber(island?.buildingSlots, 12),
+    buildings: Array.isArray(island?.buildings) ? island.buildings : []
+  }));
+  if (!normalizedIslands.some((island) => island.id === "rest")) {
+    normalizedIslands.unshift(defaults.islands[0]);
+  }
+  const camera = source.camera && typeof source.camera === "object" ? source.camera : defaults.camera;
+  return {
+    version: 1,
+    activeIslandId: normalizedIslands.some((island) => island.id === source.activeIslandId)
+      ? source.activeIslandId
+      : "rest",
+    camera: {
+      x: Number(camera.x) || 0,
+      y: Number(camera.y) || 0,
+      zoom: clamp(Number(camera.zoom) || 1, 0.5, 2)
+    },
+    islands: normalizedIslands
+  };
+}
+
+function normalizeDragonResources(value) {
+  const source = value && typeof value === "object" ? value : {};
+  const fragments = source.fragments && typeof source.fragments === "object" ? source.fragments : {};
+  const materials = source.materials && typeof source.materials === "object" ? source.materials : {};
+  return {
+    fragments: Object.fromEntries(Object.entries(fragments).map(([id, amount]) => [id, normalizedNonNegative(amount, 0)])),
+    materials: {
+      ...materials,
+      evolutionStone: normalizedNonNegative(materials.evolutionStone, 0)
+    }
+  };
+}
+
 function createNewState() {
   const starterEggs = createStarterEggInventory();
   const starterHatchSlots = createDefaultHatchSlots();
@@ -1616,6 +1767,11 @@ function createNewState() {
       ticketsMercenary: 2
     },
     homeIsland: { restDragons: [] },
+    archipelago: createDefaultArchipelago(),
+    dragonResources: {
+      fragments: {},
+      materials: { evolutionStone: 0 }
+    },
     hatchIsland: { hatchSlots: starterHatchSlots },
     hatchSlots: starterHatchSlots,
     eggInventory: starterEggs,
@@ -1639,7 +1795,9 @@ function createNewState() {
       missionChapterCompleted: {},
       activeAdventurerPanel: null,
       activeAdventurerEquipmentSlot: "weapon",
-      activeAdventurerTradeTab: "sell"
+      activeAdventurerTradeTab: "sell",
+      activeDragonEvolutionId: null,
+      bulkManage: { type: null, selectedIds: [] }
     },
     tutorial: normalizeTutorial({ tutorialSeen: false, step: 0, beginnerQuestStarted: true }),
     characterCards: initializeCardCollection(characterCardCatalog, ["char_flame_knight"], "char_flame_knight"),
@@ -1694,6 +1852,10 @@ function ensureValidState() {
     ? state.ui.activeAdventurerEquipmentSlot
     : "weapon";
   state.ui.activeAdventurerTradeTab = state.ui.activeAdventurerTradeTab === "market" ? "market" : "sell";
+  state.ui.activeDragonEvolutionId = state.dragons.some((dragon) => dragon.id === state.ui.activeDragonEvolutionId)
+    ? state.ui.activeDragonEvolutionId
+    : null;
+  state.ui.bulkManage = { type: null, selectedIds: [] };
   syncAdventurerEquipmentState();
   syncAdventurerTeamFlags();
   state.battleTeam = normalizeBattleTeam(state.battleTeam, state.dragons);
@@ -1714,6 +1876,8 @@ function ensureValidState() {
   state.hatchSlots = state.hatchIsland.hatchSlots;
   updateHatchSlots({ render: false, save: false });
   state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
+  state.archipelago = normalizeArchipelago(state.archipelago);
+  state.dragonResources = normalizeDragonResources(state.dragonResources);
   state.characterCards = normalizeCardCollection(
     state.characterCards,
     characterCardCatalog,
@@ -1762,13 +1926,14 @@ function normalizeDragon(dragon) {
   const rarity = rarities.includes(dragon?.rarity) ? dragon.rarity : "C";
   const element = normalizeDragonElement(dragon?.element);
   const stage = normalizeDragonStage(dragon?.stage, dragon?.level);
+  const template = findDragonCatalogTemplate({ ...dragon, rarity, element, stage });
   const fallback = createDragon(rarity, dragonElementLabels[element] || "火");
   const level = positiveNumber(dragon?.level, growthStageLevel[stage] || 1);
   const power = positiveNumber(
     dragon?.power,
     Math.round((rarityPower[rarity] || 1) * 10 + level * 2)
   );
-  const assetBase = normalizeDragonAssetBase(dragon?.assetBase, element, stage);
+  const assetBase = String(dragon?.assetRoot || dragon?.assetBase || template?.assetRoot || normalizeDragonAssetBase(null, element, stage));
   const angryUntil = dragon?.angryUntil ? Number(dragon.angryUntil) : null;
   const isAngry = Boolean(dragon?.isAngry && angryUntil && angryUntil > Date.now());
   const lockActionUntil = dragon?.lockActionUntil ? Number(dragon.lockActionUntil) : null;
@@ -1785,10 +1950,12 @@ function normalizeDragon(dragon) {
     rarity,
     element,
     stage,
-    hp: positiveNumber(dragon?.hp, fallback.hp),
-    attack: positiveNumber(dragon?.attack, fallback.attack),
-    defense: positiveNumber(dragon?.defense, fallback.defense),
-    speed: positiveNumber(dragon?.speed, fallback.speed),
+    templateId: dragon?.templateId || template?.id || null,
+    speciesId: dragon?.speciesId || template?.speciesId || template?.id || null,
+    hp: positiveNumber(dragon?.hp, template?.hp || fallback.hp),
+    attack: positiveNumber(dragon?.attack, template?.atk || template?.attack || fallback.attack),
+    defense: positiveNumber(dragon?.defense, template?.def || template?.defense || fallback.defense),
+    speed: positiveNumber(dragon?.speed, template?.speed || fallback.speed),
     level,
     hunger: clamp(positiveNumber(dragon?.hunger, 80), 0, 100),
     mood: clamp(positiveNumber(dragon?.mood, 80), 0, 100),
@@ -1798,9 +1965,22 @@ function normalizeDragon(dragon) {
     isOnRestIsland,
     currentAction,
     assetBase,
-    avatarAsset: String(dragon?.avatarAsset || "").startsWith(assetBase)
-      ? String(dragon.avatarAsset)
-      : `${assetBase}avatar.png`,
+    assetRoot: assetBase,
+    animationFrames: dragon?.animationFrames || template?.actions || {},
+    avatarAsset: dragon?.avatarAsset || template?.portraitAsset || template?.iconAsset || `${assetBase}portrait.png`,
+    growth: { ...(template?.growth || {}), ...(dragon?.growth || {}) },
+    nextEvolution: dragon?.nextEvolution ?? template?.nextEvolution ?? null,
+    evolution: dragon?.evolution ?? template?.evolution ?? null,
+    skills: Array.isArray(dragon?.skills) ? dragon.skills : (template?.skills || []),
+    talents: Array.isArray(dragon?.talents) ? dragon.talents : (template?.talents || []),
+    tags: Array.isArray(dragon?.tags) ? dragon.tags : (template?.tags || []),
+    variant: dragon?.variant || template?.variant || "normal",
+    glow: Boolean(dragon?.glow ?? template?.glow),
+    boss: Boolean(dragon?.boss ?? template?.boss),
+    mythical: Boolean(dragon?.mythical ?? template?.mythical),
+    codexId: dragon?.codexId || template?.codexId || dragon?.speciesId || template?.speciesId || null,
+    bonds: Array.isArray(dragon?.bonds) ? dragon.bonds : [],
+    awakeningLevel: normalizedNonNegative(dragon?.awakeningLevel, 0),
     costumeId: dragon?.costumeId || null,
     skinId: dragon?.skinId || null,
     isAngry,
@@ -1881,32 +2061,46 @@ function normalizeDragonElement(element) {
 }
 
 function normalizeDragonStage(stage, level = 1) {
-  if (DRAGON_GROWTH_STAGES.includes(stage)) return stage;
+  const aliases = { middle: "youth", evolve: "evolution" };
+  const normalized = aliases[stage] || stage;
+  if (DRAGON_GROWTH_STAGES.includes(normalized)) return normalized;
   const numericLevel = positiveNumber(level, 1);
-  if (numericLevel >= 40) return "evolve";
+  if (numericLevel >= 40) return "evolution";
   if (numericLevel >= 20) return "adult";
-  if (numericLevel >= 10) return "middle";
+  if (numericLevel >= 10) return "youth";
   return "baby";
 }
 
 function normalizeDragonAssetBase(assetBase, element, stage) {
-  return `assets/dragons/${normalizeDragonElement(element)}/${normalizeDragonStage(stage)}/`;
+  const legacyStage = { baby: "baby", youth: "middle", adult: "adult", evolution: "evolve" }[normalizeDragonStage(stage)] || "baby";
+  return `assets/dragons/${normalizeDragonElement(element)}/${legacyStage}/`;
 }
 
-function getDragonAsset(dragon, action = null) {
+function getDragonAnimationFrames(dragon, action = null) {
+  const selectedAction = DRAGON_ACTIONS.includes(action || dragon?.currentAction) ? (action || dragon.currentAction) : "idle";
+  const template = findDragonCatalogTemplate(dragon || {});
+  const actions = dragon?.animationFrames || template?.actions || {};
+  const fallbackAction = selectedAction === "angry" ? "attack" : "idle";
+  const frames = actions[selectedAction] || actions[fallbackAction] || actions.idle;
+  if (Array.isArray(frames) && frames.length > 0) return frames;
   const element = normalizeDragonElement(dragon?.element);
   const stage = normalizeDragonStage(dragon?.stage, dragon?.level);
-  const base = normalizeDragonAssetBase(dragon?.assetBase, element, stage);
-  const selectedAction = DRAGON_ACTIONS.includes(action || dragon?.currentAction)
-    ? (action || dragon.currentAction)
-    : "idle";
-  return `${base}${selectedAction}.png`;
+  const legacyBase = normalizeDragonAssetBase(null, element, stage);
+  return [`${legacyBase}${selectedAction}.png`];
+}
+
+function getDragonAsset(dragon, action = null, frameIndex = 0) {
+  const frames = getDragonAnimationFrames(dragon, action);
+  return frames[Math.abs(Number(frameIndex) || 0) % frames.length] || DRAGON_FALLBACK_ASSET;
 }
 
 function getDragonAvatarAsset(dragon) {
-  const element = normalizeDragonElement(dragon?.element);
-  const stage = normalizeDragonStage(dragon?.stage, dragon?.level);
-  return `assets/dragons/${element}/${stage}/avatar.png`;
+  const template = findDragonCatalogTemplate(dragon || {});
+  return dragon?.avatarAsset || template?.portraitAsset || template?.iconAsset || getDragonAsset(dragon, "idle");
+}
+
+function getDragonStageScale(stage) {
+  return { baby: 0.6, youth: 0.8, adult: 1, evolution: 1.16 }[normalizeDragonStage(stage)] || 0.6;
 }
 
 function finiteRestCoordinate(value) {
@@ -2073,6 +2267,9 @@ function normalizeInventoryEgg(egg) {
     image: getEggAsset({ ...egg, element, rarity }),
     assignedIncubatorId: egg?.assignedIncubatorId || null,
     hatched: Boolean(egg?.hatched),
+    locked: Boolean(egg?.locked),
+    favorite: Boolean(egg?.favorite),
+    isBeginnerEgg: Boolean(egg?.isBeginnerEgg || egg?.beginnerProtected || egg?.missionProtected),
     rarityRates: Array.isArray(egg?.rarityRates) && egg.rarityRates.length > 0
       ? egg.rarityRates.map((item) => ({
         rarity: rarities.includes(item?.rarity) ? item.rarity : definition.rarity,
@@ -4059,6 +4256,8 @@ function normalizeAdventurer(adventurer) {
     equipment,
     equipmentPower: normalizedNonNegative(source.equipmentPower, 0),
     locked: Boolean(source.locked),
+    favorite: Boolean(source.favorite),
+    isBeginnerAdventurer: Boolean(source.isBeginnerAdventurer || source.beginnerProtected || source.missionProtected),
     isInTeam: Boolean(source.isInTeam),
     teamId: source.teamId || null,
     shards: normalizedNonNegative(source.shards, 0),
@@ -4134,6 +4333,443 @@ function getFilteredAdventurers() {
   });
 }
 
+let pendingBulkOperation = null;
+let bulkLongPressTimer = null;
+let bulkLongPressPointer = null;
+let bulkSuppressClickUntil = 0;
+let bulkSuppressItemId = null;
+
+function normalizeBulkManageState(value = {}) {
+  const type = ["adventurer", "egg"].includes(value?.type) ? value.type : null;
+  const selectedIds = type && Array.isArray(value?.selectedIds)
+    ? [...new Set(value.selectedIds.filter((id) => typeof id === "string" && id))]
+    : [];
+  return { type, selectedIds };
+}
+
+function getBulkManageState() {
+  state.ui = state.ui && typeof state.ui === "object" ? state.ui : {};
+  state.ui.bulkManage = normalizeBulkManageState(state.ui.bulkManage);
+  return state.ui.bulkManage;
+}
+
+function isBulkManaging(type) {
+  return getBulkManageState().type === type;
+}
+
+function adventurerHasEquipment(adventurer) {
+  if (!adventurer) return false;
+  const hasSlotEquipment = EQUIPMENT_SLOTS.some((slot) => Boolean(adventurer.equipment?.[slot]));
+  const hasOwnedEquipment = (state.equipmentInventory || []).some((item) => item.equippedBy === adventurer.id);
+  return hasSlotEquipment || hasOwnedEquipment;
+}
+
+function adventurerHasTeamReference(adventurer) {
+  if (!adventurer) return false;
+  return Boolean(adventurer.isInTeam || adventurer.teamId)
+    || (state.adventurerTeams?.teams || []).some((team) => team.memberIds?.includes(adventurer.id));
+}
+
+function canDeleteAdventurer(adventurer) {
+  if (!adventurer) return false;
+  const rarity = String(adventurer.rarity || "C").toUpperCase();
+  return !adventurer.locked
+    && !adventurer.favorite
+    && !adventurer.isBeginnerAdventurer
+    && !adventurer.beginnerProtected
+    && !adventurer.missionProtected
+    && !["SS", "SSS"].includes(rarity)
+    && !adventurerHasTeamReference(adventurer)
+    && !adventurerHasEquipment(adventurer);
+}
+
+function isBeginnerHatchFlowComplete() {
+  const step = state.missions?.beginner?.steps?.finishHatch;
+  return Boolean(step && Number(step.current) >= Number(step.target || 1));
+}
+
+function getProtectedBeginnerEggId() {
+  const eggs = Array.isArray(state.eggInventory) ? state.eggInventory : [];
+  const explicit = eggs.find((egg) => egg.isBeginnerEgg || egg.beginnerProtected || egg.missionProtected);
+  if (explicit) return explicit.id;
+  if (isBeginnerHatchFlowComplete()) return null;
+  return [...eggs].sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0))[0]?.id || null;
+}
+
+function eggHasIncubatorReference(egg) {
+  if (!egg) return false;
+  if (egg.assignedIncubatorId || egg.incubatorId || egg.isHatching || egg.status === "hatching") return true;
+  return (state.hatchIsland?.hatchSlots || []).some((slot) => (
+    slot?.currentEggId === egg.id || slot?.currentEgg?.id === egg.id
+  ));
+}
+
+function canDeleteEgg(egg) {
+  if (!egg) return false;
+  const rarity = String(egg.rarity || egg.eggRarity || "C").toUpperCase();
+  return !eggHasIncubatorReference(egg)
+    && !egg.locked
+    && !egg.favorite
+    && !["SS", "SSS"].includes(rarity)
+    && egg.id !== getProtectedBeginnerEggId();
+}
+
+function getVisibleBulkItems(type = getBulkManageState().type) {
+  if (type === "adventurer") return getFilteredAdventurers();
+  if (type === "egg") return getAvailableEggs();
+  return [];
+}
+
+function getBulkItem(type, id) {
+  if (type === "adventurer") return getAdventurerById(id);
+  if (type === "egg") return (state.eggInventory || []).find((egg) => egg.id === id) || null;
+  return null;
+}
+
+function canDeleteBulkItem(type, item) {
+  if (type === "adventurer") return canDeleteAdventurer(item);
+  if (type === "egg") return canDeleteEgg(item);
+  return false;
+}
+
+function showBulkProtectedToast(type) {
+  showToast(type === "egg"
+    ? "正在孵化、已鎖定、收藏中或高稀有度龍蛋不可刪除"
+    : "已鎖定、已編隊、已裝備、收藏中或高稀有度角色不可刪除");
+}
+
+function enterBulkManage(type) {
+  if (!["adventurer", "egg"].includes(type)) return;
+  const bulk = getBulkManageState();
+  if (bulk.type !== type) bulk.selectedIds = [];
+  bulk.type = type;
+  getBulkOverlayHost()?.classList.add("is-bulk-managing");
+  if (type === "adventurer") closeAdventurerDetail();
+  refreshBulkManageSurface(type);
+  mountBulkManageToolbar();
+}
+
+function exitBulkManage(options = {}) {
+  const bulk = getBulkManageState();
+  const previousType = bulk.type;
+  bulk.type = null;
+  bulk.selectedIds = [];
+  pendingBulkOperation = null;
+  getBulkOverlayHost()?.classList.remove("is-bulk-managing");
+  document.querySelector(".bulk-manage-toolbar")?.remove();
+  document.querySelector(".bulk-confirm-backdrop")?.remove();
+  if (options.refresh !== false && previousType) refreshBulkManageSurface(previousType);
+}
+
+function toggleBulkSelection(id) {
+  const bulk = getBulkManageState();
+  if (!bulk.type || !id) return;
+  const item = getBulkItem(bulk.type, id);
+  if (!canDeleteBulkItem(bulk.type, item)) {
+    showBulkProtectedToast(bulk.type);
+    return;
+  }
+  const selected = new Set(bulk.selectedIds);
+  if (selected.has(id)) selected.delete(id);
+  else selected.add(id);
+  bulk.selectedIds = [...selected];
+  refreshBulkManageSurface(bulk.type);
+  mountBulkManageToolbar();
+}
+
+function selectAllVisible() {
+  const bulk = getBulkManageState();
+  if (!bulk.type) return;
+  bulk.selectedIds = getVisibleBulkItems(bulk.type)
+    .filter((item) => canDeleteBulkItem(bulk.type, item))
+    .map((item) => item.id);
+  refreshBulkManageSurface(bulk.type);
+  mountBulkManageToolbar();
+}
+
+function invertVisibleSelection() {
+  const bulk = getBulkManageState();
+  if (!bulk.type) return;
+  const visibleDeletableIds = new Set(getVisibleBulkItems(bulk.type)
+    .filter((item) => canDeleteBulkItem(bulk.type, item))
+    .map((item) => item.id));
+  const selected = new Set(bulk.selectedIds.filter((id) => !visibleDeletableIds.has(id)));
+  visibleDeletableIds.forEach((id) => {
+    if (!bulk.selectedIds.includes(id)) selected.add(id);
+  });
+  bulk.selectedIds = [...selected];
+  refreshBulkManageSurface(bulk.type);
+  mountBulkManageToolbar();
+}
+
+function clearBulkSelection() {
+  const bulk = getBulkManageState();
+  if (!bulk.type) return;
+  bulk.selectedIds = [];
+  refreshBulkManageSurface(bulk.type);
+  mountBulkManageToolbar();
+}
+
+function renderBulkManageToolbar() {
+  const bulk = getBulkManageState();
+  if (!bulk.type) return "";
+  const unit = bulk.type === "egg" ? "顆" : "位";
+  return `
+    <div class="bulk-manage-toolbar" data-bulk-type="${bulk.type}" role="toolbar" aria-label="批次管理工具列">
+      <div class="bulk-manage-count">已選擇 <b>${bulk.selectedIds.length}</b> ${unit}</div>
+      <div class="bulk-manage-actions">
+        <button type="button" data-bulk-action="cancel">取消</button>
+        <button type="button" data-bulk-action="select-all">全選</button>
+        <button type="button" data-bulk-action="invert">反選</button>
+        <button type="button" data-bulk-action="cleanup">清理普通</button>
+        <button type="button" class="is-danger" data-bulk-action="delete">刪除</button>
+      </div>
+    </div>
+  `;
+}
+
+function getBulkOverlayHost() {
+  return document.querySelector("#gameShell") || els?.homeV2Root || document.querySelector(".phone");
+}
+
+function mountBulkManageToolbar() {
+  document.querySelector(".bulk-manage-toolbar")?.remove();
+  const html = renderBulkManageToolbar();
+  const host = getBulkOverlayHost();
+  if (host && html) host.insertAdjacentHTML("beforeend", html);
+}
+
+function refreshBulkManageSurface(type) {
+  if (type === "adventurer") refreshAdventurerGuildPage();
+  if (type === "egg") {
+    renderEggInventory();
+    if (eggSelectionSlotId && document.querySelector(".egg-modal-backdrop")) mountEggSelectionModal();
+  }
+}
+
+function removeAdventurerReferences(deletedIds) {
+  const deleted = new Set(deletedIds);
+  (state.adventurerTeams?.teams || []).forEach((team) => {
+    team.memberIds = (team.memberIds || []).filter((id) => !deleted.has(id));
+  });
+  (state.equipmentInventory || []).forEach((equipment) => {
+    if (deleted.has(equipment.equippedBy)) equipment.equippedBy = null;
+  });
+  if (deleted.has(selectedAdventurerId)) {
+    selectedAdventurerId = null;
+    closeAdventurerDetail();
+  }
+}
+
+function bulkDeleteAdventurers(ids) {
+  const requested = new Set(Array.isArray(ids) ? ids : []);
+  const existing = (state.adventurers || []).filter((item) => requested.has(item.id));
+  const deletable = existing.filter(canDeleteAdventurer);
+  const deletedIds = new Set(deletable.map((item) => item.id));
+  const protectedCount = existing.length - deletable.length;
+  if (deletedIds.size > 0) {
+    state.adventurers = state.adventurers.filter((item) => !deletedIds.has(item.id));
+    removeAdventurerReferences(deletedIds);
+    getBulkManageState().selectedIds = getBulkManageState().selectedIds.filter((id) => !deletedIds.has(id));
+    syncAdventurerTeamFlags();
+    saveGame();
+    refreshAdventurerGuildPage();
+  }
+  return { deletedCount: deletedIds.size, protectedCount };
+}
+
+function bulkDeleteEggs(ids) {
+  const requested = new Set(Array.isArray(ids) ? ids : []);
+  const existing = (state.eggInventory || []).filter((item) => requested.has(item.id));
+  const deletable = existing.filter(canDeleteEgg);
+  const deletedIds = new Set(deletable.map((item) => item.id));
+  const protectedCount = existing.length - deletable.length;
+  if (deletedIds.size > 0) {
+    state.eggInventory = state.eggInventory.filter((item) => !deletedIds.has(item.id));
+    state.eggs = state.eggInventory;
+    getBulkManageState().selectedIds = getBulkManageState().selectedIds.filter((id) => !deletedIds.has(id));
+    saveGame();
+    renderEggInventory();
+    if (eggSelectionSlotId && document.querySelector(".egg-modal-backdrop")) mountEggSelectionModal();
+  }
+  return { deletedCount: deletedIds.size, protectedCount };
+}
+
+function cleanupCommonAdventurers() {
+  const ids = (state.adventurers || [])
+    .filter((item) => ["C", "B"].includes(String(item.rarity || "C").toUpperCase()))
+    .filter(canDeleteAdventurer)
+    .map((item) => item.id);
+  return bulkDeleteAdventurers(ids);
+}
+
+function cleanupCommonEggs() {
+  const ids = (state.eggInventory || [])
+    .filter((item) => ["C", "B"].includes(String(item.rarity || item.eggRarity || "C").toUpperCase()))
+    .filter(canDeleteEgg)
+    .map((item) => item.id);
+  return bulkDeleteEggs(ids);
+}
+
+function getBulkCleanupCandidates(type) {
+  const source = type === "egg" ? (state.eggInventory || []) : (state.adventurers || []);
+  return source.filter((item) => {
+    const rarity = String(item.rarity || item.eggRarity || "C").toUpperCase();
+    return ["C", "B"].includes(rarity) && canDeleteBulkItem(type, item);
+  });
+}
+
+function renderBulkConfirmModal(operation, type, count) {
+  const isEgg = type === "egg";
+  const isCleanup = operation === "cleanup";
+  const title = isCleanup
+    ? `清理普通${isEgg ? "龍蛋" : "冒險者"}`
+    : `刪除${isEgg ? "龍蛋" : "冒險者"}`;
+  const message = isCleanup
+    ? `將刪除所有可刪除的 C、B ${isEgg ? "龍蛋" : "冒險者"}，共 ${count} ${isEgg ? "顆" : "位"}。`
+    : `確定刪除 ${count} ${isEgg ? "顆龍蛋" : "位冒險者"}嗎？刪除後無法復原。`;
+  return `
+    <div class="bulk-confirm-backdrop" data-bulk-confirm-backdrop>
+      <section class="bulk-confirm-modal" role="dialog" aria-modal="true" aria-label="${title}">
+        <h2>${title}</h2>
+        <p>${message}</p>
+        <div>
+          <button type="button" data-bulk-action="close-confirm">取消</button>
+          <button type="button" class="is-danger" data-bulk-action="confirm">確認${isCleanup ? "清理" : "刪除"}</button>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function openBulkConfirm(operation) {
+  const bulk = getBulkManageState();
+  if (!bulk.type) return;
+  const ids = operation === "cleanup"
+    ? getBulkCleanupCandidates(bulk.type).map((item) => item.id)
+    : [...bulk.selectedIds];
+  if (ids.length === 0) {
+    showToast(operation === "cleanup"
+      ? `沒有可清理的普通${bulk.type === "egg" ? "龍蛋" : "冒險者"}`
+      : `請先選擇要刪除的${bulk.type === "egg" ? "龍蛋" : "冒險者"}`);
+    return;
+  }
+  pendingBulkOperation = { operation, type: bulk.type, ids };
+  document.querySelector(".bulk-confirm-backdrop")?.remove();
+  getBulkOverlayHost()?.insertAdjacentHTML("beforeend", renderBulkConfirmModal(operation, bulk.type, ids.length));
+}
+
+function confirmBulkOperation() {
+  const pending = pendingBulkOperation;
+  if (!pending) return;
+  pendingBulkOperation = null;
+  document.querySelector(".bulk-confirm-backdrop")?.remove();
+  const result = pending.operation === "cleanup"
+    ? (pending.type === "egg" ? cleanupCommonEggs() : cleanupCommonAdventurers())
+    : (pending.type === "egg" ? bulkDeleteEggs(pending.ids) : bulkDeleteAdventurers(pending.ids));
+  if (result.protectedCount > 0) {
+    showToast(`已自動略過 ${result.protectedCount} ${pending.type === "egg" ? "顆" : "位"}受保護項目`);
+  }
+  if (result.deletedCount > 0) {
+    showToast(`已${pending.operation === "cleanup" ? "清理" : "刪除"} ${result.deletedCount} ${pending.type === "egg" ? "顆龍蛋" : "位冒險者"}`);
+  }
+  mountBulkManageToolbar();
+}
+
+function handleBulkManageClick(event) {
+  const actionButton = event.target.closest("[data-bulk-action]");
+  if (actionButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    const action = actionButton.dataset.bulkAction;
+    if (action === "enter") enterBulkManage(actionButton.dataset.bulkType);
+    if (action === "cancel") exitBulkManage();
+    if (action === "select-all") selectAllVisible();
+    if (action === "invert") invertVisibleSelection();
+    if (action === "clear") clearBulkSelection();
+    if (action === "cleanup") openBulkConfirm("cleanup");
+    if (action === "delete") openBulkConfirm("delete");
+    if (action === "close-confirm") {
+      pendingBulkOperation = null;
+      document.querySelector(".bulk-confirm-backdrop")?.remove();
+    }
+    if (action === "confirm") confirmBulkOperation();
+    return;
+  }
+
+  const item = event.target.closest("[data-bulk-item-type][data-bulk-item-id]");
+  if (!item) return;
+  const bulk = getBulkManageState();
+  if (bulk.type !== item.dataset.bulkItemType) return;
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+  toggleBulkSelection(item.dataset.bulkItemId);
+}
+
+function clearBulkLongPressTimer() {
+  if (bulkLongPressTimer) clearTimeout(bulkLongPressTimer);
+  bulkLongPressTimer = null;
+  bulkLongPressPointer = null;
+}
+
+function handleBulkLongPressStart(event) {
+  const item = event.target.closest("[data-bulk-item-type][data-bulk-item-id]");
+  if (!item || isBulkManaging(item.dataset.bulkItemType)) return;
+  clearBulkLongPressTimer();
+  bulkLongPressPointer = {
+    id: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    type: item.dataset.bulkItemType,
+    itemId: item.dataset.bulkItemId
+  };
+  bulkLongPressTimer = setTimeout(() => {
+    const press = bulkLongPressPointer;
+    if (!press) return;
+    bulkSuppressClickUntil = Date.now() + 800;
+    bulkSuppressItemId = press.itemId;
+    enterBulkManage(press.type);
+    toggleBulkSelection(press.itemId);
+    clearBulkLongPressTimer();
+  }, 500);
+}
+
+function handleBulkLongPressMove(event) {
+  if (!bulkLongPressPointer || bulkLongPressPointer.id !== event.pointerId) return;
+  if (Math.hypot(event.clientX - bulkLongPressPointer.x, event.clientY - bulkLongPressPointer.y) > 8) {
+    clearBulkLongPressTimer();
+  }
+}
+
+function handleBulkLongPressEnd(event) {
+  if (!bulkLongPressPointer || bulkLongPressPointer.id === event.pointerId) clearBulkLongPressTimer();
+}
+
+function suppressBulkLongPressClick(event) {
+  const item = event.target.closest("[data-bulk-item-id]");
+  if (Date.now() >= bulkSuppressClickUntil || !item || item.dataset.bulkItemId !== bulkSuppressItemId) return;
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+  bulkSuppressClickUntil = 0;
+  bulkSuppressItemId = null;
+}
+
+function attachBulkManageEvents() {
+  if (document.documentElement.dataset.bulkManageBound === "true") return;
+  document.addEventListener("click", suppressBulkLongPressClick, true);
+  document.addEventListener("click", handleBulkManageClick, true);
+  document.addEventListener("pointerdown", handleBulkLongPressStart, true);
+  document.addEventListener("pointermove", handleBulkLongPressMove, true);
+  document.addEventListener("pointerup", handleBulkLongPressEnd, true);
+  document.addEventListener("pointercancel", handleBulkLongPressEnd, true);
+  document.documentElement.dataset.bulkManageBound = "true";
+}
+
+attachBulkManageEvents();
+
 function renderAdventurerSelectOptions(options, selected) {
   return options.map(([value, label]) => (
     `<option value="${escapeHtml(value)}"${value === selected ? " selected" : ""}>${escapeHtml(label)}</option>`
@@ -4154,6 +4790,8 @@ function renderAdventurerGuildPageInner() {
   const tickets = normalizedNonNegative(state.characterTickets, 0);
   const jobs = [...new Set(ADVENTURER_POOL.map((item) => item.job))];
   const summonCostText = tickets > 0 ? "角色券 x1" : `${ADVENTURER_SUMMON_DIAMOND_COST} 鑽石`;
+  const bulk = getBulkManageState();
+  const isManaging = bulk.type === "adventurer";
 
   return `
     <div class="adventurer-guild-page">
@@ -4162,7 +4800,12 @@ function renderAdventurerGuildPageInner() {
           <h1>冒險者工會</h1>
           <p>召喚角色卡，建立你的冒險者名冊。</p>
         </div>
-        <span class="adventurer-count">持有 ${formatNumber(total)}</span>
+        <div class="adventurer-heading-actions">
+          <span class="adventurer-count">${isManaging ? `已選擇 ${bulk.selectedIds.length} 位` : `持有 ${formatNumber(total)}`}</span>
+          <button type="button" class="bulk-manage-entry" data-bulk-action="${isManaging ? "cancel" : "enter"}" data-bulk-type="adventurer">
+            ${isManaging ? "完成" : "管理"}
+          </button>
+        </div>
       </section>
 
       <section class="adventurer-summon-bar">
@@ -4201,8 +4844,13 @@ function renderAdventurerGuildPageInner() {
 }
 
 function renderAdventurerGuildCard(adventurer) {
+  const bulk = getBulkManageState();
+  const isManaging = bulk.type === "adventurer";
+  const isSelected = isManaging && bulk.selectedIds.includes(adventurer.id);
+  const isProtected = isManaging && !canDeleteAdventurer(adventurer);
   return `
-    <button class="adventurer-card rarity-${adventurer.rarity.toLowerCase()}" type="button" data-v2-action="open-adventurer-detail" data-adventurer-id="${adventurer.id}" aria-label="查看 ${escapeHtml(adventurer.name)}">
+    <button class="adventurer-card rarity-${adventurer.rarity.toLowerCase()}${isManaging ? " bulk-selectable" : ""}${isSelected ? " bulk-selected" : ""}${isProtected ? " bulk-protected" : ""}" type="button" data-v2-action="open-adventurer-detail" data-adventurer-id="${adventurer.id}" data-bulk-item-type="adventurer" data-bulk-item-id="${adventurer.id}" aria-label="查看 ${escapeHtml(adventurer.name)}"${isManaging ? ` aria-pressed="${isSelected}"` : ""}>
+      ${isManaging ? `<span class="bulk-selection-indicator" aria-hidden="true">${isProtected ? "鎖" : (isSelected ? "✓" : "")}</span>` : ""}
       <span class="adventurer-card-sprite">
         ${renderAdventurerImage(getAdventurerSpriteAsset(adventurer), "assets/adventurers/placeholders/pixel-character.png", "adventurer-pixel", adventurer.name)}
       </span>
@@ -5532,13 +6180,24 @@ function renderEggAsset(egg, className) {
 function renderEggInventory() {
   if (!els.eggInventoryList) return;
   const emptySlots = getAvailableHatchSlots();
+  const bulk = getBulkManageState();
+  const isManaging = bulk.type === "egg";
   if (state.eggs.length === 0) {
     els.eggInventoryList.innerHTML = `<div class="empty-state">目前沒有龍蛋。前往探索，用探險卷尋找新的龍蛋。</div>`;
     return;
   }
 
-  els.eggInventoryList.innerHTML = state.eggs.map((egg) => `
-    <article class="egg-manage-card rarity-${egg.eggRarity || "C"}">
+  els.eggInventoryList.innerHTML = `
+    <div class="egg-inventory-manage-row">
+      <span>${isManaging ? `已選擇 ${bulk.selectedIds.length} 顆` : `龍蛋 ${state.eggs.length} 顆`}</span>
+      <button type="button" data-bulk-action="${isManaging ? "cancel" : "enter"}" data-bulk-type="egg">${isManaging ? "完成" : "管理"}</button>
+    </div>
+    ${state.eggs.map((egg) => {
+      const isSelected = isManaging && bulk.selectedIds.includes(egg.id);
+      const isProtected = isManaging && !canDeleteEgg(egg);
+      return `
+    <article class="egg-manage-card rarity-${egg.eggRarity || "C"}${isManaging ? " bulk-selectable" : ""}${isSelected ? " bulk-selected" : ""}${isProtected ? " bulk-protected" : ""}" data-bulk-item-type="egg" data-bulk-item-id="${egg.id}">
+      ${isManaging ? `<span class="bulk-selection-indicator" aria-hidden="true">${isProtected ? "鎖" : (isSelected ? "✓" : "")}</span>` : ""}
       <div class="egg-manage-art asset-host">${renderEggAsset(egg, "asset-image egg-manage-image")}</div>
       <div>
         <h3>${escapeHtml(egg.name)}</h3>
@@ -5547,7 +6206,7 @@ function renderEggInventory() {
           ${egg.elementBias ? `<span class="element-pill">${egg.elementBias}屬性傾向</span>` : "<span>無固定屬性傾向</span>"}
         </div>
         <p>可能孵出：${rarityPoolLabel(egg.rarityPool)} · 需要 ${formatNumber(egg.requiredSteps)} 步 / ${formatTime(egg.requiredMs)}</p>
-        <div class="slot-assign-row">
+        <div class="slot-assign-row${isManaging ? " is-bulk-hidden" : ""}">
           ${emptySlots.length > 0 ? emptySlots.map((slot) => `
             <button class="mini-button" type="button" data-action="assign-egg" data-egg-id="${egg.id}" data-slot-id="${slot.id}">
               放入${(slot.slotType || slot.type) === "steps" ? "步數" : "時間"}臺 ${slot.id.replace("slot-", "")}
@@ -5556,7 +6215,9 @@ function renderEggInventory() {
         </div>
       </div>
     </article>
-  `).join("");
+      `;
+    }).join("")}
+  `;
 }
 
 function getAvailableHatchSlots() {
@@ -7727,17 +8388,27 @@ function renderHomeV2Slot(slot) {
 function renderEggSelectionModal() {
   if (!eggSelectionSlotId) return "";
   const eggs = getAvailableEggs();
+  const bulk = getBulkManageState();
+  const isManaging = bulk.type === "egg";
 
   return `
     <div class="egg-modal-backdrop" data-v2-backdrop="egg-select" role="presentation">
       <section class="egg-modal" role="dialog" aria-modal="true" aria-label="選擇要孵化的龍蛋">
         <header>
           <h2>選擇要孵化的龍蛋</h2>
-          <button type="button" data-v2-action="close-egg-modal" aria-label="關閉">×</button>
+          <div class="egg-modal-header-actions">
+            ${isManaging ? `<span>已選擇 ${bulk.selectedIds.length} 顆</span>` : ""}
+            <button type="button" class="bulk-manage-entry" data-bulk-action="${isManaging ? "cancel" : "enter"}" data-bulk-type="egg">${isManaging ? "完成" : "管理"}</button>
+            <button type="button" data-v2-action="close-egg-modal" aria-label="關閉">×</button>
+          </div>
         </header>
         <div class="egg-choice-list">
-          ${eggs.length > 0 ? eggs.map((egg) => `
-            <article class="egg-choice-card egg-list-item">
+          ${eggs.length > 0 ? eggs.map((egg) => {
+            const isSelected = isManaging && bulk.selectedIds.includes(egg.id);
+            const isProtected = isManaging && !canDeleteEgg(egg);
+            return `
+            <article class="egg-choice-card egg-list-item${isManaging ? " bulk-selectable" : ""}${isSelected ? " bulk-selected" : ""}${isProtected ? " bulk-protected" : ""}" data-bulk-item-type="egg" data-bulk-item-id="${egg.id}">
+              ${isManaging ? `<span class="bulk-selection-indicator" aria-hidden="true">${isProtected ? "鎖" : (isSelected ? "✓" : "")}</span>` : ""}
               <div class="egg-choice-art egg-thumb-wrap">
                 <img class="egg-thumb" src="${getEggAsset(egg)}" alt="${escapeHtml(egg.name)}" onerror="this.src='assets/eggs/placeholder-egg.png'">
               </div>
@@ -7747,9 +8418,11 @@ function renderEggSelectionModal() {
                 <div class="egg-element">屬性傾向：${escapeHtml(eggElementLabel(egg))}</div>
                 <div class="egg-time">孵化時間：${formatTime((egg.hatchDuration || egg.hatchTime || 60) * 1000)}</div>
               </div>
-              <button class="egg-select-btn" type="button" data-v2-action="start-hatch" data-slot-id="${eggSelectionSlotId}" data-egg-id="${egg.id}">選擇</button>
+              ${isManaging
+                ? `<span class="egg-bulk-state">${isProtected ? "受保護" : (isSelected ? "已選取" : "點選")}</span>`
+                : `<button class="egg-select-btn" type="button" data-v2-action="start-hatch" data-slot-id="${eggSelectionSlotId}" data-egg-id="${egg.id}">選擇</button>`}
             </article>
-          `).join("") : `
+          `; }).join("") : `
             <div class="egg-empty-message">
               <b>目前沒有龍蛋</b>
               <p>目前沒有可放入的龍蛋，請前往探索取得龍蛋。</p>
@@ -7863,6 +8536,7 @@ function openEggPicker(slotId) {
 }
 
 function closeEggSelectionModal() {
+  if (isBulkManaging("egg")) exitBulkManage({ refresh: false });
   eggSelectionSlotId = null;
   document.querySelector(".egg-modal-backdrop")?.remove();
 }
@@ -10257,6 +10931,7 @@ function syncPersistentAliases() {
     ? state.ui.activeAdventurerEquipmentSlot
     : "weapon";
   state.ui.activeAdventurerTradeTab = state.ui.activeAdventurerTradeTab === "market" ? "market" : "sell";
+  state.ui.bulkManage = normalizeBulkManageState(state.ui.bulkManage);
   syncAdventurerEquipmentState();
   syncAdventurerTeamFlags();
   state.characterTickets = normalizedNonNegative(state.characterTickets, 0);
@@ -10952,9 +11627,13 @@ function goToWorldPage(index) {
   if (!pager) return;
   const pageWidth = pager.clientWidth;
   const pageCount = pager.children.length || 1;
+  const previousPageId = getWorldPages()[currentWorldPage]?.id;
   const targetIndex = clamp(Number(index) || 0, 0, pageCount - 1);
   currentWorldPage = targetIndex;
   const pageId = getWorldPages()[targetIndex]?.id;
+  if (pageId && previousPageId && pageId !== previousPageId && getBulkManageState().type) {
+    exitBulkManage({ refresh: false });
+  }
   if (pageId && pageId !== "adventurerGuild" && document.querySelector(".adventurer-detail-backdrop")) {
     closeAdventurerDetail();
   }
