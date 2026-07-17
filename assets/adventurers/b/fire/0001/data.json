@@ -1,0 +1,72 @@
+{
+  "id": "b-fire-0001",
+  "number": "0001",
+  "name": "烈焰拳士",
+  "rarity": "B",
+  "element": "fire",
+  "job": "拳士",
+  "description": "以熱血拳法戰鬥的火屬性冒險者。",
+  "maxLevel": 100,
+  "assets": {
+    "card": "card.png",
+    "portrait": "portrait.png",
+    "icon": "icon.png"
+  },
+  "growth": {
+    "base": {
+      "hp": 95,
+      "attack": 23,
+      "defense": 15,
+      "speed": 14
+    },
+    "perLevel": {
+      "hp": 8,
+      "attack": 2.4000000000000004,
+      "defense": 1.4,
+      "speed": 0.81
+    },
+    "variance": {
+      "min": 0.9,
+      "max": 1.1
+    }
+  },
+  "skills": [],
+  "animations": {
+    "idle": {
+      "folder": "sprites/idle",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "walk": {
+      "folder": "sprites/walk",
+      "frameCount": 8,
+      "frameDuration": 120,
+      "loop": true
+    },
+    "attack": {
+      "folder": "sprites/attack",
+      "frameCount": 6,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "hurt": {
+      "folder": "sprites/hurt",
+      "frameCount": 4,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "victory": {
+      "folder": "sprites/victory",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "defeated": {
+      "folder": "sprites/defeated",
+      "frameCount": 4,
+      "frameDuration": 180,
+      "loop": false
+    }
+  }
+}

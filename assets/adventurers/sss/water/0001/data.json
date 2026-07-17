@@ -1,0 +1,125 @@
+{
+  "id": "sss-water-0001",
+  "number": "0001",
+  "name": "米卡斯",
+  "rarity": "SSS",
+  "element": "water",
+  "job": "冰龍巫女",
+  "description": "與冰龍共同守護雪境的巫女。",
+  "maxLevel": 100,
+  "assets": {
+    "card": "card.png",
+    "portrait": "portrait.png",
+    "icon": "icon.png"
+  },
+  "growth": {
+    "base": {
+      "hp": 146,
+      "attack": 45,
+      "defense": 29,
+      "speed": 24
+    },
+    "perLevel": {
+      "hp": 12.4,
+      "attack": 4.699999999999999,
+      "defense": 3,
+      "speed": 1.18
+    },
+    "variance": {
+      "min": 0.9,
+      "max": 1.1
+    }
+  },
+  "skills": [
+    {
+      "id": "skill-01",
+      "name": "寒潮衝擊",
+      "type": "active",
+      "element": "water",
+      "description": "以寒潮對單一敵人造成水屬性傷害。",
+      "power": 160,
+      "cooldown": 3,
+      "unlockLevel": 1,
+      "animation": "sprites/skill-01",
+      "effect": "effects/skill-01-effect.png"
+    },
+    {
+      "id": "skill-02",
+      "name": "冰海風暴",
+      "type": "active",
+      "element": "water",
+      "description": "召喚冰海風暴攻擊全體敵人。",
+      "power": 220,
+      "cooldown": 5,
+      "unlockLevel": 20,
+      "animation": "sprites/skill-02",
+      "effect": "effects/skill-02-effect.png"
+    },
+    {
+      "id": "skill-03",
+      "name": "深海祝福",
+      "type": "passive",
+      "element": "water",
+      "description": "提升隊伍的防禦與恢復能力。",
+      "unlockLevel": 40,
+      "animation": "sprites/skill-03",
+      "effect": "effects/skill-03-effect.png"
+    }
+  ],
+  "animations": {
+    "idle": {
+      "folder": "sprites/idle",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "walk": {
+      "folder": "sprites/walk",
+      "frameCount": 8,
+      "frameDuration": 120,
+      "loop": true
+    },
+    "attack": {
+      "folder": "sprites/attack",
+      "frameCount": 6,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "hurt": {
+      "folder": "sprites/hurt",
+      "frameCount": 4,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "victory": {
+      "folder": "sprites/victory",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "defeated": {
+      "folder": "sprites/defeated",
+      "frameCount": 4,
+      "frameDuration": 180,
+      "loop": false
+    },
+    "skill-01": {
+      "folder": "sprites/skill-01",
+      "frameCount": 8,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "skill-02": {
+      "folder": "sprites/skill-02",
+      "frameCount": 10,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "skill-03": {
+      "folder": "sprites/skill-03",
+      "frameCount": 12,
+      "frameDuration": 90,
+      "loop": false
+    }
+  }
+}

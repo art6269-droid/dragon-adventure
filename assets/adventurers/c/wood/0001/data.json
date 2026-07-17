@@ -1,0 +1,72 @@
+{
+  "id": "c-wood-0001",
+  "number": "0001",
+  "name": "見習弓手",
+  "rarity": "C",
+  "element": "wood",
+  "job": "弓手",
+  "description": "在森林中練習弓術的見習冒險者。",
+  "maxLevel": 100,
+  "assets": {
+    "card": "card.png",
+    "portrait": "portrait.png",
+    "icon": "icon.png"
+  },
+  "growth": {
+    "base": {
+      "hp": 82,
+      "attack": 18,
+      "defense": 14,
+      "speed": 14
+    },
+    "perLevel": {
+      "hp": 7.4,
+      "attack": 1.9000000000000001,
+      "defense": 1.3,
+      "speed": 0.73
+    },
+    "variance": {
+      "min": 0.9,
+      "max": 1.1
+    }
+  },
+  "skills": [],
+  "animations": {
+    "idle": {
+      "folder": "sprites/idle",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "walk": {
+      "folder": "sprites/walk",
+      "frameCount": 8,
+      "frameDuration": 120,
+      "loop": true
+    },
+    "attack": {
+      "folder": "sprites/attack",
+      "frameCount": 6,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "hurt": {
+      "folder": "sprites/hurt",
+      "frameCount": 4,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "victory": {
+      "folder": "sprites/victory",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "defeated": {
+      "folder": "sprites/defeated",
+      "frameCount": 4,
+      "frameDuration": 180,
+      "loop": false
+    }
+  }
+}

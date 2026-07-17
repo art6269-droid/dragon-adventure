@@ -1,0 +1,109 @@
+{
+  "id": "ss-dark-0001",
+  "number": "0001",
+  "name": "暗獵",
+  "rarity": "SS",
+  "element": "dark",
+  "job": "獵人",
+  "description": "追蹤深淵魔物的暗影獵人。",
+  "maxLevel": 100,
+  "assets": {
+    "card": "card.png",
+    "portrait": "portrait.png",
+    "icon": "icon.png"
+  },
+  "growth": {
+    "base": {
+      "hp": 133,
+      "attack": 39,
+      "defense": 25,
+      "speed": 21
+    },
+    "perLevel": {
+      "hp": 11.4,
+      "attack": 4.2,
+      "defense": 2.6,
+      "speed": 1.11
+    },
+    "variance": {
+      "min": 0.9,
+      "max": 1.1
+    }
+  },
+  "skills": [
+    {
+      "id": "skill-01",
+      "name": "暗影突襲",
+      "type": "active",
+      "element": "dark",
+      "description": "從暗影中攻擊單一敵人。",
+      "power": 160,
+      "cooldown": 3,
+      "unlockLevel": 1,
+      "animation": "sprites/skill-01",
+      "effect": "effects/skill-01-effect.png"
+    },
+    {
+      "id": "skill-02",
+      "name": "深淵降臨",
+      "type": "active",
+      "element": "dark",
+      "description": "召喚深淵之力攻擊全體敵人。",
+      "power": 220,
+      "cooldown": 5,
+      "unlockLevel": 20,
+      "animation": "sprites/skill-02",
+      "effect": "effects/skill-02-effect.png"
+    }
+  ],
+  "animations": {
+    "idle": {
+      "folder": "sprites/idle",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "walk": {
+      "folder": "sprites/walk",
+      "frameCount": 8,
+      "frameDuration": 120,
+      "loop": true
+    },
+    "attack": {
+      "folder": "sprites/attack",
+      "frameCount": 6,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "hurt": {
+      "folder": "sprites/hurt",
+      "frameCount": 4,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "victory": {
+      "folder": "sprites/victory",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "defeated": {
+      "folder": "sprites/defeated",
+      "frameCount": 4,
+      "frameDuration": 180,
+      "loop": false
+    },
+    "skill-01": {
+      "folder": "sprites/skill-01",
+      "frameCount": 8,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "skill-02": {
+      "folder": "sprites/skill-02",
+      "frameCount": 10,
+      "frameDuration": 90,
+      "loop": false
+    }
+  }
+}

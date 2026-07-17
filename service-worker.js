@@ -1,4 +1,4 @@
-const CACHE_NAME = "dragon-adventure-v75";
+const CACHE_NAME = "dragon-adventure-v76";
 
 const CORE_ASSETS = [
   "./",
@@ -57,6 +57,7 @@ const CORE_ASSETS = [
   "./home-v2.css?v=55",
   "./home-v2.css?v=56",
   "./home-v2.css?v=57",
+  "./home-v2.css?v=58",
   "./app.js",
   "./app.js?v=14",
   "./app.js?v=15",
@@ -110,6 +111,7 @@ const CORE_ASSETS = [
   "./app.js?v=64",
   "./app.js?v=65",
   "./app.js?v=66",
+  "./app.js?v=67",
   "./home-v2-overrides.js",
   "./home-v2-overrides.js?v=1",
   "./home-v2-overrides.js?v=2",
@@ -124,7 +126,11 @@ const CORE_ASSETS = [
   "./assets/dragons/evolution/fire/C/0001/data.json",
   "./assets/eggs/fire/C/0001/data.json",
   "./assets/eggs/fire/C/0001/icon.png",
-  "./assets/adventurers/fire/C/0001/data.json",
+  "./assets/adventurers/index.json",
+  "./assets/adventurers/_shared/card-placeholder.png",
+  "./assets/adventurers/_shared/portrait-placeholder.png",
+  "./assets/adventurers/_shared/icon-placeholder.png",
+  "./assets/adventurers/_shared/sprite-placeholder.png",
   "./assets/icons/icon-192.svg",
   "./assets/icons/icon-512.svg",
   "./assets/icons/icon-coin.png",
@@ -165,61 +171,6 @@ const CORE_ASSETS = [
   "./assets/adventurers/card-backs/card-back-normal.png",
   "./assets/adventurers/card-backs/card-back-rare.png",
   "./assets/adventurers/card-backs/card-back-sss.png",
-  "./assets/adventurers/placeholders/card-c.png",
-  "./assets/adventurers/placeholders/card-b.png",
-  "./assets/adventurers/placeholders/card-a.png",
-  "./assets/adventurers/placeholders/card-s.png",
-  "./assets/adventurers/placeholders/card-ss.png",
-  "./assets/adventurers/placeholders/card-sss.png",
-  "./assets/adventurers/placeholders/pixel-character.png",
-  "./assets/adventurers/cards/newbie-swordman-c-fire.png",
-  "./assets/adventurers/cards/apprentice-archer-c-wood.png",
-  "./assets/adventurers/cards/flame-fist-b-fire.png",
-  "./assets/adventurers/cards/aqua-mage-b-water.png",
-  "./assets/adventurers/cards/forest-assassin-a-wood.png",
-  "./assets/adventurers/cards/light-pastor-a-light.png",
-  "./assets/adventurers/cards/crimson-knight-s-fire.png",
-  "./assets/adventurers/cards/azure-sorcerer-s-water.png",
-  "./assets/adventurers/cards/holy-guardian-ss-light.png",
-  "./assets/adventurers/cards/shadow-hunter-ss-dark.png",
-  "./assets/adventurers/cards/alon-sss-fire.png",
-  "./assets/adventurers/cards/star-dragonlord-sss-light.png",
-  "./assets/adventurers/pixel/newbie-swordman-c-fire-idle.png",
-  "./assets/adventurers/pixel/newbie-swordman-c-fire-walk.png",
-  "./assets/adventurers/pixel/newbie-swordman-c-fire-attack.png",
-  "./assets/adventurers/pixel/apprentice-archer-c-wood-idle.png",
-  "./assets/adventurers/pixel/apprentice-archer-c-wood-walk.png",
-  "./assets/adventurers/pixel/apprentice-archer-c-wood-attack.png",
-  "./assets/adventurers/pixel/flame-fist-b-fire-idle.png",
-  "./assets/adventurers/pixel/flame-fist-b-fire-walk.png",
-  "./assets/adventurers/pixel/flame-fist-b-fire-attack.png",
-  "./assets/adventurers/pixel/aqua-mage-b-water-idle.png",
-  "./assets/adventurers/pixel/aqua-mage-b-water-walk.png",
-  "./assets/adventurers/pixel/aqua-mage-b-water-attack.png",
-  "./assets/adventurers/pixel/forest-assassin-a-wood-idle.png",
-  "./assets/adventurers/pixel/forest-assassin-a-wood-walk.png",
-  "./assets/adventurers/pixel/forest-assassin-a-wood-attack.png",
-  "./assets/adventurers/pixel/light-pastor-a-light-idle.png",
-  "./assets/adventurers/pixel/light-pastor-a-light-walk.png",
-  "./assets/adventurers/pixel/light-pastor-a-light-attack.png",
-  "./assets/adventurers/pixel/crimson-knight-s-fire-idle.png",
-  "./assets/adventurers/pixel/crimson-knight-s-fire-walk.png",
-  "./assets/adventurers/pixel/crimson-knight-s-fire-attack.png",
-  "./assets/adventurers/pixel/azure-sorcerer-s-water-idle.png",
-  "./assets/adventurers/pixel/azure-sorcerer-s-water-walk.png",
-  "./assets/adventurers/pixel/azure-sorcerer-s-water-attack.png",
-  "./assets/adventurers/pixel/holy-guardian-ss-light-idle.png",
-  "./assets/adventurers/pixel/holy-guardian-ss-light-walk.png",
-  "./assets/adventurers/pixel/holy-guardian-ss-light-attack.png",
-  "./assets/adventurers/pixel/shadow-hunter-ss-dark-idle.png",
-  "./assets/adventurers/pixel/shadow-hunter-ss-dark-walk.png",
-  "./assets/adventurers/pixel/shadow-hunter-ss-dark-attack.png",
-  "./assets/adventurers/pixel/alon-sss-fire-idle.png",
-  "./assets/adventurers/pixel/alon-sss-fire-walk.png",
-  "./assets/adventurers/pixel/alon-sss-fire-attack.png",
-  "./assets/adventurers/pixel/star-dragonlord-sss-light-idle.png",
-  "./assets/adventurers/pixel/star-dragonlord-sss-light-walk.png",
-  "./assets/adventurers/pixel/star-dragonlord-sss-light-attack.png",
   "./assets/equipment/placeholders/equipment-fallback.png",
   "./assets/equipment/shop/shop-placeholder.png",
   "./assets/equipment/ui/slot-empty.png",
@@ -419,7 +370,12 @@ self.addEventListener("fetch", (event) => {
     || requestUrl.pathname.endsWith("/app.js")
     || requestUrl.pathname.endsWith("/style.css")
     || requestUrl.pathname.endsWith("/service-worker.js")
-    || requestUrl.pathname.endsWith("/content-catalog.json");
+    || requestUrl.pathname.endsWith("/content-catalog.json")
+    || requestUrl.pathname.endsWith("/assets/adventurers/index.json")
+    || (
+      requestUrl.pathname.includes("/assets/adventurers/")
+      && requestUrl.pathname.endsWith("/data.json")
+    );
 
   if (isFreshCoreFile) {
     event.respondWith(

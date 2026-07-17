@@ -161,31 +161,25 @@
       "path": "assets/ui/icon-character-ticket.png",
       "purpose": "Character summon ticket icon."
     },
+    "index": {
+      "path": "assets/adventurers/index.json",
+      "purpose": "Runtime index for all data-driven adventurer templates."
+    },
+    "convention": "assets/adventurers/{rarity}/{element}/{number}/",
     "cardBacks": {
       "normal": "assets/adventurers/card-backs/card-back-normal.png",
       "rare": "assets/adventurers/card-backs/card-back-rare.png",
       "sss": "assets/adventurers/card-backs/card-back-sss.png"
     },
-    "cards": {
-      "newbieSwordman": "assets/adventurers/cards/newbie-swordman-c-fire.png",
-      "apprenticeArcher": "assets/adventurers/cards/apprentice-archer-c-wood.png",
-      "flameFist": "assets/adventurers/cards/flame-fist-b-fire.png",
-      "aquaMage": "assets/adventurers/cards/aqua-mage-b-water.png",
-      "forestAssassin": "assets/adventurers/cards/forest-assassin-a-wood.png",
-      "lightPastor": "assets/adventurers/cards/light-pastor-a-light.png",
-      "crimsonKnight": "assets/adventurers/cards/crimson-knight-s-fire.png",
-      "azureSorcerer": "assets/adventurers/cards/azure-sorcerer-s-water.png",
-      "holyGuardian": "assets/adventurers/cards/holy-guardian-ss-light.png",
-      "shadowHunter": "assets/adventurers/cards/shadow-hunter-ss-dark.png",
-      "alon": "assets/adventurers/cards/alon-sss-fire.png",
-      "starDragonlord": "assets/adventurers/cards/star-dragonlord-sss-light.png"
+    "sharedFallbacks": {
+      "card": "assets/adventurers/_shared/card-placeholder.png",
+      "portrait": "assets/adventurers/_shared/portrait-placeholder.png",
+      "icon": "assets/adventurers/_shared/icon-placeholder.png",
+      "sprite": "assets/adventurers/_shared/sprite-placeholder.png"
     },
-    "pixelSprites": {
-      "pattern": "assets/adventurers/pixel/{templateId}-{idle|walk|attack}.png",
-      "fallback": "assets/adventurers/placeholders/pixel-character.png"
-    },
-    "cardPlaceholders": {
-      "pattern": "assets/adventurers/placeholders/card-{c|b|a|s|ss|sss}.png"
+    "tools": {
+      "migrate": "tools/migrate-adventurers.mjs",
+      "rebuildIndex": "tools/build-adventurer-index.mjs"
     }
   },
   "equipment": {
@@ -271,7 +265,7 @@
     },
     "dragonConvention": "assets/dragons/{stage}/{element}/{rarity}/{id}",
     "eggConvention": "assets/eggs/{element}/{rarity}/{id}",
-    "adventurerConvention": "assets/adventurers/{element}/{rarity}/{id}",
+    "adventurerConvention": "assets/adventurers/{rarity}/{element}/{number}",
     "generator": "tools/build-content-catalog.mjs"
   },
   "placeholders": {

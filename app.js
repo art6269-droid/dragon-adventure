@@ -1009,24 +1009,33 @@ const EQUIPMENT_NAMES = {
   light: { head: "晨曦聖冠", body: "聖耀鎧甲", legs: "光羽護腿", weapon: "日輪聖劍", offhand: "光明法典", ring: "星光戒指", necklace: "曙光項鍊", petContract: "天使契約" },
   dark: { head: "深淵面具", body: "暗夜長袍", legs: "影行護腿", weapon: "黑月匕首", offhand: "虛空魔典", ring: "暗影戒指", necklace: "黑曜項鍊", petContract: "魔獸契約" }
 };
-const ADVENTURER_POOL = [
-  { templateId: "newbie-swordman-c-fire", name: "新人劍士", rarity: "C", element: "fire", job: "戰士", basePower: 28 },
-  { templateId: "apprentice-archer-c-wood", name: "見習弓手", rarity: "C", element: "wood", job: "弓手", basePower: 26 },
-  { templateId: "flame-fist-b-fire", name: "火焰拳士", rarity: "B", element: "fire", job: "戰士", basePower: 38 },
-  { templateId: "aqua-mage-b-water", name: "水靈法師", rarity: "B", element: "water", job: "法師", basePower: 40 },
-  { templateId: "forest-assassin-a-wood", name: "森林刺客", rarity: "A", element: "wood", job: "刺客", basePower: 54 },
-  { templateId: "light-pastor-a-light", name: "雷光牧者", rarity: "A", element: "light", job: "牧者", basePower: 52 },
-  { templateId: "crimson-knight-s-fire", name: "赤焰騎士", rarity: "S", element: "fire", job: "戰士", basePower: 70 },
-  { templateId: "azure-sorcerer-s-water", name: "蒼海術士", rarity: "S", element: "water", job: "法師", basePower: 72 },
-  { templateId: "holy-guardian-ss-light", name: "聖光守衛", rarity: "SS", element: "light", job: "守衛", basePower: 94 },
-  { templateId: "shadow-hunter-ss-dark", name: "暗影獵手", rarity: "SS", element: "dark", job: "弓手", basePower: 96 },
-  { templateId: "alon-sss-fire", name: "阿龍", rarity: "SSS", element: "fire", job: "龍裔戰士", basePower: 120 },
-  { templateId: "star-dragonlord-sss-light", name: "星辰龍主", rarity: "SSS", element: "light", job: "戰士", basePower: 124 }
-].map((template) => ({
-  ...template,
-  cardAsset: `assets/adventurers/cards/${template.templateId}.png`,
-  spriteAsset: `assets/adventurers/pixel/${template.templateId}-idle.png`
-}));
+const EXCLUSIVE_SKILL_COUNT = { C: 0, B: 0, A: 0, S: 1, SS: 2, SSS: 3 };
+const ADVENTURER_INDEX_URL = "assets/adventurers/index.json";
+const ADVENTURER_SHARED_ASSETS = {
+  card: "assets/adventurers/_shared/card-placeholder.png",
+  portrait: "assets/adventurers/_shared/portrait-placeholder.png",
+  icon: "assets/adventurers/_shared/icon-placeholder.png",
+  sprite: "assets/adventurers/_shared/sprite-placeholder.png"
+};
+const ADVENTURER_TEMPLATE_MIGRATION = {
+  "newbie-swordman-c-fire": "c-fire-0001",
+  "apprentice-archer-c-wood": "c-wood-0001",
+  "flame-fist-b-fire": "b-fire-0001",
+  "aqua-mage-b-water": "b-water-0001",
+  "forest-assassin-a-wood": "a-wood-0001",
+  "light-pastor-a-light": "a-light-0001",
+  "crimson-knight-s-fire": "s-fire-0001",
+  "azure-sorcerer-s-water": "s-water-0001",
+  "holy-guardian-ss-light": "ss-light-0001",
+  "shadow-hunter-ss-dark": "ss-dark-0001",
+  "alon-sss-fire": "sss-fire-0001",
+  "alon_sss_fire": "sss-fire-0001",
+  "star-dragonlord-sss-light": "sss-light-0001",
+  "star_dragonlord_sss_light": "sss-light-0001",
+  "shadow_hunter_ss_dark": "ss-dark-0001"
+};
+let adventurerTemplates = [];
+let adventurerTemplateMap = new Map();
 const CONTENT_CATALOG_URL = "assets/data/content-catalog.json";
 const contentCatalog = {
   loaded: false,
@@ -1051,22 +1060,167 @@ async function loadContentCatalog() {
   }
 }
 
-function getAdventurerTemplatePool() {
-  const merged = new Map(ADVENTURER_POOL.map((item) => [item.templateId, item]));
-  contentCatalog.adventurers.forEach((item) => {
-    const templateId = item.templateId || item.id;
-    if (!templateId) return;
-    merged.set(templateId, {
-      ...merged.get(templateId),
-      ...item,
-      templateId,
-      basePower: positiveNumber(item.basePower, merged.get(templateId)?.basePower || 28),
-      cardAsset: item.cardAsset || merged.get(templateId)?.cardAsset,
-      spriteAsset: item.actions?.idle?.[0] || merged.get(templateId)?.spriteAsset
-    });
-  });
-  return [...merged.values()];
+function resolveAdventurerRelativePath(basePath, assetPath, fallback) {
+  const value = String(assetPath || "").replace(/\\/g, "/");
+  if (!value) return fallback;
+  if (/^(?:https?:|data:|blob:|\/)/i.test(value) || value.startsWith("assets/")) return value;
+  return `${basePath}${value.replace(/^\.\//, "")}`;
 }
+
+function migrateAdventurerTemplateId(templateId) {
+  const value = String(templateId || "").trim();
+  return ADVENTURER_TEMPLATE_MIGRATION[value] || value.toLowerCase();
+}
+
+function prepareAdventurerTemplate(source, dataPath) {
+  const normalizedDataPath = String(dataPath || "").replace(/\\/g, "/");
+  const assetRoot = normalizedDataPath.replace(/data\.json$/i, "");
+  const templateId = migrateAdventurerTemplateId(source?.id || source?.templateId);
+  const animations = source?.animations && typeof source.animations === "object" ? source.animations : {};
+  const animationFrames = {};
+  Object.entries(animations).forEach(([action, config]) => {
+    const count = Math.max(0, Math.floor(Number(config?.frameCount) || 0));
+    const folder = resolveAdventurerRelativePath(assetRoot, config?.folder || `sprites/${action}`, "");
+    if (!folder || count <= 0) return;
+    animationFrames[action] = Array.from({ length: count }, (_, index) => (
+      `${folder.replace(/\/$/, "")}/${action}-${String(index + 1).padStart(2, "0")}.png`
+    ));
+  });
+  const growth = source?.growth && typeof source.growth === "object" ? source.growth : {};
+  const base = growth.base && typeof growth.base === "object" ? growth.base : {};
+  const template = {
+    ...source,
+    id: templateId,
+    templateId,
+    number: String(source?.number || templateId.split("-").at(-1) || ""),
+    rarity: String(source?.rarity || templateId.split("-")[0] || "C").toUpperCase(),
+    element: String(source?.element || templateId.split("-")[1] || "fire").toLowerCase(),
+    dataPath: normalizedDataPath,
+    assetRoot,
+    cardAsset: resolveAdventurerRelativePath(assetRoot, source?.assets?.card, ADVENTURER_SHARED_ASSETS.card),
+    portraitAsset: resolveAdventurerRelativePath(assetRoot, source?.assets?.portrait, ADVENTURER_SHARED_ASSETS.portrait),
+    iconAsset: resolveAdventurerRelativePath(assetRoot, source?.assets?.icon, ADVENTURER_SHARED_ASSETS.icon),
+    animations,
+    animationFrames,
+    actions: animationFrames,
+    skills: Array.isArray(source?.skills) ? source.skills : [],
+    growth: {
+      base: {
+        hp: positiveNumber(base.hp, 80),
+        attack: positiveNumber(base.attack, 18),
+        defense: positiveNumber(base.defense, 14),
+        speed: positiveNumber(base.speed, 14)
+      },
+      perLevel: {
+        hp: normalizedNonNegative(growth.perLevel?.hp, 7),
+        attack: normalizedNonNegative(growth.perLevel?.attack, 2),
+        defense: normalizedNonNegative(growth.perLevel?.defense, 1.2),
+        speed: normalizedNonNegative(growth.perLevel?.speed, 0.7)
+      },
+      variance: {
+        min: clamp(Number(growth.variance?.min) || 0.9, 0.5, 1.5),
+        max: clamp(Number(growth.variance?.max) || 1.1, 0.5, 1.5)
+      }
+    }
+  };
+  template.baseStats = { ...template.growth.base };
+  template.basePower = Math.max(1, Math.round(
+    template.growth.base.hp * 0.25
+    + template.growth.base.attack * 2
+    + template.growth.base.defense * 1.5
+    + template.growth.base.speed * 1.2
+  ));
+  return template;
+}
+
+function validateAdventurerTemplate(template) {
+  const warnings = [];
+  const validRarities = ["C", "B", "A", "S", "SS", "SSS"];
+  const validElements = ["fire", "water", "wood", "light", "dark"];
+  if (!template?.templateId) warnings.push("缺少 id");
+  if (!validRarities.includes(template?.rarity)) warnings.push("rarity 無效");
+  if (!validElements.includes(template?.element)) warnings.push("element 無效");
+  if (!/^\d{4}$/.test(String(template?.number || ""))) warnings.push("number 必須是四位數");
+  if (!template?.name) warnings.push("缺少名稱");
+  if (!template?.growth?.base || !template?.growth?.perLevel || !template?.growth?.variance) warnings.push("growth 不完整");
+  if (!template?.cardAsset || !template?.portraitAsset || !template?.iconAsset) warnings.push("assets 不完整");
+  if (!template?.animations?.idle || !template?.animationFrames?.idle?.length) warnings.push("缺少 idle 動畫");
+  if (Array.isArray(template?.missingAssets) && template.missingAssets.length) {
+    warnings.push(`缺少素材：${template.missingAssets.join("、")}`);
+  }
+  const expectedSkills = EXCLUSIVE_SKILL_COUNT[template?.rarity] || 0;
+  if (["S", "SS", "SSS"].includes(template?.rarity) && template.skills.length !== expectedSkills) {
+    warnings.push(`${template.rarity} 應有 ${expectedSkills} 個專有技能，目前為 ${template.skills.length}`);
+  }
+  if (warnings.length) {
+    console.warn(`[adventurer template] ${template?.templateId || template?.dataPath || "unknown"}`, warnings);
+  }
+  return warnings;
+}
+
+async function loadAdventurerTemplates() {
+  const loaded = [];
+  try {
+    const response = await fetch(ADVENTURER_INDEX_URL, { cache: "no-cache" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const index = await response.json();
+    const entries = Array.isArray(index.characters) ? index.characters : [];
+    const results = await Promise.allSettled(entries.map(async (entry) => {
+      const dataPath = `assets/adventurers/${String(entry.path || "").replace(/^\/+/, "")}`;
+      const dataResponse = await fetch(dataPath, { cache: "no-cache" });
+      if (!dataResponse.ok) throw new Error(`${dataPath}: HTTP ${dataResponse.status}`);
+      return prepareAdventurerTemplate({
+        ...(await dataResponse.json()),
+        missingAssets: Array.isArray(entry.missingAssets) ? entry.missingAssets : []
+      }, dataPath);
+    }));
+    results.forEach((result, indexPosition) => {
+      if (result.status === "fulfilled") {
+        validateAdventurerTemplate(result.value);
+        loaded.push(result.value);
+      } else {
+        console.warn("[adventurer template] skipped", entries[indexPosition]?.path, result.reason);
+      }
+    });
+  } catch (error) {
+    console.warn("冒險者索引載入失敗，改用內容清單相容資料。", error);
+  }
+
+  if (!loaded.length) {
+    contentCatalog.adventurers.forEach((item) => {
+      const template = prepareAdventurerTemplate(item, item.dataPath || `${item.assetRoot || ""}data.json`);
+      validateAdventurerTemplate(template);
+      loaded.push(template);
+    });
+  }
+  adventurerTemplates = loaded;
+  adventurerTemplateMap = new Map(loaded.map((template) => [template.templateId, template]));
+  contentCatalog.adventurers = loaded;
+}
+
+function getAdventurerTemplatePool() {
+  return adventurerTemplates;
+}
+
+function getAdventurerTemplate(templateOrId) {
+  const templateId = migrateAdventurerTemplateId(
+    typeof templateOrId === "string" ? templateOrId : templateOrId?.templateId
+  );
+  return adventurerTemplateMap.get(templateId) || null;
+}
+
+window.debugListAdventurers = function debugListAdventurers() {
+  console.table(getAdventurerTemplatePool().map((template) => ({
+    templateId: template.templateId,
+    name: template.name,
+    rarity: template.rarity,
+    element: template.element,
+    skills: template.skills.length,
+    dataPath: template.dataPath,
+    missingAssets: (template.missingAssets || []).join("、") || "無"
+  })));
+  return getAdventurerTemplatePool();
+};
 
 function findDragonCatalogTemplate(criteria = {}) {
   const stage = normalizeDragonStage(criteria.stage, criteria.level);
@@ -1526,6 +1680,7 @@ initialize();
 
 async function initialize() {
   await loadContentCatalog();
+  await loadAdventurerTemplates();
   ensureValidState();
   audioManager = new AudioManager(MUSIC_TRACKS, "start", MUSIC_FALLBACKS);
   audioManager.onChange = renderAudioControls;
@@ -1546,6 +1701,7 @@ async function initialize() {
   startHatchTimer();
   startRestDragonBehaviorLoop();
   startDragonFrameAnimationLoop();
+  startAdventurerFrameAnimationLoop();
 }
 
 function attachAudioUnlockEvents() {
@@ -1831,7 +1987,7 @@ function ensureValidState() {
     : createStarterEggInventory();
   state.eggs = state.eggInventory;
   state.dragons = Array.isArray(state.dragons) ? state.dragons.map(normalizeDragon) : [];
-  state.adventurers = Array.isArray(state.adventurers) ? state.adventurers.map(normalizeAdventurer) : [];
+  state.adventurers = Array.isArray(state.adventurers) ? state.adventurers.map(normalizeAdventurer).filter(Boolean) : [];
   state.equipmentInventory = Array.isArray(state.equipmentInventory) ? state.equipmentInventory.map(normalizeEquipment) : [];
   state.equipmentShop = normalizeEquipmentShop(state.equipmentShop);
   state.adventurerTeams = normalizeAdventurerTeams(state.adventurerTeams, state.adventurers);
@@ -2596,10 +2752,38 @@ function normalizeHomeIsland(homeIsland, dragons) {
   return { restDragons: validIds };
 }
 
+function serializeAdventurerInstance(adventurer) {
+  return {
+    id: adventurer.id,
+    templateId: adventurer.templateId,
+    name: adventurer.name,
+    level: adventurer.level,
+    exp: adventurer.exp,
+    growthRoll: { ...adventurer.growthRoll },
+    equipment: { ...createEmptyAdventurerEquipment(), ...(adventurer.equipment || {}) },
+    locked: Boolean(adventurer.locked),
+    favorite: Boolean(adventurer.favorite),
+    isInTeam: Boolean(adventurer.isInTeam),
+    teamId: adventurer.teamId || null,
+    shards: normalizedNonNegative(adventurer.shards, 0),
+    isBeginnerAdventurer: Boolean(adventurer.isBeginnerAdventurer),
+    obtainedAt: positiveNumber(adventurer.obtainedAt, Date.now())
+  };
+}
+
+function createPersistableGameState() {
+  return {
+    ...state,
+    adventurers: Array.isArray(state.adventurers)
+      ? state.adventurers.filter(Boolean).map(serializeAdventurerInstance)
+      : []
+  };
+}
+
 function saveGame() {
   console.log("[saveGame]");
   syncPersistentAliases();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(createPersistableGameState()));
 }
 
 function resetGame() {
@@ -4170,7 +4354,10 @@ function calculateEquipmentStats(adventurer) {
 }
 
 function calculateFinalStats(adventurer) {
-  const base = adventurer?.baseStats || { hp: 100, attack: 10, defense: 10, speed: 10 };
+  const template = getAdventurerTemplate(adventurer);
+  const base = template
+    ? calculateAdventurerBaseStats(template, adventurer?.level, adventurer?.growthRoll)
+    : adventurer?.baseStats || { hp: 100, attack: 10, defense: 10, speed: 10 };
   const equipment = calculateEquipmentStats(adventurer);
   return {
     hp: base.hp + equipment.hp,
@@ -4195,6 +4382,10 @@ function calculateAdventurerPower(adventurer) {
 function recalculateAdventurerDerivedStats(adventurer) {
   if (!adventurer) return;
   const finalStats = calculateFinalStats(adventurer);
+  const template = getAdventurerTemplate(adventurer);
+  adventurer.baseStats = template
+    ? calculateAdventurerBaseStats(template, adventurer.level, adventurer.growthRoll)
+    : adventurer.baseStats;
   adventurer.hp = finalStats.hp;
   adventurer.attack = finalStats.attack;
   adventurer.defense = finalStats.defense;
@@ -4236,42 +4427,93 @@ function syncAdventurerEquipmentState() {
   state.adventurers.forEach(recalculateAdventurerDerivedStats);
 }
 
+function adventurerGrowthValue(seed, stat) {
+  const value = `${seed}:${stat}`;
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0) / 4294967295;
+}
+
+function createAdventurerGrowthRoll(template, seed = `${Date.now()}-${Math.random()}`) {
+  const min = Number(template?.growth?.variance?.min) || 0.9;
+  const max = Number(template?.growth?.variance?.max) || 1.1;
+  return Object.fromEntries(["hp", "attack", "defense", "speed"].map((stat) => [
+    stat,
+    Number((min + (max - min) * adventurerGrowthValue(seed, stat)).toFixed(4))
+  ]));
+}
+
+function normalizeAdventurerGrowthRoll(growthRoll, template, seed) {
+  const min = Number(template?.growth?.variance?.min) || 0.9;
+  const max = Number(template?.growth?.variance?.max) || 1.1;
+  const fallback = createAdventurerGrowthRoll(template, seed);
+  return Object.fromEntries(["hp", "attack", "defense", "speed"].map((stat) => [
+    stat,
+    clamp(Number(growthRoll?.[stat]) || fallback[stat], min, max)
+  ]));
+}
+
+function calculateAdventurerBaseStats(template, level = 1, growthRoll = null) {
+  const safeLevel = clamp(Math.floor(Number(level) || 1), 1, positiveNumber(template?.maxLevel, ADVENTURER_MAX_LEVEL));
+  const roll = normalizeAdventurerGrowthRoll(growthRoll, template, template?.templateId || "adventurer");
+  return Object.fromEntries(["hp", "attack", "defense", "speed"].map((stat) => {
+    const base = Number(template?.growth?.base?.[stat]) || 0;
+    const perLevel = Number(template?.growth?.perLevel?.[stat]) || 0;
+    return [stat, Math.max(1, Math.round((base + perLevel * (safeLevel - 1)) * roll[stat]))];
+  }));
+}
+
+function deriveLegacyAdventurerGrowthRoll(source, template, level) {
+  if (source?.growthRoll) return normalizeAdventurerGrowthRoll(source.growthRoll, template, source.id);
+  const nominal = calculateAdventurerBaseStats(template, level, { hp: 1, attack: 1, defense: 1, speed: 1 });
+  const legacy = source?.baseStats && typeof source.baseStats === "object" ? source.baseStats : source;
+  const min = Number(template?.growth?.variance?.min) || 0.9;
+  const max = Number(template?.growth?.variance?.max) || 1.1;
+  const derived = {};
+  ["hp", "attack", "defense", "speed"].forEach((stat) => {
+    const saved = Number(legacy?.[stat]);
+    derived[stat] = saved > 0 && nominal[stat] > 0
+      ? clamp(saved / nominal[stat], min, max)
+      : createAdventurerGrowthRoll(template, source?.id || source?.name || template.templateId)[stat];
+  });
+  return derived;
+}
+
 function normalizeAdventurer(adventurer) {
   const source = adventurer && typeof adventurer === "object" ? adventurer : {};
+  const templateId = migrateAdventurerTemplateId(source.templateId);
   const templatePool = getAdventurerTemplatePool();
-  const template = templatePool.find((item) => item.templateId === source.templateId)
+  const template = getAdventurerTemplate(templateId)
     || templatePool.find((item) => item.name === source.name)
     || templatePool[0];
-  const rarity = String(source.rarity || template.rarity || "C").toUpperCase();
-  const rarityRank = Math.max(0, ["C", "B", "A", "S", "SS", "SSS"].indexOf(rarity));
-  const baseStatsSource = source.baseStats && typeof source.baseStats === "object" ? source.baseStats : {};
-  const baseStats = {
-    hp: positiveNumber(baseStatsSource.hp, source.hp || 80 + rarityRank * 22),
-    attack: positiveNumber(baseStatsSource.attack, source.attack || 18 + rarityRank * 7),
-    defense: positiveNumber(baseStatsSource.defense, source.defense || 14 + rarityRank * 5),
-    speed: positiveNumber(baseStatsSource.speed, source.speed || 14 + rarityRank * 3)
-  };
+  if (!template) return null;
+  const level = clamp(positiveNumber(source.level, 1), 1, positiveNumber(template.maxLevel, ADVENTURER_MAX_LEVEL));
+  const growthRoll = deriveLegacyAdventurerGrowthRoll(source, template, level);
+  const baseStats = calculateAdventurerBaseStats(template, level, growthRoll);
   const equipment = { ...createEmptyAdventurerEquipment() };
   EQUIPMENT_SLOTS.forEach((slot) => {
     equipment[slot] = source.equipment?.[slot] || null;
   });
 
   return {
-    ...template,
-    ...source,
-    id: source.id || createId("adventurer"),
-    templateId: source.templateId || template.templateId,
+    id: source.id || createId("adv"),
+    templateId: template.templateId,
     name: source.name || template.name,
-    rarity,
-    element: normalizeDragonElement(source.element || template.element),
-    job: source.job || template.job,
-    level: positiveNumber(source.level, 1),
+    rarity: template.rarity,
+    element: template.element,
+    job: template.job,
+    description: template.description || "",
+    level,
     exp: normalizedNonNegative(source.exp, 0),
-    power: positiveNumber(source.power, template.basePower || 20),
-    hp: positiveNumber(source.hp, baseStats.hp),
-    attack: positiveNumber(source.attack, baseStats.attack),
-    defense: positiveNumber(source.defense, baseStats.defense),
-    speed: positiveNumber(source.speed, baseStats.speed),
+    growthRoll,
+    power: positiveNumber(source.power, template.basePower),
+    hp: baseStats.hp,
+    attack: baseStats.attack,
+    defense: baseStats.defense,
+    speed: baseStats.speed,
     baseStats,
     equipment,
     equipmentPower: normalizedNonNegative(source.equipmentPower, 0),
@@ -4282,11 +4524,14 @@ function normalizeAdventurer(adventurer) {
     teamId: source.teamId || null,
     shards: normalizedNonNegative(source.shards, 0),
     obtainedAt: positiveNumber(source.obtainedAt, Date.now()),
-    assetRoot: source.assetRoot || template.assetRoot || null,
-    animationFrames: source.animationFrames || template.actions || {},
-    portraitAsset: source.portraitAsset || template.portraitAsset || template.cardAsset,
-    cardAsset: source.cardAsset || template.cardAsset,
-    spriteAsset: source.spriteAsset || template.actions?.idle?.[0] || template.spriteAsset
+    assetRoot: template.assetRoot,
+    animationFrames: template.animationFrames,
+    animations: template.animations,
+    portraitAsset: template.portraitAsset,
+    iconAsset: template.iconAsset,
+    cardAsset: template.cardAsset,
+    spriteAsset: template.animationFrames?.idle?.[0] || ADVENTURER_SHARED_ASSETS.sprite,
+    skills: template.skills
   };
 }
 
@@ -4298,23 +4543,101 @@ function adventurerElementLabel(element) {
   return dragonElementText(normalizeDragonElement(element));
 }
 
+function resolveAdventurerAsset(templateOrInstance, assetType = "card", action = "idle") {
+  const template = getAdventurerTemplate(templateOrInstance) || templateOrInstance;
+  if (!template) return ADVENTURER_SHARED_ASSETS[assetType] || ADVENTURER_SHARED_ASSETS.sprite;
+  if (assetType === "card") return template.cardAsset || ADVENTURER_SHARED_ASSETS.card;
+  if (assetType === "portrait") return template.portraitAsset || ADVENTURER_SHARED_ASSETS.portrait;
+  if (assetType === "icon") return template.iconAsset || ADVENTURER_SHARED_ASSETS.icon;
+  if (assetType === "effect") {
+    const skill = (template.skills || []).find((item) => item.id === action);
+    return resolveAdventurerRelativePath(template.assetRoot, skill?.effect, ADVENTURER_SHARED_ASSETS.sprite);
+  }
+  if (assetType === "audio") {
+    return `${template.assetRoot}audio/${action}.mp3`;
+  }
+  const fallbackActions = action.startsWith("skill-")
+    ? [action, "attack", "idle"]
+    : action === "idle"
+      ? ["idle"]
+      : [action, "idle"];
+  for (const fallbackAction of fallbackActions) {
+    const frames = template.animationFrames?.[fallbackAction];
+    if (Array.isArray(frames) && frames.length) return frames[0];
+  }
+  return ADVENTURER_SHARED_ASSETS.sprite;
+}
+
 function getAdventurerCardAsset(adventurer) {
-  return adventurer.cardAsset || `assets/adventurers/cards/${adventurer.templateId}.png`;
+  return resolveAdventurerAsset(adventurer, "card");
+}
+
+function getAdventurerPortraitAsset(adventurer) {
+  return resolveAdventurerAsset(adventurer, "portrait");
+}
+
+function getAdventurerIconAsset(adventurer) {
+  return resolveAdventurerAsset(adventurer, "icon");
+}
+
+function getAdventurerAnimationFrames(adventurer, action = "idle") {
+  const template = getAdventurerTemplate(adventurer);
+  if (!template) return [ADVENTURER_SHARED_ASSETS.sprite];
+  const fallbackActions = action.startsWith("skill-")
+    ? [action, "attack", "idle"]
+    : action === "idle"
+      ? ["idle"]
+      : [action, "idle"];
+  for (const fallbackAction of fallbackActions) {
+    const frames = template.animationFrames?.[fallbackAction];
+    if (Array.isArray(frames) && frames.length) return frames;
+  }
+  return [ADVENTURER_SHARED_ASSETS.sprite];
 }
 
 function getAdventurerSpriteAsset(adventurer, action = "idle") {
-  const frames = adventurer?.animationFrames?.[action];
-  if (Array.isArray(frames) && frames.length > 0) return frames[0];
-  const base = String(adventurer.spriteAsset || `assets/adventurers/pixel/${adventurer.templateId}-idle.png`);
-  return action === "idle" ? base : base.replace(/-idle\.png$/i, `-${action}.png`);
+  return getAdventurerAnimationFrames(adventurer, action)[0];
 }
 
 function getAdventurerCardFallback(rarity) {
-  return `assets/adventurers/placeholders/card-${String(rarity || "C").toLowerCase()}.png`;
+  return ADVENTURER_SHARED_ASSETS.card;
 }
 
-function renderAdventurerImage(src, fallback, className, alt) {
-  return `<img class="${className}" src="${escapeHtml(src)}" alt="${escapeHtml(alt || "")}" decoding="async" loading="lazy" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${escapeHtml(fallback)}'}else{this.hidden=true}">`;
+function renderAdventurerImage(src, fallback, className, alt, extraAttributes = "") {
+  const fallbackList = [...new Set((Array.isArray(fallback) ? fallback : [fallback]).filter(Boolean))];
+  const encodedFallbacks = encodeURIComponent(JSON.stringify(fallbackList));
+  return `<img class="${className}" src="${escapeHtml(src)}" alt="${escapeHtml(alt || "")}" decoding="async" loading="lazy" data-fallback-index="0" data-fallbacks="${encodedFallbacks}" ${extraAttributes} onerror="this.dataset.fallbackUsed='1';const q=JSON.parse(decodeURIComponent(this.dataset.fallbacks||'%5B%5D'));const i=Number(this.dataset.fallbackIndex||0);if(i<q.length){this.dataset.fallbackIndex=String(i+1);this.src=q[i]}else{this.hidden=true}">`;
+}
+
+function renderAdventurerAnimatedImage(adventurer, action, className, alt) {
+  const fallbacks = action.startsWith("skill-")
+    ? [resolveAdventurerAsset(adventurer, "sprite", "attack"), resolveAdventurerAsset(adventurer, "sprite", "idle"), ADVENTURER_SHARED_ASSETS.sprite]
+    : [resolveAdventurerAsset(adventurer, "sprite", "idle"), ADVENTURER_SHARED_ASSETS.sprite];
+  return renderAdventurerImage(
+    getAdventurerSpriteAsset(adventurer, action),
+    fallbacks,
+    className,
+    alt,
+    `data-adventurer-animation="${escapeHtml(action)}" data-adventurer-id="${escapeHtml(adventurer.id)}"`
+  );
+}
+
+function startAdventurerFrameAnimationLoop() {
+  if (window.__adventurerFrameTimer) return;
+  window.__adventurerFrameTimer = window.setInterval(() => {
+    document.querySelectorAll("[data-adventurer-animation][data-adventurer-id]").forEach((image) => {
+      if (image.dataset.fallbackUsed === "1") return;
+      const adventurer = getAdventurerById(image.dataset.adventurerId);
+      if (!adventurer) return;
+      const action = image.dataset.adventurerAnimation || "idle";
+      const frames = getAdventurerAnimationFrames(adventurer, action);
+      if (frames.length <= 1) return;
+      const template = getAdventurerTemplate(adventurer);
+      const duration = positiveNumber(template?.animations?.[action]?.frameDuration, 150);
+      const index = Math.floor(Date.now() / duration) % frames.length;
+      if (image.getAttribute("src") !== frames[index]) image.src = frames[index];
+    });
+  }, 80);
 }
 
 function rollAdventurerRarity() {
@@ -4328,13 +4651,17 @@ function rollAdventurerRarity() {
 
 function createAdventurerInstance(template) {
   return normalizeAdventurer({
-    ...template,
-    id: createId("adventurer"),
+    id: createId("adv"),
+    templateId: template.templateId,
+    name: template.name,
     level: 1,
     exp: 0,
-    power: template.basePower,
+    growthRoll: createAdventurerGrowthRoll(template, `${Date.now()}-${Math.random()}`),
     locked: false,
+    favorite: false,
     isInTeam: false,
+    teamId: null,
+    equipment: createEmptyAdventurerEquipment(),
     shards: 0,
     obtainedAt: Date.now()
   });
@@ -4835,7 +5162,7 @@ function renderAdventurerGuildPageInner() {
 
       <section class="adventurer-summon-bar">
         <div class="adventurer-ticket-count">
-          ${renderAdventurerImage(ASSETS.icons.characterTicket, "assets/adventurers/placeholders/pixel-character.png", "adventurer-ticket-icon", "角色召喚券")}
+          ${renderAdventurerImage(ASSETS.icons.characterTicket, ADVENTURER_SHARED_ASSETS.icon, "adventurer-ticket-icon", "角色召喚券")}
           <span>角色券 <b>${formatNumber(tickets)}</b></span>
         </div>
         <button type="button" data-v2-action="summon-adventurer">
@@ -4877,8 +5204,9 @@ function renderAdventurerGuildCard(adventurer) {
     <button class="adventurer-card rarity-${adventurer.rarity.toLowerCase()}${isManaging ? " bulk-selectable" : ""}${isSelected ? " bulk-selected" : ""}${isProtected ? " bulk-protected" : ""}" type="button" data-v2-action="open-adventurer-detail" data-adventurer-id="${adventurer.id}" data-bulk-item-type="adventurer" data-bulk-item-id="${adventurer.id}" aria-label="查看 ${escapeHtml(adventurer.name)}"${isManaging ? ` aria-pressed="${isSelected}"` : ""}>
       ${isManaging ? `<span class="bulk-selection-indicator" aria-hidden="true">${isProtected ? "鎖" : (isSelected ? "✓" : "")}</span>` : ""}
       <span class="adventurer-card-sprite">
-        ${renderAdventurerImage(getAdventurerSpriteAsset(adventurer), "assets/adventurers/placeholders/pixel-character.png", "adventurer-pixel", adventurer.name)}
+        ${renderAdventurerAnimatedImage(adventurer, "idle", "adventurer-pixel", adventurer.name)}
       </span>
+      ${renderAdventurerImage(getAdventurerIconAsset(adventurer), ADVENTURER_SHARED_ASSETS.icon, "adventurer-card-icon", `${adventurer.name} icon`)}
       <b>${escapeHtml(adventurer.name)}</b>
       <small>${escapeHtml(adventurerElementLabel(adventurer.element))} / ${escapeHtml(adventurer.job)}</small>
       <span class="adventurer-card-meta"><em>${escapeHtml(adventurer.rarity)}</em><i>Lv.${formatNumber(adventurer.level)}</i></span>
@@ -4920,6 +5248,11 @@ function consumeAdventurerSummonCost() {
 }
 
 function summonAdventurer() {
+  const templatePool = getAdventurerTemplatePool();
+  if (!templatePool.length) {
+    showToast("冒險者資料尚未載入完成");
+    return false;
+  }
   if (!canPayAdventurerSummon()) {
     showToast("角色召喚券與鑽石都不足");
     return false;
@@ -4928,7 +5261,6 @@ function summonAdventurer() {
   if (!paidWith) return false;
 
   const rarity = rollAdventurerRarity();
-  const templatePool = getAdventurerTemplatePool();
   const candidates = templatePool.filter((item) => item.rarity === rarity);
   const template = candidates[Math.floor(Math.random() * candidates.length)] || templatePool[0];
   const adventurer = createAdventurerInstance(template);
@@ -5034,14 +5366,14 @@ function renderAdventurerTeamSubpanel(adventurer) {
         const member = getAdventurerById(activeTeam.memberIds[index]);
         return member ? `
           <div class="adventurer-team-slot is-filled">
-            ${renderAdventurerImage(getAdventurerSpriteAsset(member), "assets/adventurers/placeholders/pixel-character.png", "adventurer-team-avatar", member.name)}
+            ${renderAdventurerAnimatedImage(member, "idle", "adventurer-team-avatar", member.name)}
             <small>${escapeHtml(member.name)}</small>
           </div>
         ` : `<div class="adventurer-team-slot"><span>${index + 1}</span><small>空位</small></div>`;
       }).join("")}
     </div>
     <div class="adventurer-selected-member">
-      ${renderAdventurerImage(getAdventurerSpriteAsset(adventurer), "assets/adventurers/placeholders/pixel-character.png", "adventurer-selected-avatar", adventurer.name)}
+      ${renderAdventurerAnimatedImage(adventurer, "idle", "adventurer-selected-avatar", adventurer.name)}
       <div><b>${escapeHtml(adventurer.name)}</b><small>${adventurer.teamId ? `目前：${escapeHtml(state.adventurerTeams.teams.find((team) => team.id === adventurer.teamId)?.name || "已編隊")}` : "尚未加入隊伍"}</small></div>
       <button type="button" data-v2-action="toggle-adventurer-team" ${isMemberElsewhere ? "disabled" : ""}>${isActiveMember ? "移出隊伍" : isMemberElsewhere ? "已在其他隊伍" : "加入隊伍"}</button>
     </div>
@@ -5190,7 +5522,7 @@ function renderAdventurerDetailModal(adventurer) {
           <button class="adventurer-modal-close" type="button" data-v2-action="close-adventurer-detail" aria-label="關閉">×</button>
           <div class="adventurer-detail-visual">
             ${renderAdventurerImage(getAdventurerCardAsset(adventurer), getAdventurerCardFallback(adventurer.rarity), "adventurer-detail-card-art", adventurer.name)}
-            ${renderAdventurerImage(getAdventurerSpriteAsset(adventurer), "assets/adventurers/placeholders/pixel-character.png", "adventurer-detail-pixel", adventurer.name)}
+            ${renderAdventurerAnimatedImage(adventurer, "idle", "adventurer-detail-pixel", adventurer.name)}
           </div>
           <div class="adventurer-detail-info">
             <span class="adventurer-detail-rarity">${escapeHtml(adventurer.rarity)}${adventurer.locked ? "・已鎖定" : ""}</span>
@@ -5204,6 +5536,16 @@ function renderAdventurerDetailModal(adventurer) {
               <div><dt>速度</dt><dd>${formatNumber(adventurer.speed)} <i>裝+${equipmentBonus.speed}</i></dd></div>
               <div><dt>碎片</dt><dd>${formatNumber(adventurer.shards)}</dd></div>
             </dl>
+            <div class="adventurer-detail-skills" aria-label="專有技能">
+              ${(adventurer.skills || []).length
+                ? adventurer.skills.map((skill) => `
+                  <span title="${escapeHtml(skill.description || "")}">
+                    <b>${escapeHtml(skill.name)}</b>
+                    <small>Lv.${formatNumber(skill.unlockLevel || 1)} 解鎖</small>
+                  </span>
+                `).join("")
+                : `<span class="is-empty"><b>無專有技能</b><small>可使用普通攻擊與共通技能</small></span>`}
+            </div>
             <div class="adventurer-main-actions">
               ${[["team", "加入隊伍"], ["upgrade", "升級"], ["equipment", "裝備"], ["trade", "交易"]].map(([panel, label]) => `
                 <button type="button" data-v2-action="toggle-adventurer-panel" data-panel="${panel}" class="${activePanel === panel ? "is-active" : ""}">${label}</button>
@@ -5312,10 +5654,6 @@ function upgradeAdventurer() {
   }
   state.coins -= cost;
   adventurer.level += 1;
-  adventurer.baseStats.hp += 10;
-  adventurer.baseStats.attack += 4;
-  adventurer.baseStats.defense += 3;
-  adventurer.baseStats.speed += 1;
   recalculateAdventurerDerivedStats(adventurer);
   saveGame();
   updateHomeV2HudResources();
@@ -11172,7 +11510,7 @@ function syncPersistentAliases() {
   }
   state.eggs = state.eggInventory;
   state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
-  state.adventurers = Array.isArray(state.adventurers) ? state.adventurers.map(normalizeAdventurer) : [];
+  state.adventurers = Array.isArray(state.adventurers) ? state.adventurers.map(normalizeAdventurer).filter(Boolean) : [];
   state.equipmentInventory = Array.isArray(state.equipmentInventory) ? state.equipmentInventory.map(normalizeEquipment) : [];
   state.equipmentShop = normalizeEquipmentShop(state.equipmentShop);
   state.adventurerTeams = normalizeAdventurerTeams(state.adventurerTeams, state.adventurers);

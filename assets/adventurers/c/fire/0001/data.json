@@ -1,0 +1,72 @@
+{
+  "id": "c-fire-0001",
+  "number": "0001",
+  "name": "新手劍士",
+  "rarity": "C",
+  "element": "fire",
+  "job": "劍士",
+  "description": "踏上冒險旅程的年輕劍士。",
+  "maxLevel": 100,
+  "assets": {
+    "card": "card.png",
+    "portrait": "portrait.png",
+    "icon": "icon.png"
+  },
+  "growth": {
+    "base": {
+      "hp": 79,
+      "attack": 17,
+      "defense": 13,
+      "speed": 13
+    },
+    "perLevel": {
+      "hp": 7,
+      "attack": 1.8,
+      "defense": 1.2,
+      "speed": 0.7
+    },
+    "variance": {
+      "min": 0.9,
+      "max": 1.1
+    }
+  },
+  "skills": [],
+  "animations": {
+    "idle": {
+      "folder": "sprites/idle",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "walk": {
+      "folder": "sprites/walk",
+      "frameCount": 8,
+      "frameDuration": 120,
+      "loop": true
+    },
+    "attack": {
+      "folder": "sprites/attack",
+      "frameCount": 6,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "hurt": {
+      "folder": "sprites/hurt",
+      "frameCount": 4,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "victory": {
+      "folder": "sprites/victory",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "defeated": {
+      "folder": "sprites/defeated",
+      "frameCount": 4,
+      "frameDuration": 180,
+      "loop": false
+    }
+  }
+}

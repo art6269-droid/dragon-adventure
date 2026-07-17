@@ -1,0 +1,125 @@
+{
+  "id": "sss-fire-0001",
+  "number": "0001",
+  "name": "阿龍",
+  "rarity": "SSS",
+  "element": "fire",
+  "job": "龍裔戰士",
+  "description": "擁有火龍血脈的少年戰士。",
+  "maxLevel": 100,
+  "assets": {
+    "card": "card.png",
+    "portrait": "portrait.png",
+    "icon": "icon.png"
+  },
+  "growth": {
+    "base": {
+      "hp": 143,
+      "attack": 44,
+      "defense": 28,
+      "speed": 23
+    },
+    "perLevel": {
+      "hp": 12,
+      "attack": 4.6,
+      "defense": 2.9,
+      "speed": 1.15
+    },
+    "variance": {
+      "min": 0.9,
+      "max": 1.1
+    }
+  },
+  "skills": [
+    {
+      "id": "skill-01",
+      "name": "炎龍拳",
+      "type": "active",
+      "element": "fire",
+      "description": "對單一敵人造成火屬性傷害。",
+      "power": 160,
+      "cooldown": 3,
+      "unlockLevel": 1,
+      "animation": "sprites/skill-01",
+      "effect": "effects/skill-01-effect.png"
+    },
+    {
+      "id": "skill-02",
+      "name": "龍炎爆發",
+      "type": "active",
+      "element": "fire",
+      "description": "對全體敵人造成火屬性傷害。",
+      "power": 220,
+      "cooldown": 5,
+      "unlockLevel": 20,
+      "animation": "sprites/skill-02",
+      "effect": "effects/skill-02-effect.png"
+    },
+    {
+      "id": "skill-03",
+      "name": "真龍覺醒",
+      "type": "passive",
+      "element": "fire",
+      "description": "生命偏低時提升攻擊力。",
+      "unlockLevel": 40,
+      "animation": "sprites/skill-03",
+      "effect": "effects/skill-03-effect.png"
+    }
+  ],
+  "animations": {
+    "idle": {
+      "folder": "sprites/idle",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "walk": {
+      "folder": "sprites/walk",
+      "frameCount": 8,
+      "frameDuration": 120,
+      "loop": true
+    },
+    "attack": {
+      "folder": "sprites/attack",
+      "frameCount": 6,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "hurt": {
+      "folder": "sprites/hurt",
+      "frameCount": 4,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "victory": {
+      "folder": "sprites/victory",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "defeated": {
+      "folder": "sprites/defeated",
+      "frameCount": 4,
+      "frameDuration": 180,
+      "loop": false
+    },
+    "skill-01": {
+      "folder": "sprites/skill-01",
+      "frameCount": 8,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "skill-02": {
+      "folder": "sprites/skill-02",
+      "frameCount": 10,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "skill-03": {
+      "folder": "sprites/skill-03",
+      "frameCount": 12,
+      "frameDuration": 90,
+      "loop": false
+    }
+  }
+}

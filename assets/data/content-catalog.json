@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-16T05:08:20.280Z",
+  "generatedAt": "2026-07-16T11:17:35.098Z",
   "conventions": {
     "dragons": "assets/dragons/{stage}/{element}/{rarity}/{id}",
     "eggs": "assets/eggs/{element}/{rarity}/{id}",
-    "adventurers": "assets/adventurers/{element}/{rarity}/{id}"
+    "adventurers": "assets/adventurers/{rarity}/{element}/{number}"
   },
   "dragons": [
     {
@@ -6315,51 +6315,2883 @@
   ],
   "adventurers": [
     {
-      "id": "adventurer_fire_c_0001",
-      "templateId": "newbie-swordman-c-fire",
-      "name": "新人劍士",
-      "element": "fire",
+      "id": "c-fire-0001",
+      "number": "0001",
+      "name": "新手劍士",
       "rarity": "C",
-      "job": "戰士",
-      "basePower": 28,
-      "baseStats": {
-        "hp": 88,
-        "attack": 18,
-        "defense": 14,
-        "speed": 12
+      "element": "fire",
+      "job": "劍士",
+      "description": "踏上冒險旅程的年輕劍士。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 79,
+          "attack": 17,
+          "defense": 13,
+          "speed": 13
+        },
+        "perLevel": {
+          "hp": 7,
+          "attack": 1.8,
+          "defense": 1.2,
+          "speed": 0.7
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
       },
       "skills": [],
-      "talents": [],
-      "tags": [
-        "starter"
-      ],
-      "assetRoot": "assets/adventurers/fire/C/0001/",
-      "cardAsset": "assets/adventurers/fire/C/0001/card.png",
-      "portraitAsset": "assets/adventurers/fire/C/0001/portrait.png",
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        }
+      },
+      "templateId": "c-fire-0001",
+      "dataPath": "assets/adventurers/c/fire/0001/data.json",
+      "assetRoot": "assets/adventurers/c/fire/0001/",
+      "cardAsset": "assets/adventurers/c/fire/0001/card.png",
+      "portraitAsset": "assets/adventurers/c/fire/0001/portrait.png",
+      "iconAsset": "assets/adventurers/c/fire/0001/icon.png",
       "actions": {
         "idle": [
-          "assets/adventurers/fire/C/0001/pixel/idle/01.png",
-          "assets/adventurers/fire/C/0001/pixel/idle/02.png",
-          "assets/adventurers/fire/C/0001/pixel/idle/03.png",
-          "assets/adventurers/fire/C/0001/pixel/idle/04.png",
-          "assets/adventurers/fire/C/0001/pixel/idle/05.png",
-          "assets/adventurers/fire/C/0001/pixel/idle/06.png"
+          "assets/adventurers/c/fire/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/c/fire/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/c/fire/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/c/fire/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/c/fire/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/c/fire/0001/sprites/idle/idle-06.png"
         ],
         "walk": [
-          "assets/adventurers/fire/C/0001/pixel/walk/01.png",
-          "assets/adventurers/fire/C/0001/pixel/walk/02.png",
-          "assets/adventurers/fire/C/0001/pixel/walk/03.png",
-          "assets/adventurers/fire/C/0001/pixel/walk/04.png",
-          "assets/adventurers/fire/C/0001/pixel/walk/05.png",
-          "assets/adventurers/fire/C/0001/pixel/walk/06.png"
+          "assets/adventurers/c/fire/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/c/fire/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/c/fire/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/c/fire/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/c/fire/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/c/fire/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/c/fire/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/c/fire/0001/sprites/walk/walk-08.png"
         ],
         "attack": [
-          "assets/adventurers/fire/C/0001/pixel/attack/01.png",
-          "assets/adventurers/fire/C/0001/pixel/attack/02.png",
-          "assets/adventurers/fire/C/0001/pixel/attack/03.png",
-          "assets/adventurers/fire/C/0001/pixel/attack/04.png",
-          "assets/adventurers/fire/C/0001/pixel/attack/05.png",
-          "assets/adventurers/fire/C/0001/pixel/attack/06.png"
+          "assets/adventurers/c/fire/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/c/fire/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/c/fire/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/c/fire/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/c/fire/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/c/fire/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/c/fire/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/c/fire/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/c/fire/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/c/fire/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/c/fire/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/c/fire/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/c/fire/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/c/fire/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/c/fire/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/c/fire/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/c/fire/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/c/fire/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/c/fire/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/c/fire/0001/sprites/defeated/defeated-04.png"
+        ]
+      }
+    },
+    {
+      "id": "c-wood-0001",
+      "number": "0001",
+      "name": "見習弓手",
+      "rarity": "C",
+      "element": "wood",
+      "job": "弓手",
+      "description": "在森林中練習弓術的見習冒險者。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 82,
+          "attack": 18,
+          "defense": 14,
+          "speed": 14
+        },
+        "perLevel": {
+          "hp": 7.4,
+          "attack": 1.9000000000000001,
+          "defense": 1.3,
+          "speed": 0.73
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        }
+      },
+      "templateId": "c-wood-0001",
+      "dataPath": "assets/adventurers/c/wood/0001/data.json",
+      "assetRoot": "assets/adventurers/c/wood/0001/",
+      "cardAsset": "assets/adventurers/c/wood/0001/card.png",
+      "portraitAsset": "assets/adventurers/c/wood/0001/portrait.png",
+      "iconAsset": "assets/adventurers/c/wood/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/c/wood/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/c/wood/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/c/wood/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/c/wood/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/c/wood/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/c/wood/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/c/wood/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/c/wood/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/c/wood/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/c/wood/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/c/wood/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/c/wood/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/c/wood/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/c/wood/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/c/wood/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/c/wood/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/c/wood/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/c/wood/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/c/wood/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/c/wood/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/c/wood/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/c/wood/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/c/wood/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/c/wood/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/c/wood/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/c/wood/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/c/wood/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/c/wood/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/c/wood/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/c/wood/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/c/wood/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/c/wood/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/c/wood/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/c/wood/0001/sprites/defeated/defeated-04.png"
+        ]
+      }
+    },
+    {
+      "id": "b-fire-0001",
+      "number": "0001",
+      "name": "烈焰拳士",
+      "rarity": "B",
+      "element": "fire",
+      "job": "拳士",
+      "description": "以熱血拳法戰鬥的火屬性冒險者。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 95,
+          "attack": 23,
+          "defense": 15,
+          "speed": 14
+        },
+        "perLevel": {
+          "hp": 8,
+          "attack": 2.4000000000000004,
+          "defense": 1.4,
+          "speed": 0.81
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        }
+      },
+      "templateId": "b-fire-0001",
+      "dataPath": "assets/adventurers/b/fire/0001/data.json",
+      "assetRoot": "assets/adventurers/b/fire/0001/",
+      "cardAsset": "assets/adventurers/b/fire/0001/card.png",
+      "portraitAsset": "assets/adventurers/b/fire/0001/portrait.png",
+      "iconAsset": "assets/adventurers/b/fire/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/b/fire/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/b/fire/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/b/fire/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/b/fire/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/b/fire/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/b/fire/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/b/fire/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/b/fire/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/b/fire/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/b/fire/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/b/fire/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/b/fire/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/b/fire/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/b/fire/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/b/fire/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/b/fire/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/b/fire/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/b/fire/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/b/fire/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/b/fire/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/b/fire/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/b/fire/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/b/fire/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/b/fire/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/b/fire/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/b/fire/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/b/fire/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/b/fire/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/b/fire/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/b/fire/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/b/fire/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/b/fire/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/b/fire/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/b/fire/0001/sprites/defeated/defeated-04.png"
+        ]
+      }
+    },
+    {
+      "id": "b-water-0001",
+      "number": "0001",
+      "name": "水靈法師",
+      "rarity": "B",
+      "element": "water",
+      "job": "法師",
+      "description": "能操縱水流的年輕法師。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 89,
+          "attack": 21,
+          "defense": 16,
+          "speed": 15
+        },
+        "perLevel": {
+          "hp": 8.4,
+          "attack": 2.2,
+          "defense": 1.5,
+          "speed": 0.75
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        }
+      },
+      "templateId": "b-water-0001",
+      "dataPath": "assets/adventurers/b/water/0001/data.json",
+      "assetRoot": "assets/adventurers/b/water/0001/",
+      "cardAsset": "assets/adventurers/b/water/0001/card.png",
+      "portraitAsset": "assets/adventurers/b/water/0001/portrait.png",
+      "iconAsset": "assets/adventurers/b/water/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/b/water/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/b/water/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/b/water/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/b/water/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/b/water/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/b/water/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/b/water/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/b/water/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/b/water/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/b/water/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/b/water/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/b/water/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/b/water/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/b/water/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/b/water/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/b/water/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/b/water/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/b/water/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/b/water/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/b/water/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/b/water/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/b/water/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/b/water/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/b/water/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/b/water/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/b/water/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/b/water/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/b/water/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/b/water/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/b/water/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/b/water/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/b/water/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/b/water/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/b/water/0001/sprites/defeated/defeated-04.png"
+        ]
+      }
+    },
+    {
+      "id": "a-wood-0001",
+      "number": "0001",
+      "name": "森林刺客",
+      "rarity": "A",
+      "element": "wood",
+      "job": "刺客",
+      "description": "穿梭林間、行動敏捷的刺客。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 104,
+          "attack": 27,
+          "defense": 17,
+          "speed": 16
+        },
+        "perLevel": {
+          "hp": 9,
+          "attack": 2.9,
+          "defense": 1.8,
+          "speed": 0.88
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        }
+      },
+      "templateId": "a-wood-0001",
+      "dataPath": "assets/adventurers/a/wood/0001/data.json",
+      "assetRoot": "assets/adventurers/a/wood/0001/",
+      "cardAsset": "assets/adventurers/a/wood/0001/card.png",
+      "portraitAsset": "assets/adventurers/a/wood/0001/portrait.png",
+      "iconAsset": "assets/adventurers/a/wood/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/a/wood/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/a/wood/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/a/wood/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/a/wood/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/a/wood/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/a/wood/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/a/wood/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/a/wood/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/a/wood/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/a/wood/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/a/wood/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/a/wood/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/a/wood/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/a/wood/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/a/wood/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/a/wood/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/a/wood/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/a/wood/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/a/wood/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/a/wood/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/a/wood/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/a/wood/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/a/wood/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/a/wood/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/a/wood/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/a/wood/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/a/wood/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/a/wood/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/a/wood/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/a/wood/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/a/wood/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/a/wood/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/a/wood/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/a/wood/0001/sprites/defeated/defeated-04.png"
+        ]
+      }
+    },
+    {
+      "id": "a-light-0001",
+      "number": "0001",
+      "name": "光之牧師",
+      "rarity": "A",
+      "element": "light",
+      "job": "牧師",
+      "description": "以柔和聖光守護同伴的牧師。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 107,
+          "attack": 28,
+          "defense": 18,
+          "speed": 17
+        },
+        "perLevel": {
+          "hp": 9.4,
+          "attack": 3,
+          "defense": 1.9000000000000001,
+          "speed": 0.9099999999999999
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        }
+      },
+      "templateId": "a-light-0001",
+      "dataPath": "assets/adventurers/a/light/0001/data.json",
+      "assetRoot": "assets/adventurers/a/light/0001/",
+      "cardAsset": "assets/adventurers/a/light/0001/card.png",
+      "portraitAsset": "assets/adventurers/a/light/0001/portrait.png",
+      "iconAsset": "assets/adventurers/a/light/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/a/light/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/a/light/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/a/light/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/a/light/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/a/light/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/a/light/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/a/light/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/a/light/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/a/light/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/a/light/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/a/light/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/a/light/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/a/light/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/a/light/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/a/light/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/a/light/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/a/light/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/a/light/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/a/light/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/a/light/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/a/light/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/a/light/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/a/light/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/a/light/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/a/light/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/a/light/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/a/light/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/a/light/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/a/light/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/a/light/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/a/light/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/a/light/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/a/light/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/a/light/0001/sprites/defeated/defeated-04.png"
+        ]
+      }
+    },
+    {
+      "id": "s-fire-0001",
+      "number": "0001",
+      "name": "赤焰騎士",
+      "rarity": "S",
+      "element": "fire",
+      "job": "騎士",
+      "description": "身披赤焰、勇往直前的騎士。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 113,
+          "attack": 31,
+          "defense": 20,
+          "speed": 18
+        },
+        "perLevel": {
+          "hp": 10,
+          "attack": 3.4,
+          "defense": 2.1,
+          "speed": 0.95
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [
+        {
+          "id": "skill-01",
+          "name": "炎龍拳",
+          "type": "active",
+          "element": "fire",
+          "description": "對單一敵人造成火屬性傷害。",
+          "power": 160,
+          "cooldown": 3,
+          "unlockLevel": 1,
+          "animation": "sprites/skill-01",
+          "effect": "effects/skill-01-effect.png"
+        }
+      ],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        },
+        "skill-01": {
+          "folder": "sprites/skill-01",
+          "frameCount": 8,
+          "frameDuration": 90,
+          "loop": false
+        }
+      },
+      "templateId": "s-fire-0001",
+      "dataPath": "assets/adventurers/s/fire/0001/data.json",
+      "assetRoot": "assets/adventurers/s/fire/0001/",
+      "cardAsset": "assets/adventurers/s/fire/0001/card.png",
+      "portraitAsset": "assets/adventurers/s/fire/0001/portrait.png",
+      "iconAsset": "assets/adventurers/s/fire/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/s/fire/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/s/fire/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/s/fire/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/s/fire/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/s/fire/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/s/fire/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/s/fire/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/s/fire/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/s/fire/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/s/fire/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/s/fire/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/s/fire/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/s/fire/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/s/fire/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/s/fire/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/s/fire/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/s/fire/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/s/fire/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/s/fire/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/s/fire/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/s/fire/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/s/fire/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/s/fire/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/s/fire/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/s/fire/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/s/fire/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/s/fire/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/s/fire/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/s/fire/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/s/fire/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/s/fire/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/s/fire/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/s/fire/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/s/fire/0001/sprites/defeated/defeated-04.png"
+        ],
+        "skill-01": [
+          "assets/adventurers/s/fire/0001/sprites/skill-01/skill-01-01.png",
+          "assets/adventurers/s/fire/0001/sprites/skill-01/skill-01-02.png",
+          "assets/adventurers/s/fire/0001/sprites/skill-01/skill-01-03.png",
+          "assets/adventurers/s/fire/0001/sprites/skill-01/skill-01-04.png",
+          "assets/adventurers/s/fire/0001/sprites/skill-01/skill-01-05.png",
+          "assets/adventurers/s/fire/0001/sprites/skill-01/skill-01-06.png",
+          "assets/adventurers/s/fire/0001/sprites/skill-01/skill-01-07.png",
+          "assets/adventurers/s/fire/0001/sprites/skill-01/skill-01-08.png"
+        ]
+      }
+    },
+    {
+      "id": "s-water-0001",
+      "number": "0001",
+      "name": "蒼藍術士",
+      "rarity": "S",
+      "element": "water",
+      "job": "術士",
+      "description": "精通潮汐與冰霜法術的術士。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 116,
+          "attack": 32,
+          "defense": 21,
+          "speed": 19
+        },
+        "perLevel": {
+          "hp": 10.4,
+          "attack": 3.5,
+          "defense": 2.2,
+          "speed": 0.98
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [
+        {
+          "id": "skill-01",
+          "name": "寒潮衝擊",
+          "type": "active",
+          "element": "water",
+          "description": "以寒潮對單一敵人造成水屬性傷害。",
+          "power": 160,
+          "cooldown": 3,
+          "unlockLevel": 1,
+          "animation": "sprites/skill-01",
+          "effect": "effects/skill-01-effect.png"
+        }
+      ],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        },
+        "skill-01": {
+          "folder": "sprites/skill-01",
+          "frameCount": 8,
+          "frameDuration": 90,
+          "loop": false
+        }
+      },
+      "templateId": "s-water-0001",
+      "dataPath": "assets/adventurers/s/water/0001/data.json",
+      "assetRoot": "assets/adventurers/s/water/0001/",
+      "cardAsset": "assets/adventurers/s/water/0001/card.png",
+      "portraitAsset": "assets/adventurers/s/water/0001/portrait.png",
+      "iconAsset": "assets/adventurers/s/water/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/s/water/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/s/water/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/s/water/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/s/water/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/s/water/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/s/water/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/s/water/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/s/water/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/s/water/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/s/water/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/s/water/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/s/water/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/s/water/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/s/water/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/s/water/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/s/water/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/s/water/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/s/water/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/s/water/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/s/water/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/s/water/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/s/water/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/s/water/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/s/water/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/s/water/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/s/water/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/s/water/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/s/water/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/s/water/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/s/water/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/s/water/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/s/water/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/s/water/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/s/water/0001/sprites/defeated/defeated-04.png"
+        ],
+        "skill-01": [
+          "assets/adventurers/s/water/0001/sprites/skill-01/skill-01-01.png",
+          "assets/adventurers/s/water/0001/sprites/skill-01/skill-01-02.png",
+          "assets/adventurers/s/water/0001/sprites/skill-01/skill-01-03.png",
+          "assets/adventurers/s/water/0001/sprites/skill-01/skill-01-04.png",
+          "assets/adventurers/s/water/0001/sprites/skill-01/skill-01-05.png",
+          "assets/adventurers/s/water/0001/sprites/skill-01/skill-01-06.png",
+          "assets/adventurers/s/water/0001/sprites/skill-01/skill-01-07.png",
+          "assets/adventurers/s/water/0001/sprites/skill-01/skill-01-08.png"
+        ]
+      }
+    },
+    {
+      "id": "ss-fire-0001",
+      "number": "0001",
+      "name": "蘿莉菈",
+      "rarity": "SS",
+      "element": "fire",
+      "job": "炎舞劍姬",
+      "description": "以烈焰劍舞席捲戰場的少女。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 133,
+          "attack": 39,
+          "defense": 24,
+          "speed": 20
+        },
+        "perLevel": {
+          "hp": 11,
+          "attack": 4.2,
+          "defense": 2.5,
+          "speed": 1.11
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [
+        {
+          "id": "skill-01",
+          "name": "炎龍拳",
+          "type": "active",
+          "element": "fire",
+          "description": "對單一敵人造成火屬性傷害。",
+          "power": 160,
+          "cooldown": 3,
+          "unlockLevel": 1,
+          "animation": "sprites/skill-01",
+          "effect": "effects/skill-01-effect.png"
+        },
+        {
+          "id": "skill-02",
+          "name": "龍炎爆發",
+          "type": "active",
+          "element": "fire",
+          "description": "對全體敵人造成火屬性傷害。",
+          "power": 220,
+          "cooldown": 5,
+          "unlockLevel": 20,
+          "animation": "sprites/skill-02",
+          "effect": "effects/skill-02-effect.png"
+        }
+      ],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        },
+        "skill-01": {
+          "folder": "sprites/skill-01",
+          "frameCount": 8,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-02": {
+          "folder": "sprites/skill-02",
+          "frameCount": 10,
+          "frameDuration": 90,
+          "loop": false
+        }
+      },
+      "templateId": "ss-fire-0001",
+      "dataPath": "assets/adventurers/ss/fire/0001/data.json",
+      "assetRoot": "assets/adventurers/ss/fire/0001/",
+      "cardAsset": "assets/adventurers/ss/fire/0001/card.png",
+      "portraitAsset": "assets/adventurers/ss/fire/0001/portrait.png",
+      "iconAsset": "assets/adventurers/ss/fire/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/ss/fire/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/ss/fire/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/ss/fire/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/ss/fire/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/ss/fire/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/ss/fire/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/ss/fire/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/ss/fire/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/ss/fire/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/ss/fire/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/ss/fire/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/ss/fire/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/ss/fire/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/ss/fire/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/ss/fire/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/ss/fire/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/ss/fire/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/ss/fire/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/ss/fire/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/ss/fire/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/ss/fire/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/ss/fire/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/ss/fire/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/ss/fire/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/ss/fire/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/ss/fire/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/ss/fire/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/ss/fire/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/ss/fire/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/ss/fire/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/ss/fire/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/ss/fire/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/ss/fire/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/ss/fire/0001/sprites/defeated/defeated-04.png"
+        ],
+        "skill-01": [
+          "assets/adventurers/ss/fire/0001/sprites/skill-01/skill-01-01.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-01/skill-01-02.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-01/skill-01-03.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-01/skill-01-04.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-01/skill-01-05.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-01/skill-01-06.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-01/skill-01-07.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-01/skill-01-08.png"
+        ],
+        "skill-02": [
+          "assets/adventurers/ss/fire/0001/sprites/skill-02/skill-02-01.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-02/skill-02-02.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-02/skill-02-03.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-02/skill-02-04.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-02/skill-02-05.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-02/skill-02-06.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-02/skill-02-07.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-02/skill-02-08.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-02/skill-02-09.png",
+          "assets/adventurers/ss/fire/0001/sprites/skill-02/skill-02-10.png"
+        ]
+      }
+    },
+    {
+      "id": "ss-wood-0001",
+      "number": "0001",
+      "name": "達西德",
+      "rarity": "SS",
+      "element": "wood",
+      "job": "森林守護者",
+      "description": "與森林猛禽締結契約的守護者。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 127,
+          "attack": 37,
+          "defense": 25,
+          "speed": 21
+        },
+        "perLevel": {
+          "hp": 11.4,
+          "attack": 4,
+          "defense": 2.6,
+          "speed": 1.05
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [
+        {
+          "id": "skill-01",
+          "name": "森靈箭",
+          "type": "active",
+          "element": "wood",
+          "description": "凝聚森林之力攻擊單一敵人。",
+          "power": 160,
+          "cooldown": 3,
+          "unlockLevel": 1,
+          "animation": "sprites/skill-01",
+          "effect": "effects/skill-01-effect.png"
+        },
+        {
+          "id": "skill-02",
+          "name": "萬木共鳴",
+          "type": "active",
+          "element": "wood",
+          "description": "以藤蔓與飛葉攻擊全體敵人。",
+          "power": 220,
+          "cooldown": 5,
+          "unlockLevel": 20,
+          "animation": "sprites/skill-02",
+          "effect": "effects/skill-02-effect.png"
+        }
+      ],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        },
+        "skill-01": {
+          "folder": "sprites/skill-01",
+          "frameCount": 8,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-02": {
+          "folder": "sprites/skill-02",
+          "frameCount": 10,
+          "frameDuration": 90,
+          "loop": false
+        }
+      },
+      "templateId": "ss-wood-0001",
+      "dataPath": "assets/adventurers/ss/wood/0001/data.json",
+      "assetRoot": "assets/adventurers/ss/wood/0001/",
+      "cardAsset": "assets/adventurers/ss/wood/0001/card.png",
+      "portraitAsset": "assets/adventurers/ss/wood/0001/portrait.png",
+      "iconAsset": "assets/adventurers/ss/wood/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/ss/wood/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/ss/wood/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/ss/wood/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/ss/wood/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/ss/wood/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/ss/wood/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/ss/wood/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/ss/wood/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/ss/wood/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/ss/wood/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/ss/wood/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/ss/wood/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/ss/wood/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/ss/wood/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/ss/wood/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/ss/wood/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/ss/wood/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/ss/wood/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/ss/wood/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/ss/wood/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/ss/wood/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/ss/wood/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/ss/wood/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/ss/wood/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/ss/wood/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/ss/wood/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/ss/wood/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/ss/wood/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/ss/wood/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/ss/wood/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/ss/wood/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/ss/wood/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/ss/wood/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/ss/wood/0001/sprites/defeated/defeated-04.png"
+        ],
+        "skill-01": [
+          "assets/adventurers/ss/wood/0001/sprites/skill-01/skill-01-01.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-01/skill-01-02.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-01/skill-01-03.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-01/skill-01-04.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-01/skill-01-05.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-01/skill-01-06.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-01/skill-01-07.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-01/skill-01-08.png"
+        ],
+        "skill-02": [
+          "assets/adventurers/ss/wood/0001/sprites/skill-02/skill-02-01.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-02/skill-02-02.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-02/skill-02-03.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-02/skill-02-04.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-02/skill-02-05.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-02/skill-02-06.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-02/skill-02-07.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-02/skill-02-08.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-02/skill-02-09.png",
+          "assets/adventurers/ss/wood/0001/sprites/skill-02/skill-02-10.png"
+        ]
+      }
+    },
+    {
+      "id": "ss-light-0001",
+      "number": "0001",
+      "name": "聖光守護者",
+      "rarity": "SS",
+      "element": "light",
+      "job": "守護者",
+      "description": "以聖盾守護隊伍的光之戰士。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 130,
+          "attack": 38,
+          "defense": 24,
+          "speed": 20
+        },
+        "perLevel": {
+          "hp": 11,
+          "attack": 4.1,
+          "defense": 2.5,
+          "speed": 1.08
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [
+        {
+          "id": "skill-01",
+          "name": "聖光裁決",
+          "type": "active",
+          "element": "light",
+          "description": "以聖光攻擊單一敵人。",
+          "power": 160,
+          "cooldown": 3,
+          "unlockLevel": 1,
+          "animation": "sprites/skill-01",
+          "effect": "effects/skill-01-effect.png"
+        },
+        {
+          "id": "skill-02",
+          "name": "星耀審判",
+          "type": "active",
+          "element": "light",
+          "description": "以星光攻擊全體敵人。",
+          "power": 220,
+          "cooldown": 5,
+          "unlockLevel": 20,
+          "animation": "sprites/skill-02",
+          "effect": "effects/skill-02-effect.png"
+        }
+      ],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        },
+        "skill-01": {
+          "folder": "sprites/skill-01",
+          "frameCount": 8,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-02": {
+          "folder": "sprites/skill-02",
+          "frameCount": 10,
+          "frameDuration": 90,
+          "loop": false
+        }
+      },
+      "templateId": "ss-light-0001",
+      "dataPath": "assets/adventurers/ss/light/0001/data.json",
+      "assetRoot": "assets/adventurers/ss/light/0001/",
+      "cardAsset": "assets/adventurers/ss/light/0001/card.png",
+      "portraitAsset": "assets/adventurers/ss/light/0001/portrait.png",
+      "iconAsset": "assets/adventurers/ss/light/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/ss/light/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/ss/light/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/ss/light/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/ss/light/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/ss/light/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/ss/light/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/ss/light/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/ss/light/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/ss/light/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/ss/light/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/ss/light/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/ss/light/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/ss/light/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/ss/light/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/ss/light/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/ss/light/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/ss/light/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/ss/light/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/ss/light/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/ss/light/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/ss/light/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/ss/light/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/ss/light/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/ss/light/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/ss/light/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/ss/light/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/ss/light/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/ss/light/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/ss/light/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/ss/light/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/ss/light/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/ss/light/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/ss/light/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/ss/light/0001/sprites/defeated/defeated-04.png"
+        ],
+        "skill-01": [
+          "assets/adventurers/ss/light/0001/sprites/skill-01/skill-01-01.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-01/skill-01-02.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-01/skill-01-03.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-01/skill-01-04.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-01/skill-01-05.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-01/skill-01-06.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-01/skill-01-07.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-01/skill-01-08.png"
+        ],
+        "skill-02": [
+          "assets/adventurers/ss/light/0001/sprites/skill-02/skill-02-01.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-02/skill-02-02.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-02/skill-02-03.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-02/skill-02-04.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-02/skill-02-05.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-02/skill-02-06.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-02/skill-02-07.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-02/skill-02-08.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-02/skill-02-09.png",
+          "assets/adventurers/ss/light/0001/sprites/skill-02/skill-02-10.png"
+        ]
+      }
+    },
+    {
+      "id": "ss-dark-0001",
+      "number": "0001",
+      "name": "暗獵",
+      "rarity": "SS",
+      "element": "dark",
+      "job": "獵人",
+      "description": "追蹤深淵魔物的暗影獵人。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 133,
+          "attack": 39,
+          "defense": 25,
+          "speed": 21
+        },
+        "perLevel": {
+          "hp": 11.4,
+          "attack": 4.2,
+          "defense": 2.6,
+          "speed": 1.11
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [
+        {
+          "id": "skill-01",
+          "name": "暗影突襲",
+          "type": "active",
+          "element": "dark",
+          "description": "從暗影中攻擊單一敵人。",
+          "power": 160,
+          "cooldown": 3,
+          "unlockLevel": 1,
+          "animation": "sprites/skill-01",
+          "effect": "effects/skill-01-effect.png"
+        },
+        {
+          "id": "skill-02",
+          "name": "深淵降臨",
+          "type": "active",
+          "element": "dark",
+          "description": "召喚深淵之力攻擊全體敵人。",
+          "power": 220,
+          "cooldown": 5,
+          "unlockLevel": 20,
+          "animation": "sprites/skill-02",
+          "effect": "effects/skill-02-effect.png"
+        }
+      ],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        },
+        "skill-01": {
+          "folder": "sprites/skill-01",
+          "frameCount": 8,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-02": {
+          "folder": "sprites/skill-02",
+          "frameCount": 10,
+          "frameDuration": 90,
+          "loop": false
+        }
+      },
+      "templateId": "ss-dark-0001",
+      "dataPath": "assets/adventurers/ss/dark/0001/data.json",
+      "assetRoot": "assets/adventurers/ss/dark/0001/",
+      "cardAsset": "assets/adventurers/ss/dark/0001/card.png",
+      "portraitAsset": "assets/adventurers/ss/dark/0001/portrait.png",
+      "iconAsset": "assets/adventurers/ss/dark/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/ss/dark/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/ss/dark/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/ss/dark/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/ss/dark/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/ss/dark/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/ss/dark/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/ss/dark/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/ss/dark/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/ss/dark/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/ss/dark/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/ss/dark/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/ss/dark/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/ss/dark/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/ss/dark/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/ss/dark/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/ss/dark/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/ss/dark/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/ss/dark/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/ss/dark/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/ss/dark/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/ss/dark/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/ss/dark/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/ss/dark/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/ss/dark/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/ss/dark/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/ss/dark/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/ss/dark/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/ss/dark/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/ss/dark/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/ss/dark/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/ss/dark/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/ss/dark/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/ss/dark/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/ss/dark/0001/sprites/defeated/defeated-04.png"
+        ],
+        "skill-01": [
+          "assets/adventurers/ss/dark/0001/sprites/skill-01/skill-01-01.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-01/skill-01-02.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-01/skill-01-03.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-01/skill-01-04.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-01/skill-01-05.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-01/skill-01-06.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-01/skill-01-07.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-01/skill-01-08.png"
+        ],
+        "skill-02": [
+          "assets/adventurers/ss/dark/0001/sprites/skill-02/skill-02-01.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-02/skill-02-02.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-02/skill-02-03.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-02/skill-02-04.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-02/skill-02-05.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-02/skill-02-06.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-02/skill-02-07.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-02/skill-02-08.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-02/skill-02-09.png",
+          "assets/adventurers/ss/dark/0001/sprites/skill-02/skill-02-10.png"
+        ]
+      }
+    },
+    {
+      "id": "sss-fire-0001",
+      "number": "0001",
+      "name": "阿龍",
+      "rarity": "SSS",
+      "element": "fire",
+      "job": "龍裔戰士",
+      "description": "擁有火龍血脈的少年戰士。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 143,
+          "attack": 44,
+          "defense": 28,
+          "speed": 23
+        },
+        "perLevel": {
+          "hp": 12,
+          "attack": 4.6,
+          "defense": 2.9,
+          "speed": 1.15
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [
+        {
+          "id": "skill-01",
+          "name": "炎龍拳",
+          "type": "active",
+          "element": "fire",
+          "description": "對單一敵人造成火屬性傷害。",
+          "power": 160,
+          "cooldown": 3,
+          "unlockLevel": 1,
+          "animation": "sprites/skill-01",
+          "effect": "effects/skill-01-effect.png"
+        },
+        {
+          "id": "skill-02",
+          "name": "龍炎爆發",
+          "type": "active",
+          "element": "fire",
+          "description": "對全體敵人造成火屬性傷害。",
+          "power": 220,
+          "cooldown": 5,
+          "unlockLevel": 20,
+          "animation": "sprites/skill-02",
+          "effect": "effects/skill-02-effect.png"
+        },
+        {
+          "id": "skill-03",
+          "name": "真龍覺醒",
+          "type": "passive",
+          "element": "fire",
+          "description": "生命偏低時提升攻擊力。",
+          "unlockLevel": 40,
+          "animation": "sprites/skill-03",
+          "effect": "effects/skill-03-effect.png"
+        }
+      ],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        },
+        "skill-01": {
+          "folder": "sprites/skill-01",
+          "frameCount": 8,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-02": {
+          "folder": "sprites/skill-02",
+          "frameCount": 10,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-03": {
+          "folder": "sprites/skill-03",
+          "frameCount": 12,
+          "frameDuration": 90,
+          "loop": false
+        }
+      },
+      "templateId": "sss-fire-0001",
+      "dataPath": "assets/adventurers/sss/fire/0001/data.json",
+      "assetRoot": "assets/adventurers/sss/fire/0001/",
+      "cardAsset": "assets/adventurers/sss/fire/0001/card.png",
+      "portraitAsset": "assets/adventurers/sss/fire/0001/portrait.png",
+      "iconAsset": "assets/adventurers/sss/fire/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/sss/fire/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/sss/fire/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/sss/fire/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/sss/fire/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/sss/fire/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/sss/fire/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/sss/fire/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/sss/fire/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/sss/fire/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/sss/fire/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/sss/fire/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/sss/fire/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/sss/fire/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/sss/fire/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/sss/fire/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/sss/fire/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/sss/fire/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/sss/fire/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/sss/fire/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/sss/fire/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/sss/fire/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/sss/fire/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/sss/fire/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/sss/fire/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/sss/fire/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/sss/fire/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/sss/fire/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/sss/fire/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/sss/fire/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/sss/fire/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/sss/fire/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/sss/fire/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/sss/fire/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/sss/fire/0001/sprites/defeated/defeated-04.png"
+        ],
+        "skill-01": [
+          "assets/adventurers/sss/fire/0001/sprites/skill-01/skill-01-01.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-01/skill-01-02.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-01/skill-01-03.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-01/skill-01-04.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-01/skill-01-05.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-01/skill-01-06.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-01/skill-01-07.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-01/skill-01-08.png"
+        ],
+        "skill-02": [
+          "assets/adventurers/sss/fire/0001/sprites/skill-02/skill-02-01.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-02/skill-02-02.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-02/skill-02-03.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-02/skill-02-04.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-02/skill-02-05.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-02/skill-02-06.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-02/skill-02-07.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-02/skill-02-08.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-02/skill-02-09.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-02/skill-02-10.png"
+        ],
+        "skill-03": [
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-01.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-02.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-03.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-04.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-05.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-06.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-07.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-08.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-09.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-10.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-11.png",
+          "assets/adventurers/sss/fire/0001/sprites/skill-03/skill-03-12.png"
+        ]
+      }
+    },
+    {
+      "id": "sss-water-0001",
+      "number": "0001",
+      "name": "米卡斯",
+      "rarity": "SSS",
+      "element": "water",
+      "job": "冰龍巫女",
+      "description": "與冰龍共同守護雪境的巫女。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 146,
+          "attack": 45,
+          "defense": 29,
+          "speed": 24
+        },
+        "perLevel": {
+          "hp": 12.4,
+          "attack": 4.699999999999999,
+          "defense": 3,
+          "speed": 1.18
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [
+        {
+          "id": "skill-01",
+          "name": "寒潮衝擊",
+          "type": "active",
+          "element": "water",
+          "description": "以寒潮對單一敵人造成水屬性傷害。",
+          "power": 160,
+          "cooldown": 3,
+          "unlockLevel": 1,
+          "animation": "sprites/skill-01",
+          "effect": "effects/skill-01-effect.png"
+        },
+        {
+          "id": "skill-02",
+          "name": "冰海風暴",
+          "type": "active",
+          "element": "water",
+          "description": "召喚冰海風暴攻擊全體敵人。",
+          "power": 220,
+          "cooldown": 5,
+          "unlockLevel": 20,
+          "animation": "sprites/skill-02",
+          "effect": "effects/skill-02-effect.png"
+        },
+        {
+          "id": "skill-03",
+          "name": "深海祝福",
+          "type": "passive",
+          "element": "water",
+          "description": "提升隊伍的防禦與恢復能力。",
+          "unlockLevel": 40,
+          "animation": "sprites/skill-03",
+          "effect": "effects/skill-03-effect.png"
+        }
+      ],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        },
+        "skill-01": {
+          "folder": "sprites/skill-01",
+          "frameCount": 8,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-02": {
+          "folder": "sprites/skill-02",
+          "frameCount": 10,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-03": {
+          "folder": "sprites/skill-03",
+          "frameCount": 12,
+          "frameDuration": 90,
+          "loop": false
+        }
+      },
+      "templateId": "sss-water-0001",
+      "dataPath": "assets/adventurers/sss/water/0001/data.json",
+      "assetRoot": "assets/adventurers/sss/water/0001/",
+      "cardAsset": "assets/adventurers/sss/water/0001/card.png",
+      "portraitAsset": "assets/adventurers/sss/water/0001/portrait.png",
+      "iconAsset": "assets/adventurers/sss/water/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/sss/water/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/sss/water/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/sss/water/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/sss/water/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/sss/water/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/sss/water/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/sss/water/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/sss/water/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/sss/water/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/sss/water/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/sss/water/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/sss/water/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/sss/water/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/sss/water/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/sss/water/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/sss/water/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/sss/water/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/sss/water/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/sss/water/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/sss/water/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/sss/water/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/sss/water/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/sss/water/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/sss/water/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/sss/water/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/sss/water/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/sss/water/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/sss/water/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/sss/water/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/sss/water/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/sss/water/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/sss/water/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/sss/water/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/sss/water/0001/sprites/defeated/defeated-04.png"
+        ],
+        "skill-01": [
+          "assets/adventurers/sss/water/0001/sprites/skill-01/skill-01-01.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-01/skill-01-02.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-01/skill-01-03.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-01/skill-01-04.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-01/skill-01-05.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-01/skill-01-06.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-01/skill-01-07.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-01/skill-01-08.png"
+        ],
+        "skill-02": [
+          "assets/adventurers/sss/water/0001/sprites/skill-02/skill-02-01.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-02/skill-02-02.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-02/skill-02-03.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-02/skill-02-04.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-02/skill-02-05.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-02/skill-02-06.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-02/skill-02-07.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-02/skill-02-08.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-02/skill-02-09.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-02/skill-02-10.png"
+        ],
+        "skill-03": [
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-01.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-02.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-03.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-04.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-05.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-06.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-07.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-08.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-09.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-10.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-11.png",
+          "assets/adventurers/sss/water/0001/sprites/skill-03/skill-03-12.png"
+        ]
+      }
+    },
+    {
+      "id": "sss-wood-0001",
+      "number": "0001",
+      "name": "卡蘿娜",
+      "rarity": "SSS",
+      "element": "wood",
+      "job": "森語神射手",
+      "description": "與翼蛇同行的森林精靈神射手。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 149,
+          "attack": 46,
+          "defense": 28,
+          "speed": 23
+        },
+        "perLevel": {
+          "hp": 12,
+          "attack": 4.8,
+          "defense": 2.9,
+          "speed": 1.21
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [
+        {
+          "id": "skill-01",
+          "name": "森靈箭",
+          "type": "active",
+          "element": "wood",
+          "description": "凝聚森林之力攻擊單一敵人。",
+          "power": 160,
+          "cooldown": 3,
+          "unlockLevel": 1,
+          "animation": "sprites/skill-01",
+          "effect": "effects/skill-01-effect.png"
+        },
+        {
+          "id": "skill-02",
+          "name": "萬木共鳴",
+          "type": "active",
+          "element": "wood",
+          "description": "以藤蔓與飛葉攻擊全體敵人。",
+          "power": 220,
+          "cooldown": 5,
+          "unlockLevel": 20,
+          "animation": "sprites/skill-02",
+          "effect": "effects/skill-02-effect.png"
+        },
+        {
+          "id": "skill-03",
+          "name": "生命循環",
+          "type": "passive",
+          "element": "wood",
+          "description": "回合開始時有機會恢復生命。",
+          "unlockLevel": 40,
+          "animation": "sprites/skill-03",
+          "effect": "effects/skill-03-effect.png"
+        }
+      ],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        },
+        "skill-01": {
+          "folder": "sprites/skill-01",
+          "frameCount": 8,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-02": {
+          "folder": "sprites/skill-02",
+          "frameCount": 10,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-03": {
+          "folder": "sprites/skill-03",
+          "frameCount": 12,
+          "frameDuration": 90,
+          "loop": false
+        }
+      },
+      "templateId": "sss-wood-0001",
+      "dataPath": "assets/adventurers/sss/wood/0001/data.json",
+      "assetRoot": "assets/adventurers/sss/wood/0001/",
+      "cardAsset": "assets/adventurers/sss/wood/0001/card.png",
+      "portraitAsset": "assets/adventurers/sss/wood/0001/portrait.png",
+      "iconAsset": "assets/adventurers/sss/wood/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/sss/wood/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/sss/wood/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/sss/wood/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/sss/wood/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/sss/wood/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/sss/wood/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/sss/wood/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/sss/wood/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/sss/wood/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/sss/wood/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/sss/wood/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/sss/wood/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/sss/wood/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/sss/wood/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/sss/wood/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/sss/wood/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/sss/wood/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/sss/wood/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/sss/wood/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/sss/wood/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/sss/wood/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/sss/wood/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/sss/wood/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/sss/wood/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/sss/wood/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/sss/wood/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/sss/wood/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/sss/wood/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/sss/wood/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/sss/wood/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/sss/wood/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/sss/wood/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/sss/wood/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/sss/wood/0001/sprites/defeated/defeated-04.png"
+        ],
+        "skill-01": [
+          "assets/adventurers/sss/wood/0001/sprites/skill-01/skill-01-01.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-01/skill-01-02.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-01/skill-01-03.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-01/skill-01-04.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-01/skill-01-05.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-01/skill-01-06.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-01/skill-01-07.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-01/skill-01-08.png"
+        ],
+        "skill-02": [
+          "assets/adventurers/sss/wood/0001/sprites/skill-02/skill-02-01.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-02/skill-02-02.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-02/skill-02-03.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-02/skill-02-04.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-02/skill-02-05.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-02/skill-02-06.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-02/skill-02-07.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-02/skill-02-08.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-02/skill-02-09.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-02/skill-02-10.png"
+        ],
+        "skill-03": [
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-01.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-02.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-03.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-04.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-05.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-06.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-07.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-08.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-09.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-10.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-11.png",
+          "assets/adventurers/sss/wood/0001/sprites/skill-03/skill-03-12.png"
+        ]
+      }
+    },
+    {
+      "id": "sss-light-0001",
+      "number": "0001",
+      "name": "米克羅",
+      "rarity": "SSS",
+      "element": "light",
+      "job": "星龍領主",
+      "description": "承載星光與龍之祝福的領主。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 143,
+          "attack": 44,
+          "defense": 29,
+          "speed": 24
+        },
+        "perLevel": {
+          "hp": 12.4,
+          "attack": 4.6,
+          "defense": 3,
+          "speed": 1.15
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [
+        {
+          "id": "skill-01",
+          "name": "聖光裁決",
+          "type": "active",
+          "element": "light",
+          "description": "以聖光攻擊單一敵人。",
+          "power": 160,
+          "cooldown": 3,
+          "unlockLevel": 1,
+          "animation": "sprites/skill-01",
+          "effect": "effects/skill-01-effect.png"
+        },
+        {
+          "id": "skill-02",
+          "name": "星耀審判",
+          "type": "active",
+          "element": "light",
+          "description": "以星光攻擊全體敵人。",
+          "power": 220,
+          "cooldown": 5,
+          "unlockLevel": 20,
+          "animation": "sprites/skill-02",
+          "effect": "effects/skill-02-effect.png"
+        },
+        {
+          "id": "skill-03",
+          "name": "光之守護",
+          "type": "passive",
+          "element": "light",
+          "description": "生命偏低時獲得光之護盾。",
+          "unlockLevel": 40,
+          "animation": "sprites/skill-03",
+          "effect": "effects/skill-03-effect.png"
+        }
+      ],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        },
+        "skill-01": {
+          "folder": "sprites/skill-01",
+          "frameCount": 8,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-02": {
+          "folder": "sprites/skill-02",
+          "frameCount": 10,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-03": {
+          "folder": "sprites/skill-03",
+          "frameCount": 12,
+          "frameDuration": 90,
+          "loop": false
+        }
+      },
+      "templateId": "sss-light-0001",
+      "dataPath": "assets/adventurers/sss/light/0001/data.json",
+      "assetRoot": "assets/adventurers/sss/light/0001/",
+      "cardAsset": "assets/adventurers/sss/light/0001/card.png",
+      "portraitAsset": "assets/adventurers/sss/light/0001/portrait.png",
+      "iconAsset": "assets/adventurers/sss/light/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/sss/light/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/sss/light/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/sss/light/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/sss/light/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/sss/light/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/sss/light/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/sss/light/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/sss/light/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/sss/light/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/sss/light/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/sss/light/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/sss/light/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/sss/light/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/sss/light/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/sss/light/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/sss/light/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/sss/light/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/sss/light/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/sss/light/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/sss/light/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/sss/light/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/sss/light/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/sss/light/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/sss/light/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/sss/light/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/sss/light/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/sss/light/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/sss/light/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/sss/light/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/sss/light/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/sss/light/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/sss/light/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/sss/light/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/sss/light/0001/sprites/defeated/defeated-04.png"
+        ],
+        "skill-01": [
+          "assets/adventurers/sss/light/0001/sprites/skill-01/skill-01-01.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-01/skill-01-02.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-01/skill-01-03.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-01/skill-01-04.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-01/skill-01-05.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-01/skill-01-06.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-01/skill-01-07.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-01/skill-01-08.png"
+        ],
+        "skill-02": [
+          "assets/adventurers/sss/light/0001/sprites/skill-02/skill-02-01.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-02/skill-02-02.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-02/skill-02-03.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-02/skill-02-04.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-02/skill-02-05.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-02/skill-02-06.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-02/skill-02-07.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-02/skill-02-08.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-02/skill-02-09.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-02/skill-02-10.png"
+        ],
+        "skill-03": [
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-01.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-02.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-03.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-04.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-05.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-06.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-07.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-08.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-09.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-10.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-11.png",
+          "assets/adventurers/sss/light/0001/sprites/skill-03/skill-03-12.png"
+        ]
+      }
+    },
+    {
+      "id": "sss-dark-0001",
+      "number": "0001",
+      "name": "黑曜龍巫",
+      "rarity": "SSS",
+      "element": "dark",
+      "job": "深淵龍巫",
+      "description": "能與黑曜魔龍共鳴的神秘術士。",
+      "maxLevel": 100,
+      "assets": {
+        "card": "card.png",
+        "portrait": "portrait.png",
+        "icon": "icon.png"
+      },
+      "growth": {
+        "base": {
+          "hp": 146,
+          "attack": 45,
+          "defense": 28,
+          "speed": 23
+        },
+        "perLevel": {
+          "hp": 12,
+          "attack": 4.699999999999999,
+          "defense": 2.9,
+          "speed": 1.18
+        },
+        "variance": {
+          "min": 0.9,
+          "max": 1.1
+        }
+      },
+      "skills": [
+        {
+          "id": "skill-01",
+          "name": "暗影突襲",
+          "type": "active",
+          "element": "dark",
+          "description": "從暗影中攻擊單一敵人。",
+          "power": 160,
+          "cooldown": 3,
+          "unlockLevel": 1,
+          "animation": "sprites/skill-01",
+          "effect": "effects/skill-01-effect.png"
+        },
+        {
+          "id": "skill-02",
+          "name": "深淵降臨",
+          "type": "active",
+          "element": "dark",
+          "description": "召喚深淵之力攻擊全體敵人。",
+          "power": 220,
+          "cooldown": 5,
+          "unlockLevel": 20,
+          "animation": "sprites/skill-02",
+          "effect": "effects/skill-02-effect.png"
+        },
+        {
+          "id": "skill-03",
+          "name": "黑月契約",
+          "type": "passive",
+          "element": "dark",
+          "description": "戰鬥中提升暴擊與速度。",
+          "unlockLevel": 40,
+          "animation": "sprites/skill-03",
+          "effect": "effects/skill-03-effect.png"
+        }
+      ],
+      "animations": {
+        "idle": {
+          "folder": "sprites/idle",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "walk": {
+          "folder": "sprites/walk",
+          "frameCount": 8,
+          "frameDuration": 120,
+          "loop": true
+        },
+        "attack": {
+          "folder": "sprites/attack",
+          "frameCount": 6,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "hurt": {
+          "folder": "sprites/hurt",
+          "frameCount": 4,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "victory": {
+          "folder": "sprites/victory",
+          "frameCount": 6,
+          "frameDuration": 150,
+          "loop": true
+        },
+        "defeated": {
+          "folder": "sprites/defeated",
+          "frameCount": 4,
+          "frameDuration": 180,
+          "loop": false
+        },
+        "skill-01": {
+          "folder": "sprites/skill-01",
+          "frameCount": 8,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-02": {
+          "folder": "sprites/skill-02",
+          "frameCount": 10,
+          "frameDuration": 90,
+          "loop": false
+        },
+        "skill-03": {
+          "folder": "sprites/skill-03",
+          "frameCount": 12,
+          "frameDuration": 90,
+          "loop": false
+        }
+      },
+      "templateId": "sss-dark-0001",
+      "dataPath": "assets/adventurers/sss/dark/0001/data.json",
+      "assetRoot": "assets/adventurers/sss/dark/0001/",
+      "cardAsset": "assets/adventurers/sss/dark/0001/card.png",
+      "portraitAsset": "assets/adventurers/sss/dark/0001/portrait.png",
+      "iconAsset": "assets/adventurers/sss/dark/0001/icon.png",
+      "actions": {
+        "idle": [
+          "assets/adventurers/sss/dark/0001/sprites/idle/idle-01.png",
+          "assets/adventurers/sss/dark/0001/sprites/idle/idle-02.png",
+          "assets/adventurers/sss/dark/0001/sprites/idle/idle-03.png",
+          "assets/adventurers/sss/dark/0001/sprites/idle/idle-04.png",
+          "assets/adventurers/sss/dark/0001/sprites/idle/idle-05.png",
+          "assets/adventurers/sss/dark/0001/sprites/idle/idle-06.png"
+        ],
+        "walk": [
+          "assets/adventurers/sss/dark/0001/sprites/walk/walk-01.png",
+          "assets/adventurers/sss/dark/0001/sprites/walk/walk-02.png",
+          "assets/adventurers/sss/dark/0001/sprites/walk/walk-03.png",
+          "assets/adventurers/sss/dark/0001/sprites/walk/walk-04.png",
+          "assets/adventurers/sss/dark/0001/sprites/walk/walk-05.png",
+          "assets/adventurers/sss/dark/0001/sprites/walk/walk-06.png",
+          "assets/adventurers/sss/dark/0001/sprites/walk/walk-07.png",
+          "assets/adventurers/sss/dark/0001/sprites/walk/walk-08.png"
+        ],
+        "attack": [
+          "assets/adventurers/sss/dark/0001/sprites/attack/attack-01.png",
+          "assets/adventurers/sss/dark/0001/sprites/attack/attack-02.png",
+          "assets/adventurers/sss/dark/0001/sprites/attack/attack-03.png",
+          "assets/adventurers/sss/dark/0001/sprites/attack/attack-04.png",
+          "assets/adventurers/sss/dark/0001/sprites/attack/attack-05.png",
+          "assets/adventurers/sss/dark/0001/sprites/attack/attack-06.png"
+        ],
+        "hurt": [
+          "assets/adventurers/sss/dark/0001/sprites/hurt/hurt-01.png",
+          "assets/adventurers/sss/dark/0001/sprites/hurt/hurt-02.png",
+          "assets/adventurers/sss/dark/0001/sprites/hurt/hurt-03.png",
+          "assets/adventurers/sss/dark/0001/sprites/hurt/hurt-04.png"
+        ],
+        "victory": [
+          "assets/adventurers/sss/dark/0001/sprites/victory/victory-01.png",
+          "assets/adventurers/sss/dark/0001/sprites/victory/victory-02.png",
+          "assets/adventurers/sss/dark/0001/sprites/victory/victory-03.png",
+          "assets/adventurers/sss/dark/0001/sprites/victory/victory-04.png",
+          "assets/adventurers/sss/dark/0001/sprites/victory/victory-05.png",
+          "assets/adventurers/sss/dark/0001/sprites/victory/victory-06.png"
+        ],
+        "defeated": [
+          "assets/adventurers/sss/dark/0001/sprites/defeated/defeated-01.png",
+          "assets/adventurers/sss/dark/0001/sprites/defeated/defeated-02.png",
+          "assets/adventurers/sss/dark/0001/sprites/defeated/defeated-03.png",
+          "assets/adventurers/sss/dark/0001/sprites/defeated/defeated-04.png"
+        ],
+        "skill-01": [
+          "assets/adventurers/sss/dark/0001/sprites/skill-01/skill-01-01.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-01/skill-01-02.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-01/skill-01-03.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-01/skill-01-04.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-01/skill-01-05.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-01/skill-01-06.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-01/skill-01-07.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-01/skill-01-08.png"
+        ],
+        "skill-02": [
+          "assets/adventurers/sss/dark/0001/sprites/skill-02/skill-02-01.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-02/skill-02-02.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-02/skill-02-03.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-02/skill-02-04.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-02/skill-02-05.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-02/skill-02-06.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-02/skill-02-07.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-02/skill-02-08.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-02/skill-02-09.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-02/skill-02-10.png"
+        ],
+        "skill-03": [
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-01.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-02.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-03.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-04.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-05.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-06.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-07.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-08.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-09.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-10.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-11.png",
+          "assets/adventurers/sss/dark/0001/sprites/skill-03/skill-03-12.png"
         ]
       }
     }

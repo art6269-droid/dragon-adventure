@@ -1,0 +1,91 @@
+{
+  "id": "s-water-0001",
+  "number": "0001",
+  "name": "蒼藍術士",
+  "rarity": "S",
+  "element": "water",
+  "job": "術士",
+  "description": "精通潮汐與冰霜法術的術士。",
+  "maxLevel": 100,
+  "assets": {
+    "card": "card.png",
+    "portrait": "portrait.png",
+    "icon": "icon.png"
+  },
+  "growth": {
+    "base": {
+      "hp": 116,
+      "attack": 32,
+      "defense": 21,
+      "speed": 19
+    },
+    "perLevel": {
+      "hp": 10.4,
+      "attack": 3.5,
+      "defense": 2.2,
+      "speed": 0.98
+    },
+    "variance": {
+      "min": 0.9,
+      "max": 1.1
+    }
+  },
+  "skills": [
+    {
+      "id": "skill-01",
+      "name": "寒潮衝擊",
+      "type": "active",
+      "element": "water",
+      "description": "以寒潮對單一敵人造成水屬性傷害。",
+      "power": 160,
+      "cooldown": 3,
+      "unlockLevel": 1,
+      "animation": "sprites/skill-01",
+      "effect": "effects/skill-01-effect.png"
+    }
+  ],
+  "animations": {
+    "idle": {
+      "folder": "sprites/idle",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "walk": {
+      "folder": "sprites/walk",
+      "frameCount": 8,
+      "frameDuration": 120,
+      "loop": true
+    },
+    "attack": {
+      "folder": "sprites/attack",
+      "frameCount": 6,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "hurt": {
+      "folder": "sprites/hurt",
+      "frameCount": 4,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "victory": {
+      "folder": "sprites/victory",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "defeated": {
+      "folder": "sprites/defeated",
+      "frameCount": 4,
+      "frameDuration": 180,
+      "loop": false
+    },
+    "skill-01": {
+      "folder": "sprites/skill-01",
+      "frameCount": 8,
+      "frameDuration": 90,
+      "loop": false
+    }
+  }
+}

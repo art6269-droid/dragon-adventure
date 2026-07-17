@@ -1,0 +1,91 @@
+{
+  "id": "s-fire-0001",
+  "number": "0001",
+  "name": "赤焰騎士",
+  "rarity": "S",
+  "element": "fire",
+  "job": "騎士",
+  "description": "身披赤焰、勇往直前的騎士。",
+  "maxLevel": 100,
+  "assets": {
+    "card": "card.png",
+    "portrait": "portrait.png",
+    "icon": "icon.png"
+  },
+  "growth": {
+    "base": {
+      "hp": 113,
+      "attack": 31,
+      "defense": 20,
+      "speed": 18
+    },
+    "perLevel": {
+      "hp": 10,
+      "attack": 3.4,
+      "defense": 2.1,
+      "speed": 0.95
+    },
+    "variance": {
+      "min": 0.9,
+      "max": 1.1
+    }
+  },
+  "skills": [
+    {
+      "id": "skill-01",
+      "name": "炎龍拳",
+      "type": "active",
+      "element": "fire",
+      "description": "對單一敵人造成火屬性傷害。",
+      "power": 160,
+      "cooldown": 3,
+      "unlockLevel": 1,
+      "animation": "sprites/skill-01",
+      "effect": "effects/skill-01-effect.png"
+    }
+  ],
+  "animations": {
+    "idle": {
+      "folder": "sprites/idle",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "walk": {
+      "folder": "sprites/walk",
+      "frameCount": 8,
+      "frameDuration": 120,
+      "loop": true
+    },
+    "attack": {
+      "folder": "sprites/attack",
+      "frameCount": 6,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "hurt": {
+      "folder": "sprites/hurt",
+      "frameCount": 4,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "victory": {
+      "folder": "sprites/victory",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "defeated": {
+      "folder": "sprites/defeated",
+      "frameCount": 4,
+      "frameDuration": 180,
+      "loop": false
+    },
+    "skill-01": {
+      "folder": "sprites/skill-01",
+      "frameCount": 8,
+      "frameDuration": 90,
+      "loop": false
+    }
+  }
+}

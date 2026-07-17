@@ -1,0 +1,72 @@
+{
+  "id": "a-light-0001",
+  "number": "0001",
+  "name": "光之牧師",
+  "rarity": "A",
+  "element": "light",
+  "job": "牧師",
+  "description": "以柔和聖光守護同伴的牧師。",
+  "maxLevel": 100,
+  "assets": {
+    "card": "card.png",
+    "portrait": "portrait.png",
+    "icon": "icon.png"
+  },
+  "growth": {
+    "base": {
+      "hp": 107,
+      "attack": 28,
+      "defense": 18,
+      "speed": 17
+    },
+    "perLevel": {
+      "hp": 9.4,
+      "attack": 3,
+      "defense": 1.9000000000000001,
+      "speed": 0.9099999999999999
+    },
+    "variance": {
+      "min": 0.9,
+      "max": 1.1
+    }
+  },
+  "skills": [],
+  "animations": {
+    "idle": {
+      "folder": "sprites/idle",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "walk": {
+      "folder": "sprites/walk",
+      "frameCount": 8,
+      "frameDuration": 120,
+      "loop": true
+    },
+    "attack": {
+      "folder": "sprites/attack",
+      "frameCount": 6,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "hurt": {
+      "folder": "sprites/hurt",
+      "frameCount": 4,
+      "frameDuration": 90,
+      "loop": false
+    },
+    "victory": {
+      "folder": "sprites/victory",
+      "frameCount": 6,
+      "frameDuration": 150,
+      "loop": true
+    },
+    "defeated": {
+      "folder": "sprites/defeated",
+      "frameCount": 4,
+      "frameDuration": 180,
+      "loop": false
+    }
+  }
+}

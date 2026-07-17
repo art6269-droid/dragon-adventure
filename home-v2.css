@@ -2733,6 +2733,59 @@ body.home-v2-active #toastLayer #toast.is-visible {
   }
 }
 
+/* Data-driven adventurer assets and skill summaries. */
+.adventurer-card-icon {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  border: 1px solid rgba(255, 224, 137, 0.72);
+  border-radius: 6px;
+  background: rgba(10, 24, 56, 0.72);
+  pointer-events: none;
+}
+
+.adventurer-detail-skills {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 5px;
+}
+
+.adventurer-detail-skills > span {
+  min-width: 0;
+  padding: 5px 4px;
+  border: 1px solid rgba(255, 222, 130, 0.42);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  text-align: center;
+}
+
+.adventurer-detail-skills b,
+.adventurer-detail-skills small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adventurer-detail-skills b {
+  color: #ffe6a0;
+  font-size: 0.61rem;
+}
+
+.adventurer-detail-skills small {
+  margin-top: 2px;
+  color: #c9dcff;
+  font-size: 0.5rem;
+}
+
+.adventurer-detail-skills .is-empty {
+  grid-column: 1 / -1;
+}
+
 /* Growth system UI: remove pager dots and add rest-island interaction modals. */
 .homeDots,
 .hatch-dots,

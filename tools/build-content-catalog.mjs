@@ -160,29 +160,35 @@ async function scanEggCatalog() {
 
 async function scanAdventurerCatalog() {
   const records = [];
-  for (const element of elements) {
-    for (const rarity of rarities) {
-      const rarityPath = path.join(assetsRoot, "adventurers", element, rarity);
-      if (!(await exists(rarityPath))) continue;
-      const folders = (await fs.readdir(rarityPath, { withFileTypes: true }))
-        .filter((entry) => entry.isDirectory())
-        .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
-      for (const folder of folders) {
-        const assetRoot = path.join(rarityPath, folder.name);
-        const dataPath = path.join(assetRoot, "data.json");
-        if (!(await exists(dataPath))) continue;
-        const data = await readJson(dataPath);
-        records.push({
-          ...data,
-          templateId: data.templateId || data.id || `adventurer_${element}_${rarity.toLowerCase()}_${folder.name}`,
-          element,
-          rarity,
-          assetRoot: `${toAssetPath(assetRoot)}/`,
-          cardAsset: toAssetPath(path.join(assetRoot, "card.png")),
-          portraitAsset: toAssetPath(path.join(assetRoot, "portrait.png")),
-          actions: await readActionFrames(path.join(assetRoot, "pixel"))
-        });
+  const indexPath = path.join(assetsRoot, "adventurers", "index.json");
+  if (!(await exists(indexPath))) return records;
+  const index = await readJson(indexPath);
+  for (const entry of Array.isArray(index.characters) ? index.characters : []) {
+    const dataPath = path.join(assetsRoot, "adventurers", entry.path);
+    if (!(await exists(dataPath))) continue;
+    try {
+      const data = await readJson(dataPath);
+      const assetRoot = path.dirname(dataPath);
+      const actions = {};
+      for (const [action, config] of Object.entries(data.animations || {})) {
+        const folder = path.join(assetRoot, config.folder || `sprites/${action}`);
+        const frames = await readActionFrames(path.dirname(folder), [path.basename(folder)]);
+        actions[action] = frames[path.basename(folder)] || [];
       }
+      records.push({
+        ...data,
+        templateId: String(data.id || entry.id).toLowerCase(),
+        element: String(data.element || "").toLowerCase(),
+        rarity: String(data.rarity || "").toUpperCase(),
+        dataPath: toAssetPath(dataPath),
+        assetRoot: `${toAssetPath(assetRoot)}/`,
+        cardAsset: toAssetPath(path.join(assetRoot, data.assets?.card || "card.png")),
+        portraitAsset: toAssetPath(path.join(assetRoot, data.assets?.portrait || "portrait.png")),
+        iconAsset: toAssetPath(path.join(assetRoot, data.assets?.icon || "icon.png")),
+        actions
+      });
+    } catch (error) {
+      console.warn(`Skipped invalid adventurer template: ${entry.path}`, error.message);
     }
   }
   return records;
@@ -194,7 +200,7 @@ const catalog = {
   conventions: {
     dragons: "assets/dragons/{stage}/{element}/{rarity}/{id}",
     eggs: "assets/eggs/{element}/{rarity}/{id}",
-    adventurers: "assets/adventurers/{element}/{rarity}/{id}"
+    adventurers: "assets/adventurers/{rarity}/{element}/{number}"
   },
   dragons: await scanDragonCatalog(),
   eggs: await scanEggCatalog(),

@@ -1,0 +1,72 @@
+{
+  "characters": [
+    {
+      "id": "c-fire-0001",
+      "path": "c/fire/0001/data.json"
+    },
+    {
+      "id": "c-wood-0001",
+      "path": "c/wood/0001/data.json"
+    },
+    {
+      "id": "b-fire-0001",
+      "path": "b/fire/0001/data.json"
+    },
+    {
+      "id": "b-water-0001",
+      "path": "b/water/0001/data.json"
+    },
+    {
+      "id": "a-wood-0001",
+      "path": "a/wood/0001/data.json"
+    },
+    {
+      "id": "a-light-0001",
+      "path": "a/light/0001/data.json"
+    },
+    {
+      "id": "s-fire-0001",
+      "path": "s/fire/0001/data.json"
+    },
+    {
+      "id": "s-water-0001",
+      "path": "s/water/0001/data.json"
+    },
+    {
+      "id": "ss-fire-0001",
+      "path": "ss/fire/0001/data.json"
+    },
+    {
+      "id": "ss-wood-0001",
+      "path": "ss/wood/0001/data.json"
+    },
+    {
+      "id": "ss-light-0001",
+      "path": "ss/light/0001/data.json"
+    },
+    {
+      "id": "ss-dark-0001",
+      "path": "ss/dark/0001/data.json"
+    },
+    {
+      "id": "sss-fire-0001",
+      "path": "sss/fire/0001/data.json"
+    },
+    {
+      "id": "sss-water-0001",
+      "path": "sss/water/0001/data.json"
+    },
+    {
+      "id": "sss-wood-0001",
+      "path": "sss/wood/0001/data.json"
+    },
+    {
+      "id": "sss-light-0001",
+      "path": "sss/light/0001/data.json"
+    },
+    {
+      "id": "sss-dark-0001",
+      "path": "sss/dark/0001/data.json"
+    }
+  ]
+}
