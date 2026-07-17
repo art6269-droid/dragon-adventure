@@ -1,4 +1,4 @@
-const CACHE_NAME = "dragon-adventure-v76";
+const CACHE_NAME = "dragon-adventure-v-adventurer-loader-fix-1";
 
 const CORE_ASSETS = [
   "./",
@@ -112,6 +112,7 @@ const CORE_ASSETS = [
   "./app.js?v=65",
   "./app.js?v=66",
   "./app.js?v=67",
+  "./app.js?v=68",
   "./home-v2-overrides.js",
   "./home-v2-overrides.js?v=1",
   "./home-v2-overrides.js?v=2",
@@ -381,8 +382,10 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
           return response;
         })
         .catch(() => caches.match(event.request))

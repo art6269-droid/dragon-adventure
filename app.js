@@ -1035,7 +1035,13 @@ const ADVENTURER_TEMPLATE_MIGRATION = {
   "shadow_hunter_ss_dark": "ss-dark-0001"
 };
 let adventurerTemplates = [];
-let adventurerTemplateMap = new Map();
+let adventurerTemplatesById = new Map();
+let adventurerDataState = {
+  status: "idle",
+  error: null,
+  usingFallback: false,
+  failedEntries: []
+};
 const CONTENT_CATALOG_URL = "assets/data/content-catalog.json";
 const contentCatalog = {
   loaded: false,
@@ -1060,11 +1066,27 @@ async function loadContentCatalog() {
   }
 }
 
+function resolveGameUrl(path, baseUrl = document.baseURI || window.location.href) {
+  try {
+    return new URL(String(path || ""), baseUrl).href;
+  } catch (error) {
+    console.warn("[Adventurer URL] 無法解析路徑", path, baseUrl, error);
+    return String(path || "");
+  }
+}
+
 function resolveAdventurerRelativePath(basePath, assetPath, fallback) {
   const value = String(assetPath || "").replace(/\\/g, "/");
   if (!value) return fallback;
-  if (/^(?:https?:|data:|blob:|\/)/i.test(value) || value.startsWith("assets/")) return value;
-  return `${basePath}${value.replace(/^\.\//, "")}`;
+  if (/^(?:https?:|data:|blob:)/i.test(value)) return value;
+  if (value.startsWith("/") || value.startsWith("assets/")) {
+    return resolveGameUrl(value, document.baseURI || window.location.href);
+  }
+  return resolveGameUrl(value.replace(/^\.\//, ""), basePath || document.baseURI || window.location.href);
+}
+
+function resolveTemplateAsset(template, assetPath, fallback = ADVENTURER_SHARED_ASSETS.card) {
+  return resolveAdventurerRelativePath(template?.__baseUrl || template?.assetRoot, assetPath, fallback);
 }
 
 function migrateAdventurerTemplateId(templateId) {
@@ -1073,8 +1095,9 @@ function migrateAdventurerTemplateId(templateId) {
 }
 
 function prepareAdventurerTemplate(source, dataPath) {
-  const normalizedDataPath = String(dataPath || "").replace(/\\/g, "/");
-  const assetRoot = normalizedDataPath.replace(/data\.json$/i, "");
+  const normalizedDataPath = String(source?.__dataUrl || dataPath || "").replace(/\\/g, "/");
+  const assetRoot = source?.__baseUrl
+    || resolveGameUrl("./", normalizedDataPath || document.baseURI || window.location.href);
   const templateId = migrateAdventurerTemplateId(source?.id || source?.templateId);
   const animations = source?.animations && typeof source.animations === "object" ? source.animations : {};
   const animationFrames = {};
@@ -1097,6 +1120,8 @@ function prepareAdventurerTemplate(source, dataPath) {
     element: String(source?.element || templateId.split("-")[1] || "fire").toLowerCase(),
     dataPath: normalizedDataPath,
     assetRoot,
+    __dataUrl: normalizedDataPath,
+    __baseUrl: assetRoot,
     cardAsset: resolveAdventurerRelativePath(assetRoot, source?.assets?.card, ADVENTURER_SHARED_ASSETS.card),
     portraitAsset: resolveAdventurerRelativePath(assetRoot, source?.assets?.portrait, ADVENTURER_SHARED_ASSETS.portrait),
     iconAsset: resolveAdventurerRelativePath(assetRoot, source?.assets?.icon, ADVENTURER_SHARED_ASSETS.icon),
@@ -1158,55 +1183,134 @@ function validateAdventurerTemplate(template) {
   return warnings;
 }
 
-async function loadAdventurerTemplates() {
-  const loaded = [];
+function setAdventurerTemplateRegistry(templates) {
+  adventurerTemplates = Array.isArray(templates) ? templates.filter(Boolean) : [];
+  adventurerTemplatesById = new Map(adventurerTemplates.map((template) => [template.templateId, template]));
+  contentCatalog.adventurers = adventurerTemplates;
+}
+
+function createFallbackAdventurerTemplates() {
+  const sharedAssets = {
+    card: ADVENTURER_SHARED_ASSETS.card,
+    portrait: ADVENTURER_SHARED_ASSETS.portrait,
+    icon: ADVENTURER_SHARED_ASSETS.icon
+  };
+  const sources = [
+    { id: "c-fire-fallback", number: "9001", name: "新人劍士", rarity: "C", element: "fire", job: "劍士", growth: { base: { hp: 82, attack: 18, defense: 13, speed: 14 }, perLevel: { hp: 7, attack: 2, defense: 1.2, speed: 0.7 }, variance: { min: 0.9, max: 1.1 } } },
+    { id: "c-wood-fallback", number: "9002", name: "見習弓手", rarity: "C", element: "wood", job: "弓手", growth: { base: { hp: 74, attack: 20, defense: 11, speed: 18 }, perLevel: { hp: 6, attack: 2.2, defense: 1, speed: 0.9 }, variance: { min: 0.9, max: 1.1 } } },
+    { id: "b-water-fallback", number: "9003", name: "水靈法師", rarity: "B", element: "water", job: "法師", growth: { base: { hp: 80, attack: 25, defense: 12, speed: 16 }, perLevel: { hp: 7, attack: 2.7, defense: 1.1, speed: 0.8 }, variance: { min: 0.9, max: 1.1 } } },
+    { id: "s-fire-fallback", number: "9004", name: "赤焰騎士", rarity: "S", element: "fire", job: "騎士", growth: { base: { hp: 112, attack: 33, defense: 24, speed: 18 }, perLevel: { hp: 10, attack: 3.5, defense: 2.2, speed: 0.9 }, variance: { min: 0.9, max: 1.1 } }, skills: [{ id: "skill-01", name: "赤焰斬", type: "active", element: "fire", power: 150, cooldown: 3, unlockLevel: 1 }] }
+  ];
+
+  return sources.map((source) => {
+    const template = prepareAdventurerTemplate({
+      ...source,
+      description: "冒險者索引暫時無法使用時提供的備援角色。",
+      maxLevel: 100,
+      assets: sharedAssets,
+      animations: {},
+      skills: source.skills || []
+    }, resolveGameUrl(`assets/adventurers/_fallback/${source.id}/data.json`));
+    template.animationFrames = { idle: [resolveGameUrl(ADVENTURER_SHARED_ASSETS.sprite)] };
+    template.actions = template.animationFrames;
+    template.isFallback = true;
+    return template;
+  });
+}
+
+async function loadAdventurerTemplates(options = {}) {
+  const allowFallback = options.allowFallback !== false;
+  adventurerDataState.status = "loading";
+  adventurerDataState.error = null;
+  adventurerDataState.usingFallback = false;
+  adventurerDataState.failedEntries = [];
+
   try {
-    const response = await fetch(ADVENTURER_INDEX_URL, { cache: "no-cache" });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const indexUrl = new URL(ADVENTURER_INDEX_URL, document.baseURI || window.location.href);
+    const response = await fetch(indexUrl.href, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`冒險者索引載入失敗：${response.status} ${indexUrl.href}`);
+    }
     const index = await response.json();
     const entries = Array.isArray(index.characters) ? index.characters : [];
     const results = await Promise.allSettled(entries.map(async (entry) => {
-      const dataPath = `assets/adventurers/${String(entry.path || "").replace(/^\/+/, "")}`;
-      const dataResponse = await fetch(dataPath, { cache: "no-cache" });
-      if (!dataResponse.ok) throw new Error(`${dataPath}: HTTP ${dataResponse.status}`);
+      const dataUrl = new URL(String(entry.path || ""), indexUrl);
+      const dataResponse = await fetch(dataUrl.href, { cache: "no-store" });
+      if (!dataResponse.ok) {
+        throw new Error(`${entry.id || entry.path} 載入失敗：${dataResponse.status} ${dataUrl.href}`);
+      }
+      const source = await dataResponse.json();
       return prepareAdventurerTemplate({
-        ...(await dataResponse.json()),
+        ...source,
+        __dataUrl: dataUrl.href,
+        __baseUrl: new URL("./", dataUrl).href,
         missingAssets: Array.isArray(entry.missingAssets) ? entry.missingAssets : []
-      }, dataPath);
+      }, dataUrl.href);
     }));
+    const loaded = [];
     results.forEach((result, indexPosition) => {
       if (result.status === "fulfilled") {
         validateAdventurerTemplate(result.value);
         loaded.push(result.value);
       } else {
-        console.warn("[adventurer template] skipped", entries[indexPosition]?.path, result.reason);
+        const failure = { entry: entries[indexPosition], error: result.reason };
+        adventurerDataState.failedEntries.push(failure);
+        console.warn("[Adventurer load failed]", failure.entry, failure.error);
       }
     });
-  } catch (error) {
-    console.warn("冒險者索引載入失敗，改用內容清單相容資料。", error);
-  }
+    if (!loaded.length) throw new Error("沒有任何可用的冒險者資料");
 
-  if (!loaded.length) {
-    contentCatalog.adventurers.forEach((item) => {
-      const template = prepareAdventurerTemplate(item, item.dataPath || `${item.assetRoot || ""}data.json`);
-      validateAdventurerTemplate(template);
-      loaded.push(template);
-    });
+    setAdventurerTemplateRegistry(loaded);
+    adventurerDataState.status = "ready";
+    return loaded;
+  } catch (error) {
+    console.error("冒險者資料初始化失敗", error);
+    adventurerDataState.error = error?.message || "角色資料載入失敗";
+    if (allowFallback) {
+      const fallbackTemplates = createFallbackAdventurerTemplates();
+      if (fallbackTemplates.length) {
+        console.warn("正在使用冒險者備援角色池");
+        setAdventurerTemplateRegistry(fallbackTemplates);
+        adventurerDataState.status = "ready";
+        adventurerDataState.usingFallback = true;
+        return fallbackTemplates;
+      }
+    }
+    setAdventurerTemplateRegistry([]);
+    adventurerDataState.status = "error";
+    return [];
   }
-  adventurerTemplates = loaded;
-  adventurerTemplateMap = new Map(loaded.map((template) => [template.templateId, template]));
-  contentCatalog.adventurers = loaded;
+}
+
+async function retryLoadAdventurers() {
+  adventurerDataState.status = "loading";
+  adventurerDataState.error = null;
+  refreshAdventurerGuildPage();
+  const templates = await loadAdventurerTemplates({ allowFallback: false });
+  if (templates.length) ensureValidState();
+  refreshAdventurerGuildPage();
+  return templates.length > 0;
 }
 
 function getAdventurerTemplatePool() {
   return adventurerTemplates;
 }
 
+window.debugAdventurerLoader = function debugAdventurerLoader() {
+  return {
+    status: adventurerDataState.status,
+    error: adventurerDataState.error,
+    usingFallback: adventurerDataState.usingFallback,
+    templateCount: adventurerTemplates.length,
+    failedCount: adventurerDataState.failedEntries.length
+  };
+};
+
 function getAdventurerTemplate(templateOrId) {
   const templateId = migrateAdventurerTemplateId(
     typeof templateOrId === "string" ? templateOrId : templateOrId?.templateId
   );
-  return adventurerTemplateMap.get(templateId) || null;
+  return adventurerTemplatesById.get(templateId) || null;
 }
 
 window.debugListAdventurers = function debugListAdventurers() {
@@ -1680,6 +1784,7 @@ initialize();
 
 async function initialize() {
   await loadContentCatalog();
+  adventurerDataState.status = "loading";
   await loadAdventurerTemplates();
   ensureValidState();
   audioManager = new AudioManager(MUSIC_TRACKS, "start", MUSIC_FALLBACKS);
@@ -4482,13 +4587,58 @@ function deriveLegacyAdventurerGrowthRoll(source, template, level) {
   return derived;
 }
 
+const warnedMissingAdventurerTemplates = new Set();
+
+function createMissingAdventurerTemplate(source, requestedTemplateId) {
+  const templateId = requestedTemplateId || `legacy-${String(source?.id || createId("template")).toLowerCase()}`;
+  if (!warnedMissingAdventurerTemplates.has(templateId)) {
+    console.warn(`[Adventurer template missing] ${templateId}，保留玩家角色並使用 placeholder。`);
+    warnedMissingAdventurerTemplates.add(templateId);
+  }
+  const sourceBase = source?.baseStats && typeof source.baseStats === "object" ? source.baseStats : source;
+  const template = prepareAdventurerTemplate({
+    id: templateId,
+    number: /^\d{4}$/.test(String(source?.number || "")) ? String(source.number) : "0000",
+    name: source?.name || "未知冒險者",
+    rarity: String(source?.rarity || "C").toUpperCase(),
+    element: String(source?.element || "fire").toLowerCase(),
+    job: source?.job || "冒險者",
+    description: source?.description || "舊存檔冒險者資料。",
+    maxLevel: positiveNumber(source?.maxLevel, ADVENTURER_MAX_LEVEL),
+    assets: {
+      card: source?.cardAsset || ADVENTURER_SHARED_ASSETS.card,
+      portrait: source?.portraitAsset || ADVENTURER_SHARED_ASSETS.portrait,
+      icon: source?.iconAsset || ADVENTURER_SHARED_ASSETS.icon
+    },
+    growth: {
+      base: {
+        hp: positiveNumber(sourceBase?.hp, 100),
+        attack: positiveNumber(sourceBase?.attack, 10),
+        defense: positiveNumber(sourceBase?.defense, 10),
+        speed: positiveNumber(sourceBase?.speed, 10)
+      },
+      perLevel: { hp: 7, attack: 2, defense: 1.2, speed: 0.7 },
+      variance: { min: 0.9, max: 1.1 }
+    },
+    skills: Array.isArray(source?.skills) ? source.skills : [],
+    animations: {}
+  }, resolveGameUrl(`assets/adventurers/_legacy-runtime/${encodeURIComponent(templateId)}/data.json`));
+  template.animationFrames = source?.animationFrames && Object.keys(source.animationFrames).length
+    ? source.animationFrames
+    : { idle: [resolveGameUrl(source?.spriteAsset || ADVENTURER_SHARED_ASSETS.sprite)] };
+  template.actions = template.animationFrames;
+  template.isMissingTemplate = true;
+  adventurerTemplatesById.set(templateId, template);
+  return template;
+}
+
 function normalizeAdventurer(adventurer) {
   const source = adventurer && typeof adventurer === "object" ? adventurer : {};
   const templateId = migrateAdventurerTemplateId(source.templateId);
   const templatePool = getAdventurerTemplatePool();
   const template = getAdventurerTemplate(templateId)
     || templatePool.find((item) => item.name === source.name)
-    || templatePool[0];
+    || createMissingAdventurerTemplate(source, templateId);
   if (!template) return null;
   const level = clamp(positiveNumber(source.level, 1), 1, positiveNumber(template.maxLevel, ADVENTURER_MAX_LEVEL));
   const growthRoll = deriveLegacyAdventurerGrowthRoll(source, template, level);
@@ -4551,10 +4701,10 @@ function resolveAdventurerAsset(templateOrInstance, assetType = "card", action =
   if (assetType === "icon") return template.iconAsset || ADVENTURER_SHARED_ASSETS.icon;
   if (assetType === "effect") {
     const skill = (template.skills || []).find((item) => item.id === action);
-    return resolveAdventurerRelativePath(template.assetRoot, skill?.effect, ADVENTURER_SHARED_ASSETS.sprite);
+    return resolveTemplateAsset(template, skill?.effect, ADVENTURER_SHARED_ASSETS.sprite);
   }
   if (assetType === "audio") {
-    return `${template.assetRoot}audio/${action}.mp3`;
+    return resolveTemplateAsset(template, `audio/${action}.mp3`, "");
   }
   const fallbackActions = action.startsWith("skill-")
     ? [action, "attack", "idle"]
@@ -5144,6 +5294,8 @@ function renderAdventurerGuildPageInner() {
   const summonCostText = tickets > 0 ? "角色券 x1" : `${ADVENTURER_SUMMON_DIAMOND_COST} 鑽石`;
   const bulk = getBulkManageState();
   const isManaging = bulk.type === "adventurer";
+  const isDataLoading = adventurerDataState.status === "idle" || adventurerDataState.status === "loading";
+  const isDataError = adventurerDataState.status === "error";
 
   return `
     <div class="adventurer-guild-page">
@@ -5165,7 +5317,7 @@ function renderAdventurerGuildPageInner() {
           ${renderAdventurerImage(ASSETS.icons.characterTicket, ADVENTURER_SHARED_ASSETS.icon, "adventurer-ticket-icon", "角色召喚券")}
           <span>角色券 <b>${formatNumber(tickets)}</b></span>
         </div>
-        <button type="button" data-v2-action="summon-adventurer">
+        <button type="button" data-v2-action="summon-adventurer"${isDataLoading || isDataError ? " disabled aria-disabled=\"true\"" : ""}>
           <span>召喚角色</span>
           <small>${summonCostText}</small>
         </button>
@@ -5187,9 +5339,13 @@ function renderAdventurerGuildPageInner() {
       </section>
 
       <section class="adventurer-grid" aria-label="持有角色">
-        ${adventurers.length
-          ? adventurers.map(renderAdventurerGuildCard).join("")
-          : `<div class="adventurer-empty-state"><b>尚無符合條件的角色</b><span>使用召喚券或鑽石召喚第一位冒險者。</span></div>`}
+        ${isDataLoading
+          ? `<div class="adventurer-empty-state"><b>冒險者資料載入中</b><span>請稍候片刻。</span></div>`
+          : isDataError
+            ? `<div class="adventurer-empty-state"><b>冒險者資料載入失敗</b><span>${escapeHtml(adventurerDataState.error || "請檢查角色資料或重新載入")}</span><button type="button" data-v2-action="retry-load-adventurers">重新載入角色資料</button></div>`
+            : adventurers.length
+              ? adventurers.map(renderAdventurerGuildCard).join("")
+              : `<div class="adventurer-empty-state"><b>尚無符合條件的角色</b><span>使用召喚券或鑽石召喚第一位冒險者。</span></div>`}
       </section>
     </div>
   `;
@@ -5247,10 +5403,22 @@ function consumeAdventurerSummonCost() {
   return null;
 }
 
+async function handleAdventurerSummon() {
+  if (adventurerDataState.status === "idle" || adventurerDataState.status === "loading") {
+    showToast("冒險者資料仍在載入，請稍候");
+    return false;
+  }
+  if (adventurerDataState.status === "error") {
+    showToast(adventurerDataState.error || "冒險者資料載入失敗");
+    return false;
+  }
+  return summonAdventurer();
+}
+
 function summonAdventurer() {
   const templatePool = getAdventurerTemplatePool();
   if (!templatePool.length) {
-    showToast("冒險者資料尚未載入完成");
+    showToast("目前沒有可召喚的冒險者");
     return false;
   }
   if (!canPayAdventurerSummon()) {
@@ -6004,7 +6172,8 @@ function handleAdventurerGuildClick(event) {
     "select-adventurer-team", "toggle-adventurer-team", "upgrade-adventurer",
     "select-adventurer-equipment-slot", "equip-adventurer-equipment", "unequip-adventurer-equipment",
     "select-adventurer-trade-tab", "toggle-adventurer-lock", "open-adventurer-sell",
-    "close-adventurer-sell", "confirm-adventurer-sell", "buy-equipment-shop-item"
+    "close-adventurer-sell", "confirm-adventurer-sell", "buy-equipment-shop-item",
+    "retry-load-adventurers"
   ]);
   const action = actionButton?.dataset.v2Action;
   if (!backdrop && (!action || !guildActions.has(action))) return;
@@ -6020,7 +6189,8 @@ function handleAdventurerGuildClick(event) {
   if (!actionButton) return;
 
   const adventurerId = actionButton.dataset.adventurerId;
-  if (action === "summon-adventurer") summonAdventurer();
+  if (action === "summon-adventurer") handleAdventurerSummon();
+  if (action === "retry-load-adventurers") retryLoadAdventurers();
   if (action === "accept-adventurer") acceptAdventurerGacha();
   if (action === "summon-adventurer-again") summonAdventurerAgain();
   if (action === "open-adventurer-detail") openAdventurerDetail(adventurerId);
