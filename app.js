@@ -1009,6 +1009,243 @@ const EQUIPMENT_NAMES = {
   light: { head: "晨曦聖冠", body: "聖耀鎧甲", legs: "光羽護腿", weapon: "日輪聖劍", offhand: "光明法典", ring: "星光戒指", necklace: "曙光項鍊", petContract: "天使契約" },
   dark: { head: "深淵面具", body: "暗夜長袍", legs: "影行護腿", weapon: "黑月匕首", offhand: "虛空魔典", ring: "暗影戒指", necklace: "黑曜項鍊", petContract: "魔獸契約" }
 };
+const GAME_CONFIG_URL = "config/game-config.json";
+const DEFAULT_PAGE_ADMIN_CONFIG = {
+  enabled: true,
+  contentScale: 1,
+  backgroundScale: 1,
+  backgroundX: 50,
+  backgroundY: 50,
+  contentTop: 0,
+  contentLeft: 0,
+  contentWidth: 100,
+  contentHeight: 100,
+  paddingTop: 0,
+  paddingBottom: 0,
+  cardWidth: 100,
+  cardHeight: 112,
+  cardGap: 12,
+  iconSize: 48,
+  textScale: 1,
+  panelOpacity: 0.92,
+  panelRadius: 18,
+  goldBorder: 2,
+  navHeight: 92,
+  scrollable: true,
+  mimiWidth: 88,
+  mimiBottom: 14,
+  mimiAvatar: 54
+};
+const DEFAULT_GAME_CONFIG = {
+  version: 1,
+  features: {
+    home: true,
+    hatchery: true,
+    dragonHouse: true,
+    equipmentShop: true,
+    itemShop: true,
+    explore: true,
+    adventurerGuild: true,
+    missions: true,
+    adventure: false
+  },
+  pages: Object.fromEntries(Array.from({ length: 9 }, (_, index) => [
+    `page${String(index + 1).padStart(2, "0")}`,
+    { ...DEFAULT_PAGE_ADMIN_CONFIG }
+  ])),
+  gacha: {
+    adventurer: {
+      rarities: Object.fromEntries(ADVENTURER_RARITY_RATES.map((entry) => [entry.rarity, entry.rate])),
+      elements: { fire: 20, water: 20, wood: 20, light: 20, dark: 20 },
+      diamondCost: ADVENTURER_SUMMON_DIAMOND_COST
+    },
+    egg: {
+      rarities: { C: 45, B: 28, A: 15, S: 7, SS: 4, SSS: 1 },
+      elements: { fire: 28, water: 28, wood: 28, light: 8, dark: 8 }
+    }
+  },
+  sprites: {
+    adventurers: { guildScale: 1, mapScale: 1, portraitScale: 1, anchorX: 0.5, anchorY: 1 },
+    dragons: { stageScale: { baby: 0.88, youth: 0.94, adult: 1, evolution: 1.08 }, mapScale: 1, restIslandScale: 1, hatchIslandScale: 1, detailScale: 1, wrapperWidth: 68, wrapperHeight: 68, anchorX: 0.5, anchorY: 1 }
+  },
+  ui: {
+    topHudHeight: 72, coinWidth: 132, diamondWidth: 132, settingsSize: 48,
+    bottomNavHeight: 92, bottomNavIconSize: 42, bottomNavGap: 8,
+    cardRadius: 18, goldBorderWidth: 2, buttonHeight: 44, buttonFontSize: 15,
+    mimiAvatarSize: 54, mimiDialogueHeight: 72, modalWidth: 390, modalTop: 82,
+    overlayOpacity: 0.72, toastBottom: 116, scrollbarMode: "hidden"
+  },
+  economy: {
+    adventurerSummonDiamonds: 30, exploreTicketCost: 1, defaultHatchSeconds: 90,
+    equipmentShopRefreshMinutes: 120, equipmentPriceMultiplier: 1, feedExp: 5, trainExp: 20,
+    incubatorUnlockPrices: [0, 0, 100, 200, 300, 500],
+    beginnerRewards: { tutorialExploreTickets: 3, final: { ...BEGINNER_FINAL_REWARD } },
+    missionRewards: Object.fromEntries(BEGINNER_MISSION_DEFS.map((mission) => [mission.id, { ...mission.reward }])),
+    adventurerSellPrices: { ...ADVENTURER_SELL_PRICES },
+    dragonSellPrices: { C: 50, B: 100, A: 200, S: 400, SS: 800, SSS: 1500 },
+    upgrade: { baseCost: 100, levelCost: 80, baseExp: 100, levelExp: 50 }
+  },
+  adventure: { enabled: false, chapterCount: 1, stagesPerChapter: 10, enemyLevelMultiplier: 1, recommendedPower: 100, staminaCost: 5, coinDrop: 50, expDrop: 30, equipmentDropRate: 10, equipmentRarityRates: { C: 45, B: 28, A: 15, S: 7, SS: 4, SSS: 1 }, bossRate: 10, autoBattle: false, battleSpeed: 1, teamSize: 4 }
+};
+let gameConfig = JSON.parse(JSON.stringify(DEFAULT_GAME_CONFIG));
+
+function mergeGameConfig(base, override) {
+  if (!override || typeof override !== "object" || Array.isArray(override)) return base;
+  const merged = { ...base };
+  Object.entries(override).forEach(([key, value]) => {
+    merged[key] = value && typeof value === "object" && !Array.isArray(value)
+      ? mergeGameConfig(base?.[key] && typeof base[key] === "object" ? base[key] : {}, value)
+      : value;
+  });
+  return merged;
+}
+
+function renderWorldAdventureAdminPage(index) {
+  const enabled = Boolean(gameConfig.features?.adventure && gameConfig.adventure?.enabled);
+  if (!enabled) {
+    return renderWorldPlaceholderPage(index, "adventurePage", "冒險", "冒險功能準備中", [
+      ["世界地圖", "功能完成後可從後台啟用"],
+      ["隊伍出戰", "目前不會消耗體力或改動玩家資料"]
+    ]);
+  }
+  const settings = gameConfig.adventure || {};
+  return renderWorldPlaceholderPage(index, "adventurePage", "冒險", "帶領隊伍探索新的關卡", [
+    ["地圖章節", `${Number(settings.chapterCount) || 1} 章，每章 ${Number(settings.stagesPerChapter) || 10} 關`],
+    ["推薦戰力", formatNumber(Number(settings.recommendedPower) || 0)],
+    ["體力消耗", `${Number(settings.staminaCost) || 0} 點`],
+    ["戰鬥設定", `${settings.autoBattle ? "自動戰鬥" : "手動戰鬥"} / ${Number(settings.battleSpeed) || 1} 倍速`]
+  ]);
+}
+
+function getAdminWorldPages() {
+  const pages = [
+    { id: "home", configKey: "page01", featureKey: "home", label: "家", title: "龍之島", icon: "家", assetKey: "navHome", className: "homePage", render: renderWorldHomePage },
+    { id: "dragonHouse", configKey: "page02", featureKey: "dragonHouse", label: "龍舍", title: "龍舍", icon: "龍", assetKey: "navDragonHouse", className: "dragonHousePage", render: renderWorldDragonHousePage },
+    { id: "dragonCave", configKey: "page03", featureKey: "hatchery", label: "孵蛋島", title: "孵蛋島", icon: "蛋", assetKey: "navDragonCave", className: "dragonCavePage", render: renderWorldDragonCavePage },
+    { id: "equipment", configKey: "page04", featureKey: "equipmentShop", label: "裝備商店", title: "裝備商店", icon: "裝", assetKey: "navEquipmentShop", className: "equipmentShopPage", render: renderWorldEquipmentShopPage },
+    { id: "items", configKey: "page05", featureKey: "itemShop", label: "道具商店", title: "道具商店", icon: "物", assetKey: "navItemShop", className: "itemShopPage", render: (index) => renderWorldPlaceholderPage(index, "itemShopPage", "道具商店", "準備旅途中需要的補給", [["恢復道具", "補充冒險所需資源"], ["成長道具", "陪伴龍與冒險者成長"]]) },
+    { id: "explore", configKey: "page06", featureKey: "explore", label: "探索", title: "探索", icon: "探", assetKey: "navExplore", className: "explorePage", render: renderWorldExplorePage },
+    { id: "adventurerGuild", configKey: "page07", featureKey: "adventurerGuild", label: "冒險者工會", title: "冒險者工會", icon: "會", assetKey: "navAdventurerGuild", className: "adventurerGuildPage", render: renderWorldAdventurerGuildPage },
+    { id: "quest", configKey: "page08", featureKey: "missions", label: "任務", title: "任務", icon: "任", assetKey: "navQuest", className: "questPage", render: renderWorldQuestPage },
+    { id: "adventure", configKey: "page09", featureKey: "adventure", label: "冒險", title: "冒險", icon: "戰", assetKey: "navExplore", className: "adventurePage", render: renderWorldAdventureAdminPage }
+  ];
+  const enabled = pages.filter((page) => {
+    if (gameConfig.pages?.[page.configKey]?.enabled === false) return false;
+    if (page.id === "adventure") return true;
+    return gameConfig.features?.[page.featureKey] !== false;
+  });
+  return enabled.length ? enabled : [pages[0]];
+}
+
+async function loadGameConfig() {
+  try {
+    const configUrl = new URL(GAME_CONFIG_URL, document.baseURI || window.location.href);
+    const response = await fetch(configUrl.href, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    gameConfig = mergeGameConfig(JSON.parse(JSON.stringify(DEFAULT_GAME_CONFIG)), await response.json());
+  } catch (error) {
+    console.warn("遊戲設定載入失敗，使用安全預設值。", error);
+    gameConfig = JSON.parse(JSON.stringify(DEFAULT_GAME_CONFIG));
+  }
+  applyGameConfigCssVariables();
+  return gameConfig;
+}
+
+function gameConfigNumber(path, fallback) {
+  const value = path.split(".").reduce((current, key) => current?.[key], gameConfig);
+  return Number.isFinite(Number(value)) ? Number(value) : fallback;
+}
+
+function applyGameConfigCssVariables() {
+  const ui = gameConfig.ui || {};
+  const root = document.documentElement;
+  const variables = {
+    "--admin-top-hud-height": `${gameConfigNumber("ui.topHudHeight", 72)}px`,
+    "--admin-coin-width": `${gameConfigNumber("ui.coinWidth", 132)}px`,
+    "--admin-diamond-width": `${gameConfigNumber("ui.diamondWidth", 132)}px`,
+    "--admin-settings-size": `${gameConfigNumber("ui.settingsSize", 48)}px`,
+    "--bottom-nav-height": `${gameConfigNumber("ui.bottomNavHeight", 92)}px`,
+    "--admin-nav-icon-size": `${gameConfigNumber("ui.bottomNavIconSize", 42)}px`,
+    "--admin-nav-gap": `${gameConfigNumber("ui.bottomNavGap", 8)}px`,
+    "--admin-card-radius": `${gameConfigNumber("ui.cardRadius", 18)}px`,
+    "--admin-gold-border": `${gameConfigNumber("ui.goldBorderWidth", 2)}px`,
+    "--admin-button-height": `${gameConfigNumber("ui.buttonHeight", 44)}px`,
+    "--admin-button-font-size": `${gameConfigNumber("ui.buttonFontSize", 15)}px`,
+    "--admin-mimi-avatar-size": `${gameConfigNumber("ui.mimiAvatarSize", 54)}px`,
+    "--admin-mimi-dialogue-height": `${gameConfigNumber("ui.mimiDialogueHeight", 72)}px`,
+    "--admin-modal-width": `${gameConfigNumber("ui.modalWidth", 390)}px`,
+    "--admin-modal-top": `${gameConfigNumber("ui.modalTop", 82)}px`,
+    "--admin-overlay-opacity": String(gameConfigNumber("ui.overlayOpacity", 0.72)),
+    "--admin-toast-bottom": `${gameConfigNumber("ui.toastBottom", 116)}px`,
+    "--admin-dragon-baby-scale": String(gameConfigNumber("sprites.dragons.stageScale.baby", 0.88)),
+    "--admin-dragon-youth-scale": String(gameConfigNumber("sprites.dragons.stageScale.youth", 0.94)),
+    "--admin-dragon-adult-scale": String(gameConfigNumber("sprites.dragons.stageScale.adult", 1)),
+    "--admin-dragon-evolution-scale": String(gameConfigNumber("sprites.dragons.stageScale.evolution", 1.08)),
+    "--admin-adventurer-guild-scale": String(gameConfigNumber("sprites.adventurers.guildScale", 1)),
+    "--admin-adventurer-map-scale": String(gameConfigNumber("sprites.adventurers.mapScale", 1)),
+    "--admin-adventurer-portrait-scale": String(gameConfigNumber("sprites.adventurers.portraitScale", 1)),
+    "--admin-dragon-wrapper-width": `${gameConfigNumber("sprites.dragons.wrapperWidth", 68)}px`,
+    "--admin-dragon-wrapper-height": `${gameConfigNumber("sprites.dragons.wrapperHeight", 68)}px`
+  };
+  Object.entries(variables).forEach(([name, value]) => root.style.setProperty(name, value));
+  root.dataset.adminScrollbar = ui.scrollbarMode || "hidden";
+}
+
+function applyGameConfigToRenderedPages() {
+  getWorldPages().forEach((page, index) => {
+    const element = document.querySelector(`.worldPage[data-world-index="${index}"]`);
+    if (!element) return;
+    const pageConfig = gameConfig.pages?.[page.configKey] || DEFAULT_PAGE_ADMIN_CONFIG;
+    element.dataset.adminPage = page.configKey;
+    element.dataset.adminScrollable = pageConfig.scrollable === false ? "false" : "true";
+    const values = {
+      "--page-content-scale": pageConfig.contentScale,
+      "--page-background-scale": pageConfig.backgroundScale,
+      "--page-background-x": `${pageConfig.backgroundX}%`,
+      "--page-background-y": `${pageConfig.backgroundY}%`,
+      "--page-content-top": `${pageConfig.contentTop}px`,
+      "--page-content-left": `${pageConfig.contentLeft}px`,
+      "--page-content-width": `${pageConfig.contentWidth}%`,
+      "--page-content-height": `${pageConfig.contentHeight}%`,
+      "--page-padding-top": `${pageConfig.paddingTop}px`,
+      "--page-padding-bottom": `${pageConfig.paddingBottom}px`,
+      "--page-card-width": `${pageConfig.cardWidth}%`,
+      "--page-card-height": `${pageConfig.cardHeight}px`,
+      "--page-card-gap": `${pageConfig.cardGap}px`,
+      "--page-icon-size": `${pageConfig.iconSize}px`,
+      "--page-text-scale": pageConfig.textScale,
+      "--page-panel-opacity": pageConfig.panelOpacity,
+      "--page-panel-radius": `${pageConfig.panelRadius}px`,
+      "--page-gold-border": `${pageConfig.goldBorder}px`
+    };
+    Object.entries(values).forEach(([name, value]) => element.style.setProperty(name, String(value)));
+  });
+  applyActivePageConfig(currentWorldPage);
+}
+
+function applyActivePageConfig(index = 0) {
+  const page = getWorldPages()[Number(index) || 0];
+  const pageConfig = gameConfig.pages?.[page?.configKey] || DEFAULT_PAGE_ADMIN_CONFIG;
+  const root = document.documentElement;
+  root.style.setProperty("--bottom-nav-height", `${Number(pageConfig.navHeight) || gameConfigNumber("ui.bottomNavHeight", 92)}px`);
+  root.style.setProperty("--admin-mimi-width", `${Number(pageConfig.mimiWidth) || 88}vw`);
+  root.style.setProperty("--admin-mimi-bottom", `${Number(pageConfig.mimiBottom) || 14}px`);
+  root.style.setProperty("--admin-mimi-avatar-size", `${Number(pageConfig.mimiAvatar) || gameConfigNumber("ui.mimiAvatarSize", 54)}px`);
+}
+
+function installDragonAdminPreviewBridge() {
+  if (window.__dragonAdminPreviewBound) return;
+  window.__dragonAdminPreviewBound = true;
+  window.addEventListener("message", (event) => {
+    let sourceUrl;
+    try { sourceUrl = new URL(event.origin); } catch { return; }
+    if (!["localhost", "127.0.0.1"].includes(sourceUrl.hostname)) return;
+    if (event.data?.type !== "dragon-admin-preview" || !event.data.config) return;
+    gameConfig = mergeGameConfig(JSON.parse(JSON.stringify(DEFAULT_GAME_CONFIG)), event.data.config);
+    applyGameConfigCssVariables();
+    applyGameConfigToRenderedPages();
+  });
+}
 const EXCLUSIVE_SKILL_COUNT = { C: 0, B: 0, A: 0, S: 1, SS: 2, SSS: 3 };
 const ADVENTURER_INDEX_URL = "assets/adventurers/index.json";
 const ADVENTURER_SHARED_ASSETS = {
@@ -1783,6 +2020,9 @@ class AudioManager {
 initialize();
 
 async function initialize() {
+  await loadGameConfig();
+  getWorldPages = getAdminWorldPages;
+  installDragonAdminPreviewBridge();
   await loadContentCatalog();
   adventurerDataState.status = "loading";
   await loadAdventurerTemplates();
@@ -2366,7 +2606,9 @@ function getDragonAvatarAsset(dragon) {
 }
 
 function getDragonStageScale(stage) {
-  return { baby: 0.6, youth: 0.8, adult: 1, evolution: 1.16 }[normalizeDragonStage(stage)] || 0.6;
+  const normalizedStage = normalizeDragonStage(stage);
+  const defaults = { baby: 0.88, youth: 0.94, adult: 1, evolution: 1.08 };
+  return gameConfigNumber(`sprites.dragons.stageScale.${normalizedStage}`, defaults[normalizedStage] || 0.88);
 }
 
 function finiteRestCoordinate(value) {
@@ -2791,7 +3033,7 @@ function createDefaultHatchSlots() {
       type: "time",
       slotType: "time",
       unlocked: index < 2,
-      unlockCostDiamonds: hatchSlotUnlockCosts[index] ?? 999,
+      unlockCostDiamonds: gameConfig?.economy?.incubatorUnlockPrices?.[index] ?? hatchSlotUnlockCosts[index] ?? 999,
       currentEggId: null,
       currentEgg: null,
       startTime: null,
@@ -4051,7 +4293,7 @@ function renderWorldExplorePage(index) {
               <div class="explore-card-content">
                 <h2>${escapeHtml(area.name)}</h2>
                 <p>${escapeHtml(area.description)}</p>
-                <span>消耗探險券 x${area.ticketCost}</span>
+                <span>消耗探險券 x${getConfiguredExploreTicketCost(area)}</span>
               </div>
               <button class="explore-start-btn" type="button" data-v2-action="start-explore" data-area-id="${area.id}">開始探險</button>
             </article>
@@ -4760,6 +5002,15 @@ function renderAdventurerImage(src, fallback, className, alt, extraAttributes = 
 }
 
 function renderAdventurerAnimatedImage(adventurer, action, className, alt) {
+  const template = getAdventurerTemplate(adventurer);
+  const display = template?.display || {};
+  const scale = className.includes("detail")
+    ? Number(display.portraitScale) || 1
+    : className.includes("map")
+      ? Number(display.mapScale) || 1
+      : Number(display.guildScale) || 1;
+  const anchorX = clamp(Number(display.anchorX ?? 0.5), 0, 1);
+  const anchorY = clamp(Number(display.anchorY ?? 1), 0, 1);
   const fallbacks = action.startsWith("skill-")
     ? [resolveAdventurerAsset(adventurer, "sprite", "attack"), resolveAdventurerAsset(adventurer, "sprite", "idle"), ADVENTURER_SHARED_ASSETS.sprite]
     : [resolveAdventurerAsset(adventurer, "sprite", "idle"), ADVENTURER_SHARED_ASSETS.sprite];
@@ -4768,7 +5019,7 @@ function renderAdventurerAnimatedImage(adventurer, action, className, alt) {
     fallbacks,
     className,
     alt,
-    `data-adventurer-animation="${escapeHtml(action)}" data-adventurer-id="${escapeHtml(adventurer.id)}"`
+    `data-adventurer-animation="${escapeHtml(action)}" data-adventurer-id="${escapeHtml(adventurer.id)}" style="--adventurer-instance-scale:${scale};--adventurer-anchor-x:${anchorX * 100}%;--adventurer-anchor-y:${anchorY * 100}%"`
   );
 }
 
@@ -4790,13 +5041,86 @@ function startAdventurerFrameAnimationLoop() {
   }, 80);
 }
 
-function rollAdventurerRarity() {
-  let roll = Math.random() * 100;
-  for (const entry of ADVENTURER_RARITY_RATES) {
-    roll -= entry.rate;
-    if (roll < 0) return entry.rarity;
+function weightedRandom(items, getWeight = (item) => item?.rate ?? item?.weight ?? 0) {
+  const weightedItems = (Array.isArray(items) ? items : [])
+    .map((item) => ({ item, weight: Math.max(0, Number(getWeight(item)) || 0) }))
+    .filter((entry) => entry.weight > 0);
+  const total = weightedItems.reduce((sum, entry) => sum + entry.weight, 0);
+  if (!total) return null;
+  let roll = Math.random() * total;
+  for (const entry of weightedItems) {
+    roll -= entry.weight;
+    if (roll < 0) return entry.item;
   }
-  return "C";
+  return weightedItems.at(-1)?.item || null;
+}
+
+function getConfiguredAdventurerRarityRates() {
+  const configured = gameConfig?.gacha?.adventurer?.rarities || {};
+  return ADVENTURER_RARITY_RATES.map((entry) => ({
+    rarity: entry.rarity,
+    rate: Math.max(0, Number(configured[entry.rarity]) || 0)
+  }));
+}
+
+function getConfiguredAdventurerElementRates() {
+  const configured = gameConfig?.gacha?.adventurer?.elements || {};
+  return ["fire", "water", "wood", "light", "dark"].map((element) => ({
+    element,
+    rate: Math.max(0, Number(configured[element]) || 0)
+  }));
+}
+
+function getAvailableAdventurerPool(rarity, element) {
+  return getAdventurerTemplatePool().filter((template) => (
+    (!rarity || template.rarity === rarity)
+    && (!element || template.element === element)
+    && !String(template.__dataPath || "").includes("/_shared/")
+    && !String(template.__dataPath || "").includes("/_legacy/")
+  ));
+}
+
+function rollAdventurerRarity(availableRarities = null) {
+  const allowed = availableRarities ? new Set(availableRarities) : null;
+  const rates = getConfiguredAdventurerRarityRates()
+    .filter((entry) => !allowed || allowed.has(entry.rarity));
+  return weightedRandom(rates)?.rarity || null;
+}
+
+function rollAdventurerElement(availableElements = null) {
+  const allowed = availableElements ? new Set(availableElements) : null;
+  const rates = getConfiguredAdventurerElementRates()
+    .filter((entry) => !allowed || allowed.has(entry.element));
+  return weightedRandom(rates)?.element || null;
+}
+
+function rollAdventurerTemplate() {
+  const templates = getAdventurerTemplatePool();
+  if (!templates.length) return null;
+
+  const availableRarities = [...new Set(templates.map((template) => template.rarity))];
+  let rarity = rollAdventurerRarity();
+  if (!rarity || !availableRarities.includes(rarity)) {
+    console.warn("[Adventurer gacha] Empty rarity pool; rerolling from available rarities.", rarity, availableRarities);
+    rarity = rollAdventurerRarity(availableRarities);
+  }
+  if (!rarity) return null;
+
+  const rarityPool = getAvailableAdventurerPool(rarity);
+  const availableElements = [...new Set(rarityPool.map((template) => template.element))];
+  let element = rollAdventurerElement();
+  if (!element || !availableElements.includes(element)) {
+    console.warn(`[Adventurer gacha] Empty ${rarity}/${element || "unknown"} pool; rerolling from available elements.`, availableElements);
+    element = rollAdventurerElement(availableElements);
+  }
+  if (!element) return null;
+
+  const candidates = getAvailableAdventurerPool(rarity, element);
+  if (!candidates.length) {
+    console.warn(`[Adventurer gacha] No valid templates in ${rarity}/${element}.`);
+    return null;
+  }
+  return candidates[Math.floor(Math.random() * candidates.length)] || null;
 }
 
 function createAdventurerInstance(template) {
@@ -5291,7 +5615,7 @@ function renderAdventurerGuildPageInner() {
   const total = (state.adventurers || []).length;
   const tickets = normalizedNonNegative(state.characterTickets, 0);
   const jobs = [...new Set(getAdventurerTemplatePool().map((item) => item.job))];
-  const summonCostText = tickets > 0 ? "角色券 x1" : `${ADVENTURER_SUMMON_DIAMOND_COST} 鑽石`;
+  const summonCostText = tickets > 0 ? "角色券 x1" : `${getAdventurerSummonDiamondCost()} 鑽石`;
   const bulk = getBulkManageState();
   const isManaging = bulk.type === "adventurer";
   const isDataLoading = adventurerDataState.status === "idle" || adventurerDataState.status === "loading";
@@ -5387,7 +5711,14 @@ function refreshAdventurerGuildPage(options = {}) {
 
 function canPayAdventurerSummon() {
   return normalizedNonNegative(state.characterTickets, 0) > 0
-    || normalizedNonNegative(state.diamonds, 0) >= ADVENTURER_SUMMON_DIAMOND_COST;
+    || normalizedNonNegative(state.diamonds, 0) >= getAdventurerSummonDiamondCost();
+}
+
+function getAdventurerSummonDiamondCost() {
+  return Math.max(0, Math.round(gameConfigNumber(
+    "economy.adventurerSummonDiamonds",
+    gameConfigNumber("gacha.adventurer.diamondCost", ADVENTURER_SUMMON_DIAMOND_COST)
+  )));
 }
 
 function consumeAdventurerSummonCost() {
@@ -5396,8 +5727,9 @@ function consumeAdventurerSummonCost() {
     state.characterTickets -= 1;
     return "ticket";
   }
-  if (normalizedNonNegative(state.diamonds, 0) >= ADVENTURER_SUMMON_DIAMOND_COST) {
-    state.diamonds -= ADVENTURER_SUMMON_DIAMOND_COST;
+  const diamondCost = getAdventurerSummonDiamondCost();
+  if (normalizedNonNegative(state.diamonds, 0) >= diamondCost) {
+    state.diamonds -= diamondCost;
     return "diamonds";
   }
   return null;
@@ -5425,12 +5757,14 @@ function summonAdventurer() {
     showToast("角色召喚券與鑽石都不足");
     return false;
   }
+  const template = rollAdventurerTemplate();
+  if (!template) {
+    showToast("目前沒有符合抽卡設定的冒險者角色池");
+    return false;
+  }
   const paidWith = consumeAdventurerSummonCost();
   if (!paidWith) return false;
 
-  const rarity = rollAdventurerRarity();
-  const candidates = templatePool.filter((item) => item.rarity === rarity);
-  const template = candidates[Math.floor(Math.random() * candidates.length)] || templatePool[0];
   const adventurer = createAdventurerInstance(template);
   state.adventurers.push(adventurer);
   currentAdventurerGachaResult = { adventurer, paidWith, claimed: false };
@@ -5549,11 +5883,30 @@ function renderAdventurerTeamSubpanel(adventurer) {
 }
 
 function getAdventurerUpgradeCost(adventurer) {
-  return 100 + positiveNumber(adventurer?.level, 1) * 80;
+  return Math.round(
+    gameConfigNumber("economy.upgrade.baseCost", 100)
+    + positiveNumber(adventurer?.level, 1) * gameConfigNumber("economy.upgrade.levelCost", 80)
+  );
 }
 
 function getAdventurerExpRequired(adventurer) {
-  return 100 + positiveNumber(adventurer?.level, 1) * 50;
+  return Math.round(
+    gameConfigNumber("economy.upgrade.baseExp", 100)
+    + positiveNumber(adventurer?.level, 1) * gameConfigNumber("economy.upgrade.levelExp", 50)
+  );
+}
+
+function getConfiguredAdventurerSellPrice(adventurer) {
+  const rarity = String(adventurer?.rarity || "C").toUpperCase();
+  return Math.max(0, Math.round(gameConfigNumber(`economy.adventurerSellPrices.${rarity}`, ADVENTURER_SELL_PRICES[rarity] || 100)));
+}
+
+function getConfiguredExploreTicketCost(area) {
+  return Math.max(0, Math.round(gameConfigNumber("economy.exploreTicketCost", Number(area?.ticketCost) || 1)));
+}
+
+function getConfiguredEquipmentShopRefreshMs() {
+  return Math.max(60_000, gameConfigNumber("economy.equipmentShopRefreshMinutes", 120) * 60_000);
 }
 
 function renderAdventurerUpgradeSubpanel(adventurer) {
@@ -5636,7 +5989,7 @@ function renderAdventurerEquipmentSubpanel(adventurer) {
 
 function renderAdventurerTradeSubpanel(adventurer) {
   const activeTab = state.ui.activeAdventurerTradeTab === "market" ? "market" : "sell";
-  const price = ADVENTURER_SELL_PRICES[adventurer.rarity] || 100;
+  const price = getConfiguredAdventurerSellPrice(adventurer);
   return `
     <div class="adventurer-trade-tabs">
       <button type="button" data-v2-action="select-adventurer-trade-tab" data-trade-tab="sell" class="${activeTab === "sell" ? "is-active" : ""}">賣出</button>
@@ -5949,6 +6302,7 @@ function generateEquipmentShopItem(slot) {
   const price = Math.round(
     (EQUIPMENT_BASE_PRICES[rarity] || EQUIPMENT_BASE_PRICES.A)
     * (EQUIPMENT_SLOT_PRICE_MULTIPLIERS[slot] || 1)
+    * gameConfigNumber("economy.equipmentPriceMultiplier", 1)
   );
   return {
     shopItemId: createId("shop"),
@@ -5960,7 +6314,7 @@ function generateEquipmentShopItem(slot) {
 
 function refreshEquipmentShopInventory(options = {}) {
   state.equipmentShop = {
-    refreshAt: Date.now() + EQUIPMENT_SHOP_REFRESH_MS,
+    refreshAt: Date.now() + getConfiguredEquipmentShopRefreshMs(),
     items: shuffledEquipmentSlots().map(generateEquipmentShopItem)
   };
   if (options.save !== false) saveGame();
@@ -6106,7 +6460,7 @@ function openAdventurerSellConfirm(adventurerId) {
     showToast("隊伍中的角色不能出售");
     return;
   }
-  const price = ADVENTURER_SELL_PRICES[adventurer.rarity] || 100;
+  const price = getConfiguredAdventurerSellPrice(adventurer);
   document.querySelector(".adventurer-sell-backdrop")?.remove();
   mountHomeV2Overlay(`
     <div class="adventurer-sell-backdrop" data-adventurer-backdrop="sell">
@@ -6143,7 +6497,7 @@ function confirmAdventurerSell(adventurerId) {
     showToast("隊伍中的角色不能出售");
     return;
   }
-  const price = ADVENTURER_SELL_PRICES[adventurer.rarity] || 100;
+  const price = getConfiguredAdventurerSellPrice(adventurer);
   EQUIPMENT_SLOTS.forEach((slot) => {
     const equipment = state.equipmentInventory.find((item) => item.id === adventurer.equipment?.[slot]);
     if (equipment) equipment.equippedBy = null;
@@ -8740,6 +9094,7 @@ function renderHomeV2() {
     <button id="navRightBtn" class="home-v2-nav-arrow is-right" type="button" data-v2-nav-arrow="1" aria-label="往右看功能">›</button>
     ${renderEggSelectionModal()}
   `;
+  applyGameConfigToRenderedPages();
 
   window.setTimeout(() => {
     const nextPager = document.querySelector("#worldPager");
@@ -10027,7 +10382,7 @@ function renderWorldExplorePage(index) {
               <div class="explore-card-content">
                 <h2>${escapeHtml(area.name)}</h2>
                 <p>${escapeHtml(area.description)}</p>
-                <span>消耗探險券 x${area.ticketCost}</span>
+                <span>消耗探險券 x${getConfiguredExploreTicketCost(area)}</span>
                 <button type="button" data-v2-action="start-explore" data-area-id="${area.id}">開始探險</button>
               </div>
             </article>
@@ -10101,7 +10456,7 @@ function feedRestDragon(dragonId) {
   closeRestDragonActionSheet();
   dragon.hunger = Math.min(100, normalizedNonNegative(dragon.hunger, 80) + 10);
   dragon.mood = Math.min(100, normalizedNonNegative(dragon.mood, 80) + 5);
-  dragon.exp = normalizedNonNegative(dragon.exp, 0) + 5;
+  dragon.exp = normalizedNonNegative(dragon.exp, 0) + gameConfigNumber("economy.feedExp", 5);
   setDragonTemporaryAction(dragon, "eat");
   showToast("已餵食，龍看起來更有精神了！");
 }
@@ -10110,7 +10465,7 @@ function trainRestDragon(dragonId) {
   const dragon = getDragonById(dragonId);
   if (!dragon) return;
   closeRestDragonActionSheet();
-  dragon.exp = normalizedNonNegative(dragon.exp, 0) + 20;
+  dragon.exp = normalizedNonNegative(dragon.exp, 0) + gameConfigNumber("economy.trainExp", 20);
   dragon.power = normalizedNonNegative(dragon.power, 10) + 5;
   dragon.hunger = Math.max(0, normalizedNonNegative(dragon.hunger, 80) - 10);
   dragon.mood = Math.max(0, normalizedNonNegative(dragon.mood, 80) - 5);
@@ -11809,6 +12164,16 @@ function toggleMissionChapter(chapterId) {
   refreshMissionPage();
 }
 
+function getConfiguredMissionReward(id, fallback = {}) {
+  const configured = gameConfig?.economy?.missionRewards?.[id];
+  return configured && typeof configured === "object" ? configured : fallback;
+}
+
+function getConfiguredBeginnerFinalReward() {
+  const configured = gameConfig?.economy?.beginnerRewards?.final;
+  return configured && typeof configured === "object" ? configured : BEGINNER_FINAL_REWARD;
+}
+
 function applyMissionReward(reward = {}) {
   if (!reward || typeof reward !== "object") return;
   state.coins = normalizedNonNegative(state.coins, 0) + normalizedNonNegative(reward.coins, 0);
@@ -11844,13 +12209,14 @@ function claimBeginnerMissionReward(id) {
     showToast("獎勵已領取");
     return;
   }
-  applyMissionReward(mission.reward);
+  const reward = getConfiguredMissionReward(id, mission.reward);
+  applyMissionReward(reward);
   step.claimed = true;
   completingMissionIds.add(id);
   saveGame();
   updateHomeV2HudResources();
   refreshMissionPage();
-  showToast(`已領取：${renderMissionRewardLabel(mission.reward)}`);
+  showToast(`已領取：${renderMissionRewardLabel(reward)}`);
   window.setTimeout(() => {
     completingMissionIds.delete(id);
     syncMissionChapterUiState(getBeginnerMissionState(), { save: false });
@@ -11873,7 +12239,7 @@ function claimBeginnerFinalReward() {
     showToast("總獎勵已領取");
     return;
   }
-  applyMissionReward(BEGINNER_FINAL_REWARD);
+  applyMissionReward(getConfiguredBeginnerFinalReward());
   beginner.finalClaimed = true;
   beginner.completed = true;
   saveGame();
@@ -11914,14 +12280,15 @@ function grantTutorialExploreTickets() {
   state.tutorial = normalizeTutorial(state.tutorial);
   if (state.tutorial.ticketsGranted) return;
   state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
-  state.inventory.ticketsExplore = normalizedNonNegative(state.inventory.ticketsExplore, 0) + 3;
+  const ticketGift = Math.max(0, Math.round(gameConfigNumber("economy.beginnerRewards.tutorialExploreTickets", 3)));
+  state.inventory.ticketsExplore = normalizedNonNegative(state.inventory.ticketsExplore, 0) + ticketGift;
   state.tutorial.ticketsGranted = true;
   state.tutorial.beginnerQuestStarted = true;
   state.beginnerQuestStarted = true;
   saveGame();
   updateHomeV2HudResources();
   refreshExplorePage();
-  showToast("Mimi 送你 3 張探險券！");
+  showToast(`Mimi 送你 ${ticketGift} 張探險券！`);
 }
 
 function maybeShowTutorialOverlay() {
@@ -12033,7 +12400,9 @@ function rollWeightedOption(options, valueKey) {
 }
 
 function rollExploreEggRarity() {
-  return rollWeightedOption(EGG_RARITY_RATES, "rarity") || "C";
+  const configured = gameConfig?.gacha?.egg?.rarities || {};
+  const rates = EGG_RARITY_RATES.map((entry) => ({ rarity: entry.rarity, rate: Number(configured[entry.rarity]) || 0 }));
+  return rollWeightedOption(rates, "rarity") || "C";
 }
 
 function rollExploreElement(area) {
@@ -12041,8 +12410,10 @@ function rollExploreElement(area) {
   const mainElement = typeof area === "object" && area?.mainElement ? area.mainElement : null;
   const r = Math.random();
 
-  if (r < 0.08) return "light";
-  if (r < 0.16) return "dark";
+  const lightRate = Math.max(0, Number(gameConfig?.gacha?.egg?.elements?.light) || 8) / 100;
+  const darkRate = Math.max(0, Number(gameConfig?.gacha?.egg?.elements?.dark) || 8) / 100;
+  if (r < lightRate) return "light";
+  if (r < lightRate + darkRate) return "dark";
 
   if (areaId === "volcano") return "fire";
   if (areaId === "ocean") return "water";
@@ -12065,7 +12436,7 @@ function getEggTypeForExploreResult(rarity, element) {
 
 function getHatchDurationForRarity(rarity) {
   const durations = { C: 60, B: 90, A: 120, S: 180, SS: 240, SSS: 300 };
-  return durations[rarity] || 60;
+  return Math.max(1, Math.round(gameConfigNumber("economy.defaultHatchSeconds", durations[rarity] || 60)));
 }
 
 function createExplorationEgg(area) {
@@ -12112,12 +12483,13 @@ function closeExploreReveal() {
 function beginExploreDraw(area) {
   state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
   const tickets = normalizedNonNegative(state.inventory.ticketsExplore, 0);
-  if (tickets < area.ticketCost) {
+  const ticketCost = getConfiguredExploreTicketCost(area);
+  if (tickets < ticketCost) {
     showToast("探險券不足");
     return false;
   }
 
-  state.inventory.ticketsExplore = tickets - area.ticketCost;
+  state.inventory.ticketsExplore = tickets - ticketCost;
   const egg = createExplorationEgg(area);
   syncPersistentAliases();
   saveGame();
@@ -12213,7 +12585,7 @@ function drawExploreAgain() {
 
   state.inventory = normalizeInventory(state.inventory, createNewState().inventory);
   const tickets = normalizedNonNegative(state.inventory.ticketsExplore, 0);
-  if (tickets < area.ticketCost) {
+  if (tickets < getConfiguredExploreTicketCost(area)) {
     showToast("探險券不足");
     closeExploreReveal();
     return;
@@ -12263,7 +12635,7 @@ function renderWorldExplorePage(index) {
               <div class="explore-card-content">
                 <h2>${escapeHtml(area.name)}</h2>
                 <p>${escapeHtml(area.description)}</p>
-                <span>消耗探險券 x${area.ticketCost}</span>
+                <span>消耗探險券 x${getConfiguredExploreTicketCost(area)}</span>
               </div>
               <button class="explore-start-btn" type="button" data-v2-action="start-explore" data-area-id="${area.id}">開始探險</button>
             </article>
@@ -12318,7 +12690,7 @@ function renderWorldQuestPage(index) {
             <div class="mission-row-progress"><i style="width:${percent}%"></i></div>
             <small>${current}/${target}</small>
           </div>
-          <div class="mission-reward">${renderMissionRewardLabel(mission.reward)}</div>
+          <div class="mission-reward">${renderMissionRewardLabel(getConfiguredMissionReward(mission.id, mission.reward))}</div>
           <button type="button" data-v2-action="claim-mission" data-mission-id="${mission.id}" ${!ready || claimed ? "disabled" : ""}>${claimed ? "已完成" : ready ? "領取" : "進行中"}</button>
         </article>
       `;
@@ -12365,7 +12737,7 @@ function renderWorldQuestPage(index) {
         <section class="quest-final-reward">
           <div>
             <b>完成新手任務可獲得</b>
-            <p>${renderMissionRewardLabel(BEGINNER_FINAL_REWARD)}</p>
+            <p>${renderMissionRewardLabel(getConfiguredBeginnerFinalReward())}</p>
           </div>
           <button type="button" data-v2-action="claim-final-mission" ${!allReady || beginner.finalClaimed ? "disabled" : ""}>${beginner.finalClaimed ? "已領取" : allReady ? "領取總獎勵" : "進行中"}</button>
         </section>
@@ -12409,6 +12781,7 @@ function goToWorldPage(index) {
     closeAdventurerDetail();
   }
   if (pageId) {
+    applyActivePageConfig(targetIndex);
     if (mimiPageIntroTimer) {
       clearTimeout(mimiPageIntroTimer);
       mimiPageIntroTimer = null;
@@ -12580,7 +12953,7 @@ function feedRestDragon(dragonId) {
   closeRestDragonActionSheet();
   dragon.hunger = Math.min(100, normalizedNonNegative(dragon.hunger, 80) + 10);
   dragon.mood = Math.min(100, normalizedNonNegative(dragon.mood, 80) + 5);
-  dragon.exp = normalizedNonNegative(dragon.exp, 0) + 5;
+  dragon.exp = normalizedNonNegative(dragon.exp, 0) + gameConfigNumber("economy.feedExp", 5);
   updateBeginnerMissionProgress("feedOnce", 1, { save: false, render: false });
   checkGrowBattleReadyMission({ save: false, render: false });
   setDragonTemporaryAction(dragon, "eat");
@@ -12592,7 +12965,7 @@ function trainRestDragon(dragonId) {
   const dragon = getDragonById(dragonId);
   if (!dragon) return;
   closeRestDragonActionSheet();
-  dragon.exp = normalizedNonNegative(dragon.exp, 0) + 20;
+  dragon.exp = normalizedNonNegative(dragon.exp, 0) + gameConfigNumber("economy.trainExp", 20);
   dragon.power = normalizedNonNegative(dragon.power, 10) + 5;
   dragon.hunger = Math.max(0, normalizedNonNegative(dragon.hunger, 80) - 10);
   dragon.mood = Math.max(0, normalizedNonNegative(dragon.mood, 80) - 5);

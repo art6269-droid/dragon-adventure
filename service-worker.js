@@ -1,4 +1,4 @@
-const CACHE_NAME = "dragon-adventure-v-adventurer-loader-fix-1";
+const CACHE_NAME = "dragon-adventure-v-admin-config-1";
 
 const CORE_ASSETS = [
   "./",
@@ -58,6 +58,8 @@ const CORE_ASSETS = [
   "./home-v2.css?v=56",
   "./home-v2.css?v=57",
   "./home-v2.css?v=58",
+  "./admin-runtime.css",
+  "./admin-runtime.css?v=1",
   "./app.js",
   "./app.js?v=14",
   "./app.js?v=15",
@@ -113,6 +115,7 @@ const CORE_ASSETS = [
   "./app.js?v=66",
   "./app.js?v=67",
   "./app.js?v=68",
+  "./app.js?v=69",
   "./home-v2-overrides.js",
   "./home-v2-overrides.js?v=1",
   "./home-v2-overrides.js?v=2",
@@ -128,6 +131,8 @@ const CORE_ASSETS = [
   "./assets/eggs/fire/C/0001/data.json",
   "./assets/eggs/fire/C/0001/icon.png",
   "./assets/adventurers/index.json",
+  "./config/game-config.json",
+  "./config/game-config.defaults.json",
   "./assets/adventurers/_shared/card-placeholder.png",
   "./assets/adventurers/_shared/portrait-placeholder.png",
   "./assets/adventurers/_shared/icon-placeholder.png",
@@ -373,6 +378,8 @@ self.addEventListener("fetch", (event) => {
     || requestUrl.pathname.endsWith("/service-worker.js")
     || requestUrl.pathname.endsWith("/content-catalog.json")
     || requestUrl.pathname.endsWith("/assets/adventurers/index.json")
+    || requestUrl.pathname.endsWith("/config/game-config.json")
+    || requestUrl.pathname.endsWith("/config/game-config.defaults.json")
     || (
       requestUrl.pathname.includes("/assets/adventurers/")
       && requestUrl.pathname.endsWith("/data.json")

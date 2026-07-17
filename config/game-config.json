@@ -1,0 +1,430 @@
+{
+  "version": 2,
+  "features": {
+    "home": true,
+    "hatchery": true,
+    "dragonHouse": true,
+    "equipmentShop": true,
+    "itemShop": true,
+    "explore": true,
+    "adventurerGuild": true,
+    "missions": true,
+    "adventure": false
+  },
+  "pages": {
+    "page01": {
+      "enabled": true,
+      "contentScale": 1,
+      "backgroundScale": 1,
+      "backgroundX": 50,
+      "backgroundY": 50,
+      "contentTop": 0,
+      "contentLeft": 0,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "paddingTop": 0,
+      "paddingBottom": 0,
+      "cardWidth": 100,
+      "cardHeight": 112,
+      "cardGap": 12,
+      "iconSize": 48,
+      "textScale": 1,
+      "panelOpacity": 0.92,
+      "panelRadius": 18,
+      "goldBorder": 2,
+      "navHeight": 92,
+      "scrollable": true,
+      "mimiWidth": 88,
+      "mimiBottom": 14,
+      "mimiAvatar": 54
+    },
+    "page02": {
+      "enabled": true,
+      "contentScale": 1,
+      "backgroundScale": 1,
+      "backgroundX": 50,
+      "backgroundY": 50,
+      "contentTop": 0,
+      "contentLeft": 0,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "paddingTop": 0,
+      "paddingBottom": 130,
+      "cardWidth": 100,
+      "cardHeight": 96,
+      "cardGap": 8,
+      "iconSize": 42,
+      "textScale": 1,
+      "panelOpacity": 0.92,
+      "panelRadius": 18,
+      "goldBorder": 2,
+      "navHeight": 92,
+      "scrollable": true,
+      "mimiWidth": 88,
+      "mimiBottom": 14,
+      "mimiAvatar": 54
+    },
+    "page03": {
+      "enabled": true,
+      "contentScale": 1,
+      "backgroundScale": 1,
+      "backgroundX": 50,
+      "backgroundY": 50,
+      "contentTop": 0,
+      "contentLeft": 0,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "paddingTop": 0,
+      "paddingBottom": 100,
+      "cardWidth": 46,
+      "cardHeight": 140,
+      "cardGap": 12,
+      "iconSize": 48,
+      "textScale": 1,
+      "panelOpacity": 0.92,
+      "panelRadius": 18,
+      "goldBorder": 2,
+      "navHeight": 92,
+      "scrollable": true,
+      "mimiWidth": 88,
+      "mimiBottom": 14,
+      "mimiAvatar": 54
+    },
+    "page04": {
+      "enabled": true,
+      "contentScale": 1,
+      "backgroundScale": 1,
+      "backgroundX": 50,
+      "backgroundY": 50,
+      "contentTop": 0,
+      "contentLeft": 0,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "paddingTop": 0,
+      "paddingBottom": 130,
+      "cardWidth": 48,
+      "cardHeight": 210,
+      "cardGap": 10,
+      "iconSize": 64,
+      "textScale": 1,
+      "panelOpacity": 0.92,
+      "panelRadius": 18,
+      "goldBorder": 2,
+      "navHeight": 92,
+      "scrollable": true,
+      "mimiWidth": 88,
+      "mimiBottom": 14,
+      "mimiAvatar": 54
+    },
+    "page05": {
+      "enabled": true,
+      "contentScale": 1,
+      "backgroundScale": 1,
+      "backgroundX": 50,
+      "backgroundY": 50,
+      "contentTop": 0,
+      "contentLeft": 0,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "paddingTop": 0,
+      "paddingBottom": 130,
+      "cardWidth": 100,
+      "cardHeight": 96,
+      "cardGap": 10,
+      "iconSize": 48,
+      "textScale": 1,
+      "panelOpacity": 0.92,
+      "panelRadius": 18,
+      "goldBorder": 2,
+      "navHeight": 92,
+      "scrollable": true,
+      "mimiWidth": 88,
+      "mimiBottom": 14,
+      "mimiAvatar": 54
+    },
+    "page06": {
+      "enabled": true,
+      "contentScale": 1,
+      "backgroundScale": 1,
+      "backgroundX": 50,
+      "backgroundY": 50,
+      "contentTop": 0,
+      "contentLeft": 0,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "paddingTop": 0,
+      "paddingBottom": 130,
+      "cardWidth": 88,
+      "cardHeight": 112,
+      "cardGap": 12,
+      "iconSize": 48,
+      "textScale": 1,
+      "panelOpacity": 0.78,
+      "panelRadius": 18,
+      "goldBorder": 2,
+      "navHeight": 92,
+      "scrollable": true,
+      "mimiWidth": 88,
+      "mimiBottom": 14,
+      "mimiAvatar": 54
+    },
+    "page07": {
+      "enabled": true,
+      "contentScale": 1,
+      "backgroundScale": 1,
+      "backgroundX": 50,
+      "backgroundY": 50,
+      "contentTop": 0,
+      "contentLeft": 0,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "paddingTop": 0,
+      "paddingBottom": 140,
+      "cardWidth": 31,
+      "cardHeight": 150,
+      "cardGap": 8,
+      "iconSize": 54,
+      "textScale": 1,
+      "panelOpacity": 0.92,
+      "panelRadius": 18,
+      "goldBorder": 2,
+      "navHeight": 92,
+      "scrollable": true,
+      "mimiWidth": 88,
+      "mimiBottom": 14,
+      "mimiAvatar": 54
+    },
+    "page08": {
+      "enabled": true,
+      "contentScale": 1,
+      "backgroundScale": 1,
+      "backgroundX": 50,
+      "backgroundY": 50,
+      "contentTop": 0,
+      "contentLeft": 0,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "paddingTop": 0,
+      "paddingBottom": 130,
+      "cardWidth": 100,
+      "cardHeight": 112,
+      "cardGap": 8,
+      "iconSize": 48,
+      "textScale": 1,
+      "panelOpacity": 0.92,
+      "panelRadius": 18,
+      "goldBorder": 2,
+      "navHeight": 92,
+      "scrollable": true,
+      "mimiWidth": 88,
+      "mimiBottom": 14,
+      "mimiAvatar": 54
+    },
+    "page09": {
+      "enabled": true,
+      "contentScale": 1,
+      "backgroundScale": 1,
+      "backgroundX": 50,
+      "backgroundY": 50,
+      "contentTop": 0,
+      "contentLeft": 0,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "paddingTop": 0,
+      "paddingBottom": 130,
+      "cardWidth": 100,
+      "cardHeight": 112,
+      "cardGap": 10,
+      "iconSize": 48,
+      "textScale": 1,
+      "panelOpacity": 0.92,
+      "panelRadius": 18,
+      "goldBorder": 2,
+      "navHeight": 92,
+      "scrollable": true,
+      "mimiWidth": 88,
+      "mimiBottom": 14,
+      "mimiAvatar": 54
+    }
+  },
+  "gacha": {
+    "adventurer": {
+      "rarities": {
+        "C": 45,
+        "B": 28,
+        "A": 15,
+        "S": 7,
+        "SS": 4,
+        "SSS": 1
+      },
+      "elements": {
+        "fire": 20,
+        "water": 20,
+        "wood": 20,
+        "light": 20,
+        "dark": 20
+      },
+      "diamondCost": 30
+    },
+    "egg": {
+      "rarities": {
+        "C": 45,
+        "B": 28,
+        "A": 15,
+        "S": 7,
+        "SS": 4,
+        "SSS": 1
+      },
+      "elements": {
+        "fire": 28,
+        "water": 28,
+        "wood": 28,
+        "light": 8,
+        "dark": 8
+      }
+    }
+  },
+  "sprites": {
+    "adventurers": {
+      "guildScale": 1,
+      "mapScale": 1,
+      "portraitScale": 1,
+      "anchorX": 0.5,
+      "anchorY": 1
+    },
+    "dragons": {
+      "stageScale": {
+        "baby": 0.88,
+        "youth": 0.94,
+        "adult": 1,
+        "evolution": 1.08
+      },
+      "mapScale": 1,
+      "restIslandScale": 1,
+      "hatchIslandScale": 1,
+      "detailScale": 1,
+      "wrapperWidth": 68,
+      "wrapperHeight": 68,
+      "anchorX": 0.5,
+      "anchorY": 1
+    }
+  },
+  "ui": {
+    "topHudHeight": 72,
+    "coinWidth": 132,
+    "diamondWidth": 132,
+    "settingsSize": 48,
+    "bottomNavHeight": 92,
+    "bottomNavIconSize": 42,
+    "bottomNavGap": 8,
+    "cardRadius": 18,
+    "goldBorderWidth": 2,
+    "buttonHeight": 44,
+    "buttonFontSize": 15,
+    "mimiAvatarSize": 54,
+    "mimiDialogueHeight": 72,
+    "modalWidth": 390,
+    "modalTop": 82,
+    "overlayOpacity": 0.72,
+    "toastBottom": 116,
+    "scrollbarMode": "hidden"
+  },
+  "economy": {
+    "adventurerSummonDiamonds": 30,
+    "exploreTicketCost": 1,
+    "defaultHatchSeconds": 90,
+    "incubatorUnlockPrices": [
+      0,
+      0,
+      100,
+      200,
+      300,
+      500
+    ],
+    "equipmentShopRefreshMinutes": 120,
+    "equipmentPriceMultiplier": 1,
+    "feedExp": 5,
+    "trainExp": 20,
+    "adventurerSellPrices": {
+      "C": 100,
+      "B": 200,
+      "A": 500,
+      "S": 1200,
+      "SS": 3000,
+      "SSS": 8000
+    },
+    "dragonSellPrices": {
+      "C": 50,
+      "B": 100,
+      "A": 200,
+      "S": 400,
+      "SS": 800,
+      "SSS": 1500
+    },
+    "upgrade": {
+      "baseCost": 100,
+      "levelCost": 80,
+      "baseExp": 100,
+      "levelExp": 50
+    },
+    "beginnerRewards": {
+      "tutorialExploreTickets": 3,
+      "final": {
+        "coins": 1000,
+        "diamonds": 50,
+        "ticketsExplore": 5,
+        "items": {
+          "mysteryBag": 1
+        }
+      }
+    },
+    "missionRewards": {
+      "getEgg": {
+        "coins": 200
+      },
+      "goHatchIsland": {
+        "diamonds": 10
+      },
+      "putInIncubator": {
+        "ticketsExplore": 1
+      },
+      "finishHatch": {
+        "coins": 300
+      },
+      "feedOnce": {
+        "diamonds": 10
+      },
+      "trainOnce": {
+        "ticketsExplore": 1
+      },
+      "growBattleReady": {
+        "items": {
+          "mysteryBag": 1
+        }
+      }
+    }
+  },
+  "adventure": {
+    "enabled": false,
+    "chapterCount": 1,
+    "stagesPerChapter": 10,
+    "enemyLevelMultiplier": 1,
+    "recommendedPower": 100,
+    "staminaCost": 5,
+    "coinDrop": 50,
+    "expDrop": 30,
+    "equipmentDropRate": 10,
+    "equipmentRarityRates": {
+      "C": 45,
+      "B": 28,
+      "A": 15,
+      "S": 7,
+      "SS": 4,
+      "SSS": 1
+    },
+    "bossRate": 10,
+    "autoBattle": false,
+    "battleSpeed": 1,
+    "teamSize": 4
+  }
+}

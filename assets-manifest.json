@@ -1,4 +1,10 @@
 {
+  "adminConfig": {
+    "path": "config/game-config.json",
+    "defaultsPath": "config/game-config.defaults.json",
+    "purpose": "Data-driven game, page, gacha, sprite, UI, economy, and future adventure settings edited by Dragon Admin Studio.",
+    "localTool": "tools/dragon-admin/"
+  },
   "backgrounds": {
     "login": {
       "path": "assets/backgrounds/bg-login-dragon-adventure.png",

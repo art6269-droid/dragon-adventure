@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dragon Admin Studio</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="admin-shell">
+    <header class="admin-topbar">
+      <div>
+        <h1>Dragon Admin Studio</h1>
+        <p>《龍的冒險》本機管理程式</p>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="icon-button" data-action="undo" title="復原">↶</button>
+        <button type="button" class="icon-button" data-action="redo" title="重做">↷</button>
+        <button type="button" data-action="reload-preview">重新載入預覽</button>
+        <button type="button" class="primary" data-action="save-config">儲存設定</button>
+      </div>
+    </header>
+
+    <aside class="admin-sidebar" aria-label="後台功能">
+      <button class="is-active" data-tab="dashboard">儀表板</button>
+      <button data-tab="pages">頁面管理</button>
+      <button data-tab="gacha">抽卡管理</button>
+      <button data-tab="adventurers">冒險者資料庫</button>
+      <button data-tab="sprites">素材尺寸</button>
+      <button data-tab="ui">UI 元件</button>
+      <button data-tab="economy">遊戲數值</button>
+      <button data-tab="adventure">第九頁冒險</button>
+      <button data-tab="unclassified">未分類素材</button>
+      <button data-tab="backups">匯入與備份</button>
+    </aside>
+
+    <main id="adminContent" class="admin-content" aria-live="polite">
+      <div class="loading-state">正在讀取遊戲資料…</div>
+    </main>
+
+    <aside class="preview-pane">
+      <header>
+        <div>
+          <b>手機即時預覽</b>
+          <span id="previewSizeLabel">390 × 844</span>
+        </div>
+        <select id="previewPreset" aria-label="預覽尺寸">
+          <option value="375x812">375 × 812</option>
+          <option value="390x844" selected>390 × 844</option>
+          <option value="430x932">430 × 932</option>
+          <option value="custom">自訂尺寸</option>
+        </select>
+      </header>
+      <div class="preview-custom" hidden>
+        <label>寬 <input id="previewWidth" type="number" min="280" max="900" value="390"></label>
+        <label>高 <input id="previewHeight" type="number" min="480" max="1400" value="844"></label>
+      </div>
+      <div class="preview-stage">
+        <iframe id="gamePreview" title="《龍的冒險》即時預覽" src="/game/index.html?dragonAdminPreview=1"></iframe>
+      </div>
+    </aside>
+  </div>
+  <div id="adminToast" class="admin-toast" role="status"></div>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

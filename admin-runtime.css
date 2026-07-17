@@ -1,0 +1,66 @@
+/* Loaded after the game styles so Dragon Admin Studio variables stay authoritative. */
+.home-v2-hud { min-height: var(--admin-top-hud-height, 72px) !important; }
+.home-v2-hud .home-v2-resource:nth-child(1) { width: min(var(--admin-coin-width, 132px), 38vw) !important; }
+.home-v2-hud .home-v2-resource:nth-child(2) { width: min(var(--admin-diamond-width, 132px), 38vw) !important; }
+.home-v2-settings { min-width: var(--admin-settings-size, 48px) !important; min-height: var(--admin-settings-size, 48px) !important; }
+#bottomNavViewport { height: var(--bottom-nav-height, 92px) !important; }
+#bottomNavTrack { gap: var(--admin-nav-gap, 8px) !important; }
+#bottomNavViewport .navItemIcon { width: var(--admin-nav-icon-size, 42px) !important; height: var(--admin-nav-icon-size, 42px) !important; }
+#bottomNavViewport .nav-icon-art { width: calc(var(--admin-nav-icon-size, 42px) * .78) !important; height: calc(var(--admin-nav-icon-size, 42px) * .78) !important; }
+
+.worldPage[data-admin-page] {
+  padding-top: calc(18px + var(--page-padding-top, 0px)) !important;
+  padding-bottom: calc(18px + var(--page-padding-bottom, 0px)) !important;
+  font-size: calc(1em * var(--page-text-scale, 1));
+  translate: var(--page-content-left, 0px) var(--page-content-top, 0px);
+  scale: var(--page-content-scale, 1);
+  transform-origin: top center;
+}
+.worldPage[data-admin-page]::before { background-position: var(--page-background-x, 50%) var(--page-background-y, 50%); background-size: calc(100% * var(--page-background-scale, 1)); }
+.worldPage[data-admin-scrollable="true"] { overflow-y: auto !important; scrollbar-width: none; }
+.worldPage[data-admin-scrollable="true"]::-webkit-scrollbar { width: 0; height: 0; display: none; }
+.worldPage[data-admin-scrollable="false"] { overflow-y: hidden !important; }
+.worldPage[data-admin-page] :is(.world-card, .explore-card, .hatch-slot-card, .dragon-house-card, .mission-chapter, .equipment-shop-card) {
+  border-radius: var(--page-panel-radius, var(--admin-card-radius, 18px)) !important;
+  border-width: var(--page-gold-border, var(--admin-gold-border, 2px)) !important;
+  min-height: var(--page-card-height, auto);
+  opacity: var(--page-panel-opacity, 1);
+}
+.worldPage[data-admin-page] :is(.world-card-grid, .explore-grid, .hatch-machines-scroll, .mission-list, .equipment-shop-grid) { gap: var(--page-card-gap, 12px) !important; }
+.worldPage[data-admin-page] > :is(.world-card-grid, .explore-grid, .hatch-machines-section, .dragon-house-content, .mission-scroll, .equipment-shop-content) {
+  width: min(var(--page-content-width, 100%), 100%);
+  max-height: var(--page-content-height, none);
+  margin-inline: auto;
+}
+.worldPage[data-admin-page] :is(.explore-card, .world-card, .mission-item, .item-shop-card) {
+  max-width: var(--page-card-width, 100%);
+  margin-inline: auto;
+}
+.worldPage[data-admin-page] :is(.world-card-icon, .explore-card-icon) { width: var(--page-icon-size, 48px) !important; height: var(--page-icon-size, 48px) !important; }
+
+button:not(.navItem):not(.homeDot) { min-height: var(--admin-button-height, 44px); font-size: var(--admin-button-font-size, 15px); }
+#mimiDialogue.mimi-dialogue {
+  width: min(var(--admin-mimi-width, 88vw), 420px) !important;
+  min-height: var(--admin-mimi-dialogue-height, 72px) !important;
+  bottom: calc(var(--bottom-nav-height, 92px) + var(--admin-mimi-bottom, 14px) + env(safe-area-inset-bottom)) !important;
+}
+#mimiDialogue .mimi-dialogue-avatar { width: var(--admin-mimi-avatar-size, 54px) !important; height: var(--admin-mimi-avatar-size, 54px) !important; }
+.adventurer-card-sprite img, .adventurer-pixel {
+  transform: scale(var(--adventurer-instance-scale, 1));
+  scale: var(--admin-adventurer-guild-scale, 1);
+  transform-origin: var(--adventurer-anchor-x, 50%) var(--adventurer-anchor-y, 100%);
+}
+.adventurer-detail-portrait img, .adventurer-detail-card img, .adventurer-detail-pixel {
+  transform: scale(var(--adventurer-instance-scale, 1));
+  scale: var(--admin-adventurer-portrait-scale, 1);
+  transform-origin: var(--adventurer-anchor-x, 50%) var(--adventurer-anchor-y, 50%);
+}
+.home-v2-dragon { width: var(--admin-dragon-wrapper-width, 68px); height: var(--admin-dragon-wrapper-height, 68px); }
+.home-v2-overlay > :is(section, article, div[role="dialog"]), .adventurer-detail-panel, .dragon-house-detail-modal { max-width: min(var(--admin-modal-width, 390px), calc(100% - 24px)) !important; }
+.adventurer-detail-backdrop {
+  padding-top: calc(var(--admin-modal-top, 82px) + env(safe-area-inset-top)) !important;
+  background: rgba(3, 8, 24, var(--admin-overlay-opacity, .72)) !important;
+}
+.toast, #toast { bottom: var(--admin-toast-bottom, 116px) !important; }
+html[data-admin-scrollbar="thin"] * { scrollbar-width: thin; scrollbar-color: rgba(233, 197, 107, .8) rgba(7, 20, 48, .35); }
+html[data-admin-scrollbar="hidden"] *::-webkit-scrollbar { width: 0; height: 0; }

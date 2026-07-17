@@ -1,0 +1,12 @@
+{
+  "name": "dragon-admin-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "admin": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
