@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "admin": "node server.js"
+    "admin": "node server.js",
+    "test:evolution": "node evolution-core.test.mjs"
   },
   "dependencies": {
     "express": "^4.21.2"

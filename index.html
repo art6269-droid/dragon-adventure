@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="style.css?v=23">
   <link rel="stylesheet" href="home-v2.css?v=58">
   <link rel="stylesheet" href="admin-runtime.css?v=1">
+  <link rel="stylesheet" href="mobile-shell.css?v=1">
 </head>
 <body>
   <div class="world-scene" aria-hidden="true">
@@ -148,11 +149,7 @@
       <div class="quest-tracker" id="questTracker"></div>
     </aside>
 
-    <section class="home-v2-root" id="homeV2Root" aria-label="龍島首頁 V2" hidden></section>
-    <div id="mimiDialogue" class="mimi-dialogue" aria-live="polite" aria-hidden="true">
-      <img class="mimi-dialogue-avatar" src="assets/characters/mimi-head.png" alt="">
-      <div class="mimi-dialogue-text"></div>
-    </div>
+    <section class="home-v2-root game-app" id="homeV2Root" aria-label="龍島首頁 V2" hidden></section>
 
     <main class="game-screen" id="sceneRoot">
       <section class="tab-panel home-panel is-active" id="tab-home">
@@ -449,7 +446,8 @@
     </div>
   </div>
 
-  <script src="app.js?v=69"></script>
+  <script src="dragon-evolution-core.js?v=1"></script>
+  <script src="app.js?v=70"></script>
   <script src="home-v2-overrides.js?v=2"></script>
 </body>
 </html>

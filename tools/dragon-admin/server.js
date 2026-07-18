@@ -10,6 +10,9 @@ const ADVENTURER_ROOT = path.join(PROJECT_ROOT, "assets", "adventurers");
 const INDEX_FILE = path.join(ADVENTURER_ROOT, "index.json");
 const CONFIG_FILE = path.join(PROJECT_ROOT, "config", "game-config.json");
 const DEFAULT_CONFIG_FILE = path.join(PROJECT_ROOT, "config", "game-config.defaults.json");
+const DRAGON_EVOLUTION_FILE = path.join(PROJECT_ROOT, "config", "dragon-evolution.json");
+const DRAGON_MUTATION_FILE = path.join(PROJECT_ROOT, "config", "dragon-mutation.json");
+const DRAGON_SKILLS_FILE = path.join(PROJECT_ROOT, "config", "dragon-skills.json");
 const BACKUP_ROOT = path.join(PROJECT_ROOT, "backups", "dragon-admin");
 const PORT = 4173;
 const RARITIES = ["C", "B", "A", "S", "SS", "SSS"];
@@ -17,6 +20,10 @@ const RARITY_FOLDERS = RARITIES.map((value) => value.toLowerCase());
 const ELEMENTS = ["fire", "water", "wood", "light", "dark"];
 const EXPECTED_SKILLS = { C: 0, B: 0, A: 0, S: 1, SS: 2, SSS: 3 };
 const IMAGE_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif"]);
+
+await import(new URL("../../dragon-evolution-core.js", import.meta.url));
+const EvolutionCore = globalThis.DragonEvolutionCore;
+if (!EvolutionCore) throw new Error("Dragon evolution core failed to load");
 
 const app = express();
 app.disable("x-powered-by");
@@ -352,13 +359,38 @@ function simulateGacha(config, characters, draws) {
   };
 }
 
+async function readEvolutionBundle() {
+  const [evolution, mutation, skills] = await Promise.all([
+    readJson(DRAGON_EVOLUTION_FILE),
+    readJson(DRAGON_MUTATION_FILE),
+    readJson(DRAGON_SKILLS_FILE)
+  ]);
+  return {
+    evolution,
+    mutation,
+    skills,
+    validation: EvolutionCore.validateEvolutionGraph(evolution, mutation, skills)
+  };
+}
+
+function validateEvolutionBundle(bundle) {
+  if (!bundle?.evolution || !bundle?.mutation || !bundle?.skills) throw new Error("進化、突變與技能資料不可缺少");
+  const validation = EvolutionCore.validateEvolutionGraph(bundle.evolution, bundle.mutation, bundle.skills);
+  if (!validation.valid) {
+    const messages = validation.issues.filter((issue) => issue.level === "error").map((issue) => issue.message).join("；");
+    throw new Error(`進化資料驗證失敗：${messages}`);
+  }
+  return validation;
+}
+
 async function dashboardData() {
-  const [config, defaults, scan, health, unclassified] = await Promise.all([
+  const [config, defaults, scan, health, unclassified, evolution] = await Promise.all([
     readJson(CONFIG_FILE),
     readJson(DEFAULT_CONFIG_FILE).catch(() => readJson(CONFIG_FILE)),
     scanAdventurers(),
     runHealthCheck(),
-    listUnclassifiedFiles()
+    listUnclassifiedFiles(),
+    readEvolutionBundle()
   ]);
   const stats = await fs.stat(CONFIG_FILE);
   return {
@@ -368,6 +400,7 @@ async function dashboardData() {
     matrix: scan.matrix,
     characters: scan.characters.map(publicCharacter),
     unclassified,
+    evolution,
     summary: {
       version: config.version,
       totalCharacters: scan.characters.filter((item) => item.template).length,
@@ -410,6 +443,47 @@ app.put("/api/config", localWriteOnly, async (req, res, next) => {
     const nextConfig = { ...req.body, version: Math.max(Number(current.version) || 0, Number(req.body.version) || 0) + 1 };
     const backup = await writeJsonWithBackup(CONFIG_FILE, nextConfig, "game-config");
     res.json({ ok: true, config: nextConfig, backup, message: "設定已儲存，請重新整理遊戲測試" });
+  } catch (error) { next(error); }
+});
+
+app.get("/api/evolution", async (_req, res, next) => {
+  try { res.json(await readEvolutionBundle()); } catch (error) { next(error); }
+});
+
+app.post("/api/evolution/validate", async (req, res, next) => {
+  try {
+    const bundle = req.body?.evolution ? req.body : await readEvolutionBundle();
+    res.json(EvolutionCore.validateEvolutionGraph(bundle.evolution, bundle.mutation, bundle.skills));
+  } catch (error) { next(error); }
+});
+
+app.post("/api/evolution/simulate", async (req, res, next) => {
+  try {
+    const bundle = req.body?.bundle?.evolution ? req.body.bundle : await readEvolutionBundle();
+    const validation = EvolutionCore.validateEvolutionGraph(bundle.evolution, bundle.mutation, bundle.skills);
+    if (!validation.valid) throw new Error("進化圖含有錯誤，修正後才能模擬");
+    const options = {
+      ...(req.body?.options || {}),
+      runs: Math.min(100000, Math.max(1, Math.round(Number(req.body?.options?.runs) || 1000)))
+    };
+    res.json(EvolutionCore.simulateEvolution(bundle.evolution, bundle.mutation, bundle.skills, options));
+  } catch (error) { next(error); }
+});
+
+app.put("/api/evolution", localWriteOnly, async (req, res, next) => {
+  try {
+    const validation = validateEvolutionBundle(req.body);
+    const backup = await createBackup("dragon-evolution", [DRAGON_EVOLUTION_FILE, DRAGON_MUTATION_FILE, DRAGON_SKILLS_FILE]);
+    const current = await readEvolutionBundle();
+    const evolution = { ...req.body.evolution, version: Math.max(Number(current.evolution.version) || 0, Number(req.body.evolution.version) || 0) + 1 };
+    const mutation = { ...req.body.mutation, version: Math.max(Number(current.mutation.version) || 0, Number(req.body.mutation.version) || 0) + 1 };
+    const skills = { ...req.body.skills, version: Math.max(Number(current.skills.version) || 0, Number(req.body.skills.version) || 0) + 1 };
+    await Promise.all([
+      writeJson(DRAGON_EVOLUTION_FILE, evolution),
+      writeJson(DRAGON_MUTATION_FILE, mutation),
+      writeJson(DRAGON_SKILLS_FILE, skills)
+    ]);
+    res.json({ ok: true, evolution, mutation, skills, validation, backup, message: "進化與突變設定已儲存" });
   } catch (error) { next(error); }
 });
 

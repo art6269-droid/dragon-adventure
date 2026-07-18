@@ -1280,6 +1280,21 @@ let adventurerDataState = {
   failedEntries: []
 };
 const CONTENT_CATALOG_URL = "assets/data/content-catalog.json";
+const DRAGON_EVOLUTION_CONFIG_URL = "config/dragon-evolution.json";
+const DRAGON_MUTATION_CONFIG_URL = "config/dragon-mutation.json";
+const DRAGON_SKILLS_CONFIG_URL = "config/dragon-skills.json";
+let dragonEvolutionData = { version: 1, nodes: [], entryNodeIds: [], settings: {} };
+let dragonMutationData = {
+  version: 1,
+  baseChanceByRarity: { C: 8, B: 6, A: 4, S: 3, SS: 2, SSS: 1 },
+  stageMultiplier: { youth: 0.75, adult: 1, evolved: 1.35 },
+  resonanceGainPerFailure: 0.5,
+  resonanceCap: 5,
+  resultWeights: {},
+  devour: { inheritedSlots: { SS: 1, SSS: 2 }, successRate: 100, holdToConfirmMs: 1000 }
+};
+let dragonSkillsData = { version: 1, skills: [], finalAwakeningPools: { byCareGrade: {}, byElement: {} } };
+let dragonEvolutionDataState = { status: "idle", error: null, validation: null };
 const contentCatalog = {
   loaded: false,
   dragons: [],
@@ -1301,6 +1316,62 @@ async function loadContentCatalog() {
   } catch (error) {
     console.warn("內容目錄載入失敗，改用內建相容資料。", error);
   }
+}
+
+async function loadDragonEvolutionConfigs() {
+  dragonEvolutionDataState = { status: "loading", error: null, validation: null };
+  const urls = [DRAGON_EVOLUTION_CONFIG_URL, DRAGON_MUTATION_CONFIG_URL, DRAGON_SKILLS_CONFIG_URL];
+  try {
+    const results = await Promise.all(urls.map(async (path) => {
+      const url = new URL(path, document.baseURI || window.location.href);
+      const response = await fetch(url.href, { cache: "no-store" });
+      if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
+      return response.json();
+    }));
+    [dragonEvolutionData, dragonMutationData, dragonSkillsData] = results;
+    const core = globalThis.DragonEvolutionCore;
+    if (!core) throw new Error("進化演算法核心未載入");
+    const validation = core.validateEvolutionGraph(dragonEvolutionData, dragonMutationData, dragonSkillsData);
+    dragonEvolutionDataState = {
+      status: validation.valid ? "ready" : "error",
+      error: validation.valid ? null : "進化圖含有無效路線",
+      validation
+    };
+    if (!validation.valid) console.warn("[Dragon evolution] 進化圖驗證失敗", validation.issues);
+    else if (validation.issues.length) console.warn("[Dragon evolution] 進化圖警告", validation.issues);
+  } catch (error) {
+    dragonEvolutionDataState = { status: "error", error: error?.message || "進化資料載入失敗", validation: null };
+    console.error("[Dragon evolution] 資料載入失敗，既有龍功能仍可使用", error);
+  }
+  return dragonEvolutionDataState;
+}
+
+function getEvolutionNode(nodeId) {
+  return globalThis.DragonEvolutionCore?.getEvolutionNode(dragonEvolutionData, nodeId) || null;
+}
+
+function getEligibleEvolutionRoutes(dragon) {
+  return globalThis.DragonEvolutionCore?.getEligibleEvolutionRoutes(dragonEvolutionData, dragon, {
+    lineageResearch: state?.dragonDex?.lineageResearch || {},
+    researchBonusPerPoint: dragonEvolutionData.settings?.researchBonusPerPoint,
+    researchBonusCap: dragonEvolutionData.settings?.researchBonusCap
+  }) || [];
+}
+
+function scoreEvolutionRoute(dragon, route) {
+  return globalThis.DragonEvolutionCore?.scoreEvolutionRoute(dragonEvolutionData, dragon, route, {
+    lineageResearch: state?.dragonDex?.lineageResearch || {},
+    researchBonusPerPoint: dragonEvolutionData.settings?.researchBonusPerPoint,
+    researchBonusCap: dragonEvolutionData.settings?.researchBonusCap
+  }) || 0;
+}
+
+function selectNormalEvolutionTarget(dragon, rng = Math.random) {
+  return globalThis.DragonEvolutionCore?.selectNormalEvolutionTarget(dragonEvolutionData, dragon, {
+    lineageResearch: state?.dragonDex?.lineageResearch || {},
+    researchBonusPerPoint: dragonEvolutionData.settings?.researchBonusPerPoint,
+    researchBonusCap: dragonEvolutionData.settings?.researchBonusCap
+  }, rng) || null;
 }
 
 function resolveGameUrl(path, baseUrl = document.baseURI || window.location.href) {
@@ -2024,6 +2095,7 @@ async function initialize() {
   getWorldPages = getAdminWorldPages;
   installDragonAdminPreviewBridge();
   await loadContentCatalog();
+  await loadDragonEvolutionConfigs();
   adventurerDataState.status = "loading";
   await loadAdventurerTemplates();
   ensureValidState();
@@ -2032,6 +2104,7 @@ async function initialize() {
   audioManager.switchMusic("start");
   renderStaticAssets();
   attachEvents();
+  installDragonDevourHoldHandlers();
   attachAudioUnlockEvents();
   registerServiceWorker();
   render();
@@ -2284,6 +2357,12 @@ function createNewState() {
     equipmentShop: { refreshAt: 0, items: [] },
     adventurerTeams: createDefaultAdventurerTeams(),
     marketListings: [],
+    dragonDex: {
+      discoveredNodes: {},
+      discoveredRoutes: {},
+      lineageResearch: {},
+      devourDonors: []
+    },
     characterTickets: 0,
     soldDragonIds: [],
     dragonHouse: normalizeDragonHouse(),
@@ -2299,6 +2378,9 @@ function createNewState() {
       activeAdventurerEquipmentSlot: "weapon",
       activeAdventurerTradeTab: "sell",
       activeDragonEvolutionId: null,
+      activeDragonDevourId: null,
+      dragonDevourDraft: null,
+      lastDragonEvolutionResult: null,
       bulkManage: { type: null, selectedIds: [] }
     },
     tutorial: normalizeTutorial({ tutorialSeen: false, step: 0, beginnerQuestStarted: true }),
@@ -2337,6 +2419,10 @@ function ensureValidState() {
   state.equipmentShop = normalizeEquipmentShop(state.equipmentShop);
   state.adventurerTeams = normalizeAdventurerTeams(state.adventurerTeams, state.adventurers);
   state.marketListings = Array.isArray(state.marketListings) ? state.marketListings : [];
+  state.dragonDex = normalizeDragonDex(state.dragonDex);
+  state.dragons.forEach((dragon) => {
+    if (dragon.pendingEvolutionResult) finalizeDragonPendingEvolution(dragon);
+  });
   state.characterTickets = normalizedNonNegative(state.characterTickets, 0);
   state.soldDragonIds = Array.isArray(state.soldDragonIds) ? state.soldDragonIds.filter(Boolean) : [];
   state.dragonHouse = normalizeDragonHouse(state.dragonHouse);
@@ -2356,6 +2442,15 @@ function ensureValidState() {
   state.ui.activeAdventurerTradeTab = state.ui.activeAdventurerTradeTab === "market" ? "market" : "sell";
   state.ui.activeDragonEvolutionId = state.dragons.some((dragon) => dragon.id === state.ui.activeDragonEvolutionId)
     ? state.ui.activeDragonEvolutionId
+    : null;
+  state.ui.activeDragonDevourId = state.dragons.some((dragon) => dragon.id === state.ui.activeDragonDevourId)
+    ? state.ui.activeDragonDevourId
+    : null;
+  state.ui.dragonDevourDraft = state.ui.dragonDevourDraft && typeof state.ui.dragonDevourDraft === "object"
+    ? state.ui.dragonDevourDraft
+    : null;
+  state.ui.lastDragonEvolutionResult = state.ui.lastDragonEvolutionResult && typeof state.ui.lastDragonEvolutionResult === "object"
+    ? state.ui.lastDragonEvolutionResult
     : null;
   state.ui.bulkManage = { type: null, selectedIds: [] };
   syncAdventurerEquipmentState();
@@ -2424,11 +2519,67 @@ function ensureValidState() {
   saveGame();
 }
 
+function normalizeDragonDex(value = {}) {
+  const source = value && typeof value === "object" ? value : {};
+  return {
+    discoveredNodes: source.discoveredNodes && typeof source.discoveredNodes === "object" ? { ...source.discoveredNodes } : {},
+    discoveredRoutes: source.discoveredRoutes && typeof source.discoveredRoutes === "object" ? { ...source.discoveredRoutes } : {},
+    lineageResearch: source.lineageResearch && typeof source.lineageResearch === "object" ? { ...source.lineageResearch } : {},
+    devourDonors: Array.isArray(source.devourDonors) ? [...source.devourDonors] : []
+  };
+}
+
+function resolveDragonEvolutionNodeId(dragon, template = null) {
+  if (getEvolutionNode(dragon?.evolutionNodeId)) return dragon.evolutionNodeId;
+  const core = globalThis.DragonEvolutionCore;
+  if (!core || dragonEvolutionDataState.status !== "ready") return dragon?.evolutionNodeId || null;
+  const stage = core.normalizeStage(dragon?.stage);
+  const rarity = String(dragon?.rarity || "C").toUpperCase();
+  const element = String(dragon?.element || "fire").toLowerCase();
+  const templateId = dragon?.templateId || template?.id || null;
+  const candidates = dragonEvolutionData.nodes.filter((node) => (
+    core.normalizeStage(node.stage) === stage &&
+    String(node.element || "").toLowerCase() === element
+  ));
+  return candidates.find((node) => templateId && node.templateId === templateId && String(node.rarity || rarity).toUpperCase() === rarity)?.id
+    || candidates.find((node) => String(node.rarity || rarity).toUpperCase() === rarity && !node.variant)?.id
+    || null;
+}
+
+function normalizeOwnedDragonSkill(skill, defaultSource = "innate") {
+  const source = typeof skill === "string" ? { skillId: skill } : (skill && typeof skill === "object" ? skill : {});
+  const skillId = String(source.skillId || source.id || "").trim();
+  if (!skillId) return null;
+  const template = globalThis.DragonEvolutionCore?.findSkill(dragonSkillsData, skillId);
+  return {
+    ...(template || {}),
+    ...source,
+    id: skillId,
+    skillId,
+    sourceType: source.sourceType || defaultSource,
+    sourceDragonId: source.sourceDragonId || null,
+    level: Math.max(1, Number(source.level) || 1)
+  };
+}
+
+function normalizeDragonMutation(value = {}) {
+  const source = value && typeof value === "object" ? value : {};
+  return {
+    count: normalizedNonNegative(source.count, 0),
+    resonance: clamp(normalizedNonNegative(source.resonance, 0), 0, Number(dragonMutationData.resonanceCap) || 5),
+    failedChecks: normalizedNonNegative(source.failedChecks, 0),
+    history: Array.isArray(source.history) ? source.history.filter(Boolean) : []
+  };
+}
+
 function normalizeDragon(dragon) {
   const rarity = rarities.includes(dragon?.rarity) ? dragon.rarity : "C";
   const element = normalizeDragonElement(dragon?.element);
   const stage = normalizeDragonStage(dragon?.stage, dragon?.level);
   const template = findDragonCatalogTemplate({ ...dragon, rarity, element, stage });
+  const evolutionNodeId = resolveDragonEvolutionNodeId({ ...dragon, rarity, element, stage }, template);
+  const evolutionNode = getEvolutionNode(evolutionNodeId);
+  const configuredDevour = (dragonMutationData.devour?.templateIds || []).includes(dragon?.templateId || template?.id);
   const fallback = createDragon(rarity, dragonElementLabels[element] || "火");
   const level = positiveNumber(dragon?.level, growthStageLevel[stage] || 1);
   const power = positiveNumber(
@@ -2473,9 +2624,33 @@ function normalizeDragon(dragon) {
     growth: { ...(template?.growth || {}), ...(dragon?.growth || {}) },
     nextEvolution: dragon?.nextEvolution ?? template?.nextEvolution ?? null,
     evolution: dragon?.evolution ?? template?.evolution ?? null,
-    skills: Array.isArray(dragon?.skills) ? dragon.skills : (template?.skills || []),
+    originalRarity: rarities.includes(dragon?.originalRarity) ? dragon.originalRarity : rarity,
+    evolutionNodeId,
+    evolutionHistory: Array.isArray(dragon?.evolutionHistory) ? dragon.evolutionHistory.filter(Boolean) : [],
+    careStats: globalThis.DragonEvolutionCore?.normalizeCareStats({
+      ...(dragon?.careStats || {}),
+      mood: dragon?.careStats?.mood ?? dragon?.mood ?? 50
+    }) || dragon?.careStats || {},
+    mutation: normalizeDragonMutation(dragon?.mutation),
+    devourHistory: Array.isArray(dragon?.devourHistory) ? dragon.devourHistory.filter(Boolean) : [],
+    finalAwakeningGranted: Boolean(dragon?.finalAwakeningGranted),
+    pendingEvolutionResult: dragon?.pendingEvolutionResult && typeof dragon.pendingEvolutionResult === "object"
+      ? dragon.pendingEvolutionResult
+      : null,
+    skills: (Array.isArray(dragon?.skills) ? dragon.skills : (template?.skills || []))
+      .map((skill) => normalizeOwnedDragonSkill(skill))
+      .filter(Boolean),
     talents: Array.isArray(dragon?.talents) ? dragon.talents : (template?.talents || []),
     tags: Array.isArray(dragon?.tags) ? dragon.tags : (template?.tags || []),
+    traits: Array.from(new Set([
+      ...(Array.isArray(template?.traits) ? template.traits : []),
+      ...(Array.isArray(evolutionNode?.traits) ? evolutionNode.traits : []),
+      ...(Array.isArray(dragon?.traits) ? dragon.traits : []),
+      ...(configuredDevour ? ["devour"] : [])
+    ])),
+    hasDevour: Boolean(configuredDevour || dragon?.hasDevour || template?.hasDevour || evolutionNode?.hasDevour),
+    locked: Boolean(dragon?.locked),
+    favorite: Boolean(dragon?.favorite),
     variant: dragon?.variant || template?.variant || "normal",
     glow: Boolean(dragon?.glow ?? template?.glow),
     boss: Boolean(dragon?.boss ?? template?.boss),
@@ -3796,6 +3971,12 @@ function handleHomeV2DragonDirectClick(event) {
 }
 
 function handleHomeV2Click(event) {
+  if (event.target.matches("[data-v2-backdrop='dragon-devour']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDragonDevourModal();
+    return;
+  }
   if (homeV2Drag.moved) {
     homeV2Drag.moved = false;
     return;
@@ -9053,6 +9234,74 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function mountMobileGameShell() {
+  const root = els.homeV2Root;
+  if (!root) return;
+
+  root.classList.add("game-app");
+  root.querySelector(".home-v2-hud")?.classList.add("game-hud");
+  root.querySelector(".home-v2-scene")?.classList.add("game-main");
+  root.querySelectorAll(".worldPage").forEach((page) => page.classList.add("game-page"));
+
+  let footer = root.querySelector(":scope > .game-bottom-area");
+  if (!footer) {
+    footer = document.createElement("footer");
+    footer.className = "game-bottom-area";
+    root.append(footer);
+  }
+
+  let dialogue = document.getElementById("mimiDialogue");
+  if (!dialogue) {
+    dialogue = document.createElement("div");
+    dialogue.id = "mimiDialogue";
+    dialogue.className = "mimi-dialogue mimi-guide";
+    dialogue.setAttribute("aria-live", "polite");
+    dialogue.setAttribute("aria-hidden", "true");
+    dialogue.innerHTML = `
+      <img class="mimi-dialogue-avatar" src="assets/characters/mimi-head.png" alt="">
+      <div class="mimi-dialogue-text mimi-guide-text"></div>
+    `;
+  }
+  dialogue.classList.add("mimi-guide");
+  dialogue.querySelector(".mimi-dialogue-text")?.classList.add("mimi-guide-text");
+  footer.append(dialogue);
+
+  let navRow = footer.querySelector(".game-bottom-nav-row");
+  if (!navRow) {
+    navRow = document.createElement("div");
+    navRow.className = "game-bottom-nav-row";
+    footer.append(navRow);
+  }
+
+  ["navLeftBtn", "bottomNavViewport", "navRightBtn"].forEach((id) => {
+    const element = root.querySelector(`#${id}`);
+    if (element) navRow.append(element);
+  });
+  root.querySelector("#bottomNavViewport")?.classList.add("bottom-nav");
+
+  if (!root.dataset.mobileShellResizeBound) {
+    let resizeFrame = 0;
+    const alignPagerToViewport = () => {
+      if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
+      resizeFrame = window.requestAnimationFrame(() => {
+        resizeFrame = 0;
+        const pager = document.getElementById("worldPager");
+        if (!pager || !pager.clientWidth) return;
+        const pageCount = pager.children.length || 1;
+        const pageIndex = clamp(Number(currentWorldPage) || 0, 0, pageCount - 1);
+        const targetLeft = pageIndex * pager.clientWidth;
+        if (Math.abs(pager.scrollLeft - targetLeft) > 1) {
+          pager.scrollTo({ left: targetLeft, behavior: "auto" });
+        }
+      });
+    };
+
+    window.addEventListener("resize", alignPagerToViewport, { passive: true });
+    window.addEventListener("orientationchange", alignPagerToViewport, { passive: true });
+    root.dataset.mobileShellResizeBound = "true";
+  }
+}
+
 // Hatch V2: time-only incubators. These overrides keep the existing worldPager
 // carousel intact while replacing the old step-based hatch flow.
 function renderHomeV2() {
@@ -9094,6 +9343,7 @@ function renderHomeV2() {
     <button id="navRightBtn" class="home-v2-nav-arrow is-right" type="button" data-v2-nav-arrow="1" aria-label="往右看功能">›</button>
     ${renderEggSelectionModal()}
   `;
+  mountMobileGameShell();
   applyGameConfigToRenderedPages();
 
   window.setTimeout(() => {
@@ -10456,7 +10706,12 @@ function feedRestDragon(dragonId) {
   closeRestDragonActionSheet();
   dragon.hunger = Math.min(100, normalizedNonNegative(dragon.hunger, 80) + 10);
   dragon.mood = Math.min(100, normalizedNonNegative(dragon.mood, 80) + 5);
-  dragon.exp = normalizedNonNegative(dragon.exp, 0) + gameConfigNumber("economy.feedExp", 5);
+  dragon.careStats = globalThis.DragonEvolutionCore.normalizeCareStats(dragon.careStats);
+  dragon.careStats.affection += 2;
+  dragon.careStats.hungerCare += 1;
+  dragon.careStats.mood = dragon.mood;
+  dragon.careStats.foods.jerky = normalizedNonNegative(dragon.careStats.foods.jerky, 0) + 1;
+  gainExp(dragon, gameConfigNumber("economy.feedExp", 5));
   setDragonTemporaryAction(dragon, "eat");
   showToast("已餵食，龍看起來更有精神了！");
 }
@@ -10465,10 +10720,14 @@ function trainRestDragon(dragonId) {
   const dragon = getDragonById(dragonId);
   if (!dragon) return;
   closeRestDragonActionSheet();
-  dragon.exp = normalizedNonNegative(dragon.exp, 0) + gameConfigNumber("economy.trainExp", 20);
-  dragon.power = normalizedNonNegative(dragon.power, 10) + 5;
+  dragon.careStats = globalThis.DragonEvolutionCore.normalizeCareStats(dragon.careStats);
+  dragon.careStats.training.attack += 5;
+  dragon.careStats.mood = Math.max(0, dragon.careStats.mood - 5);
+  gainExp(dragon, gameConfigNumber("economy.trainExp", 20));
+  dragon.attack += 1;
   dragon.hunger = Math.max(0, normalizedNonNegative(dragon.hunger, 80) - 10);
   dragon.mood = Math.max(0, normalizedNonNegative(dragon.mood, 80) - 5);
+  dragon.power = Math.round(dragon.hp * 0.25 + dragon.attack * 2 + dragon.defense * 1.5 + dragon.speed * 1.2);
   setDragonTemporaryAction(dragon, "train");
   showToast("訓練完成，戰力提升！");
 }
@@ -10884,6 +11143,7 @@ function renderRestDragonStatusPanel() {
           <button type="button" data-v2-action="train-dragon" data-dragon-id="${dragon.id}">訓練</button>
           <button type="button" data-v2-action="open-team-modal" data-dragon-id="${dragon.id}">出戰</button>
           <button type="button" data-v2-action="open-dragon-evolution" data-dragon-id="${dragon.id}">進化</button>
+          ${canDragonDevour(dragon) ? `<button type="button" data-v2-action="open-dragon-devour" data-dragon-id="${dragon.id}">吞噬</button>` : ""}
           <button type="button" data-v2-action="open-sell-dragon" data-dragon-id="${dragon.id}">出售</button>
           <button type="button" data-v2-action="send-dragon-back-to-house" data-action="backToHouse" data-dragon-id="${dragon.id}">回龍舍</button>
         </div>
@@ -10893,23 +11153,62 @@ function renderRestDragonStatusPanel() {
 }
 
 function getDragonEvolutionTemplate(dragon) {
-  if (!dragon) return null;
-  const currentTemplate = findDragonCatalogTemplate(dragon);
-  if (currentTemplate?.nextEvolution) {
-    const exact = contentCatalog.dragons.find((item) => item.id === currentTemplate.nextEvolution);
-    if (exact) return exact;
-  }
-  const order = ["baby", "youth", "adult", "evolution"];
-  const nextStage = order[order.indexOf(normalizeDragonStage(dragon.stage)) + 1];
-  if (!nextStage) return null;
-  if (dragon.speciesId || currentTemplate?.speciesId) {
-    const sameSpecies = contentCatalog.dragons.find((item) => (
-      item.speciesId === (dragon.speciesId || currentTemplate.speciesId) &&
-      normalizeDragonStage(item.stage) === nextStage
-    ));
-    if (sameSpecies) return sameSpecies;
-  }
-  return findDragonCatalogTemplate({ ...dragon, stage: nextStage, templateId: null });
+  if (!dragon || dragonEvolutionDataState.status !== "ready") return null;
+  const routes = getEligibleEvolutionRoutes(dragon).sort((a, b) => b.score - a.score);
+  return getEvolutionTargetTemplate(getEvolutionNode(routes[0]?.targetId), dragon);
+}
+
+function evolutionStageForGame(stage) {
+  return globalThis.DragonEvolutionCore?.normalizeStage(stage) === "evolved" ? "evolution" : stage;
+}
+
+function getEvolutionTargetTemplate(targetNode, dragon) {
+  if (!targetNode) return null;
+  const template = contentCatalog.dragons.find((item) => item.id === targetNode.templateId)
+    || findDragonCatalogTemplate({
+      ...dragon,
+      templateId: null,
+      stage: evolutionStageForGame(targetNode.stage),
+      rarity: targetNode.rarity || dragon?.rarity,
+      element: targetNode.element || dragon?.element
+    })
+    || findDragonCatalogTemplate(dragon || {});
+  return {
+    ...(template || {}),
+    id: targetNode.templateId || template?.id || targetNode.id,
+    name: targetNode.name || template?.name || dragon?.name,
+    stage: evolutionStageForGame(targetNode.stage),
+    rarity: targetNode.rarity || template?.rarity || dragon?.rarity,
+    element: targetNode.element || template?.element || dragon?.element,
+    evolutionNodeId: targetNode.id,
+    __evolutionNode: targetNode
+  };
+}
+
+function getDragonEvolutionTendencies(dragon) {
+  return globalThis.DragonEvolutionCore?.getEvolutionTendencies(dragonEvolutionData, dragon, {
+    lineageResearch: state?.dragonDex?.lineageResearch || {},
+    researchBonusPerPoint: dragonEvolutionData.settings?.researchBonusPerPoint,
+    researchBonusCap: dragonEvolutionData.settings?.researchBonusCap
+  }) || [];
+}
+
+function renderDragonEvolutionTendencies(dragon) {
+  const tendencies = getDragonEvolutionTendencies(dragon);
+  if (!tendencies.length) return `<p class="dragon-evolution-note">目前沒有可前往的下一階段。</p>`;
+  return `
+    <section class="dragon-evolution-tendencies" aria-label="進化傾向">
+      <h3>進化傾向</h3>
+      ${tendencies.map((item) => `
+        <div class="dragon-evolution-tendency ${item.eligible ? "is-eligible" : "is-locked"}">
+          <span>${escapeHtml(item.label)}</span>
+          <b>${item.tendency}</b>
+          <small>${escapeHtml(item.hint)}</small>
+        </div>
+      `).join("")}
+      ${dragon.mutation?.resonance > 0 ? `<p class="dragon-evolution-resonance">牠的血統似乎產生了不穩定的共鳴……</p>` : ""}
+    </section>
+  `;
 }
 
 function getDragonEvolutionRequirements(dragon) {
@@ -10928,11 +11227,12 @@ function getDragonFragmentKey(dragon) {
 }
 
 function getEvolutionPreviewStats(dragon, nextTemplate) {
+  const multiplier = Number(nextTemplate?.__evolutionNode?.statMultiplier) || 1;
   return {
-    hp: positiveNumber(nextTemplate?.hp, dragon.hp + positiveNumber(dragon.growth?.hp, 8) * 10),
-    attack: positiveNumber(nextTemplate?.atk || nextTemplate?.attack, dragon.attack + positiveNumber(dragon.growth?.atk, 2) * 10),
-    defense: positiveNumber(nextTemplate?.def || nextTemplate?.defense, dragon.defense + positiveNumber(dragon.growth?.def, 1) * 10),
-    speed: positiveNumber(nextTemplate?.speed, dragon.speed + positiveNumber(dragon.growth?.speed, 1) * 5)
+    hp: Math.round(positiveNumber(nextTemplate?.hp, dragon.hp + positiveNumber(dragon.growth?.hp, 8) * 10) * multiplier),
+    attack: Math.round(positiveNumber(nextTemplate?.atk || nextTemplate?.attack, dragon.attack + positiveNumber(dragon.growth?.atk, 2) * 10) * multiplier),
+    defense: Math.round(positiveNumber(nextTemplate?.def || nextTemplate?.defense, dragon.defense + positiveNumber(dragon.growth?.def, 1) * 10) * multiplier),
+    speed: Math.round(positiveNumber(nextTemplate?.speed, dragon.speed + positiveNumber(dragon.growth?.speed, 1) * 5) * multiplier)
   };
 }
 
@@ -10995,6 +11295,555 @@ function renderDragonEvolutionModal() {
   `;
 }
 
+function renderDataDrivenDragonEvolutionModal() {
+  const dragon = getDragonById(state?.ui?.activeDragonEvolutionId);
+  if (!dragon) return "";
+  const nextTemplate = getDragonEvolutionTemplate(dragon);
+  const requirements = getDragonEvolutionRequirements(dragon);
+  const fragmentKey = getDragonFragmentKey(dragon);
+  const fragments = normalizedNonNegative(state.dragonResources?.fragments?.[fragmentKey], 0);
+  const stones = normalizedNonNegative(state.dragonResources?.materials?.evolutionStone, 0);
+  const preview = nextTemplate ? getEvolutionPreviewStats(dragon, nextTemplate) : null;
+  const hasEligibleRoute = getEligibleEvolutionRoutes(dragon).length > 0;
+  const canEvolve = Boolean(nextTemplate && requirements && hasEligibleRoute
+    && state.coins >= requirements.coins
+    && fragments >= requirements.fragments
+    && stones >= requirements.materials.evolutionStone);
+  const trainingLabels = { attack: "攻擊", defense: "防禦", speed: "速度", magic: "魔力", flight: "飛行" };
+  return `
+    <div class="dragon-evolution-backdrop" data-v2-backdrop="dragon-evolution">
+      <section class="dragon-evolution-modal is-data-driven" role="dialog" aria-modal="true" aria-label="龍進化">
+        <header>
+          <div><small>血統培育</small><h2>進化</h2></div>
+          <button type="button" data-v2-action="close-dragon-evolution" aria-label="關閉">×</button>
+        </header>
+        ${dragonEvolutionDataState.status === "error" ? `<p class="dragon-evolution-error">進化資料暫時無法使用：${escapeHtml(dragonEvolutionDataState.error || "未知錯誤")}</p>` : ""}
+        ${renderDragonEvolutionTendencies(dragon)}
+        ${nextTemplate && requirements ? `
+          <div class="dragon-evolution-path">
+            <article>
+              <img src="${getDragonAvatarAsset(dragon)}" alt="" onerror="this.src='${DRAGON_FALLBACK_ASSET}'">
+              <b>${escapeHtml(dragonStageText(dragon.stage))}</b>
+              <span>${escapeHtml(dragon.name)}</span>
+            </article>
+            <i aria-hidden="true">→</i>
+            <article class="is-next">
+              <img src="${escapeHtml(nextTemplate.portraitAsset || nextTemplate.iconAsset || getDragonAsset({ ...dragon, templateId: nextTemplate.id, stage: nextTemplate.stage }, "idle"))}" alt="">
+              <b>${escapeHtml(dragonStageText(nextTemplate.stage))}</b>
+              <span>可能型態：${escapeHtml(nextTemplate.name || dragon.name)}</span>
+            </article>
+          </div>
+          <div class="dragon-evolution-stats">
+            <span>生命 <b>${formatNumber(dragon.hp)} → ${formatNumber(preview.hp)}</b></span>
+            <span>攻擊 <b>${formatNumber(dragon.attack)} → ${formatNumber(preview.attack)}</b></span>
+            <span>防禦 <b>${formatNumber(dragon.defense)} → ${formatNumber(preview.defense)}</b></span>
+            <span>速度 <b>${formatNumber(dragon.speed)} → ${formatNumber(preview.speed)}</b></span>
+          </div>
+          <div class="dragon-care-training" aria-label="培育方向">
+            <span>培育方向</span>
+            ${Object.entries(trainingLabels).map(([type, label]) => `<button type="button" data-v2-action="train-dragon-care" data-training-type="${type}" data-dragon-id="${dragon.id}">${label}<small>${formatNumber(dragon.careStats?.training?.[type] || 0)}</small></button>`).join("")}
+          </div>
+          <div class="dragon-evolution-costs">
+            <span class="${state.coins >= requirements.coins ? "is-ready" : ""}">金幣 ${formatNumber(state.coins)} / ${formatNumber(requirements.coins)}</span>
+            <span class="${fragments >= requirements.fragments ? "is-ready" : ""}">龍碎片 ${formatNumber(fragments)} / ${formatNumber(requirements.fragments)}</span>
+            <span class="${stones >= requirements.materials.evolutionStone ? "is-ready" : ""}">進化石 ${formatNumber(stones)} / ${formatNumber(requirements.materials.evolutionStone)}</span>
+          </div>
+          ${hasEligibleRoute ? "" : `<p class="dragon-evolution-note">目前培育條件尚未形成可進化的路線。</p>`}
+          <button class="dragon-evolution-confirm" type="button" data-v2-action="confirm-dragon-evolution" data-dragon-id="${dragon.id}" ${canEvolve ? "" : "aria-disabled=\"true\""}>開始進化</button>
+        ` : `
+          <div class="dragon-evolution-max">
+            <img src="${getDragonAvatarAsset(dragon)}" alt="">
+            <h3>目前沒有可用的下一階段</h3>
+            <p>可能已到達最終型，或尚未建立這條血統資料。</p>
+          </div>
+        `}
+      </section>
+    </div>
+  `;
+}
+
+function trainDragonCare(dragonId, trainingType = "attack") {
+  const dragon = getDragonById(dragonId);
+  const types = ["attack", "defense", "speed", "magic", "flight"];
+  if (!dragon || !types.includes(trainingType)) return false;
+  dragon.careStats = globalThis.DragonEvolutionCore.normalizeCareStats(dragon.careStats);
+  dragon.careStats.training[trainingType] += 5;
+  dragon.careStats.mood = Math.max(0, dragon.careStats.mood - 1);
+  dragon.hunger = Math.max(0, normalizedNonNegative(dragon.hunger, 80) - 4);
+  dragon.mood = Math.max(0, normalizedNonNegative(dragon.mood, 80) - 1);
+  gainExp(dragon, gameConfigNumber("economy.trainExp", 20));
+  if (trainingType === "attack") dragon.attack += 1;
+  if (trainingType === "defense") dragon.defense += 1;
+  if (trainingType === "speed" || trainingType === "flight") dragon.speed += 1;
+  if (trainingType === "magic") dragon.power += 1;
+  dragon.power = Math.round(dragon.hp * 0.25 + dragon.attack * 2 + dragon.defense * 1.5 + dragon.speed * 1.2);
+  dragon.currentAction = "train";
+  dragon.lockActionUntil = Date.now() + 1500;
+  saveGame();
+  return true;
+}
+
+function discoverDragonEvolution(fromNodeId, route, targetNode) {
+  state.dragonDex = normalizeDragonDex(state.dragonDex);
+  const nodeRecord = state.dragonDex.discoveredNodes[targetNode.id];
+  const routeId = route.id || `${fromNodeId}->${targetNode.id}`;
+  const routeRecord = state.dragonDex.discoveredRoutes[routeId];
+  state.dragonDex.discoveredNodes[targetNode.id] = {
+    discoveredAt: nodeRecord?.discoveredAt || Date.now(),
+    count: normalizedNonNegative(nodeRecord?.count, 0) + 1
+  };
+  state.dragonDex.discoveredRoutes[routeId] = {
+    discoveredAt: routeRecord?.discoveredAt || Date.now(),
+    count: normalizedNonNegative(routeRecord?.count, 0) + 1
+  };
+  if (routeRecord) state.dragonDex.lineageResearch[routeId] = normalizedNonNegative(state.dragonDex.lineageResearch[routeId], 0) + 1;
+}
+
+function applyEvolutionNodeToDragon(dragon, targetNode, route) {
+  const nextTemplate = getEvolutionTargetTemplate(targetNode, dragon);
+  const stats = getEvolutionPreviewStats(dragon, nextTemplate);
+  const priorSkills = Array.isArray(dragon.skills) ? dragon.skills : [];
+  const unlocked = [...(route?.unlockSkills || []), targetNode.mutationSkillId].filter(Boolean)
+    .map((skillId) => normalizeOwnedDragonSkill({ skillId, sourceType: targetNode.mutationSkillId === skillId ? "mutation" : "evolution" }));
+  const skillMap = new Map([...priorSkills, ...unlocked].filter(Boolean).map((skill) => [skill.skillId || skill.id, skill]));
+  Object.assign(dragon, {
+    templateId: nextTemplate.id,
+    speciesId: nextTemplate.speciesId || dragon.speciesId,
+    stage: normalizeDragonStage(nextTemplate.stage),
+    level: Math.max(dragon.level || 1, growthStageLevel[normalizeDragonStage(nextTemplate.stage)] || 1),
+    name: targetNode.name || nextTemplate.name || dragon.name,
+    rarity: targetNode.rarity || dragon.rarity,
+    element: targetNode.element || dragon.element,
+    secondaryElement: targetNode.secondaryElement || null,
+    hp: stats.hp,
+    attack: stats.attack,
+    defense: stats.defense,
+    speed: stats.speed,
+    power: Math.round(stats.hp * 0.25 + stats.attack * 2 + stats.defense * 1.5 + stats.speed * 1.2),
+    assetBase: nextTemplate.assetRoot || dragon.assetBase,
+    assetRoot: nextTemplate.assetRoot || dragon.assetRoot,
+    avatarAsset: nextTemplate.portraitAsset || nextTemplate.iconAsset || dragon.avatarAsset,
+    animationFrames: nextTemplate.actions || dragon.animationFrames || {},
+    growth: nextTemplate.growth || dragon.growth || {},
+    nextEvolution: nextTemplate.nextEvolution || null,
+    evolution: nextTemplate.evolution || null,
+    skills: [...skillMap.values()],
+    talents: nextTemplate.talents || dragon.talents || [],
+    tags: Array.from(new Set([...(dragon.tags || []), ...(nextTemplate.tags || [])])),
+    traits: Array.from(new Set([...(dragon.traits || []), ...(targetNode.traits || []), ...(nextTemplate.traits || [])])),
+    variant: targetNode.variant || nextTemplate.variant || dragon.variant || "normal",
+    glow: Boolean(targetNode.glow ?? nextTemplate.glow ?? dragon.glow),
+    boss: Boolean(targetNode.boss ?? nextTemplate.boss ?? dragon.boss),
+    mythical: Boolean(targetNode.mythical ?? nextTemplate.mythical ?? dragon.mythical),
+    evolutionNodeId: targetNode.id,
+    currentAction: "idle"
+  });
+}
+
+function calculateCareGrade(dragon) {
+  return globalThis.DragonEvolutionCore?.calculateCareGrade(dragon) || "D";
+}
+
+function grantFinalAwakeningSkill(dragon, selectedSkillId = null, selectedGrade = null) {
+  const core = globalThis.DragonEvolutionCore;
+  const node = getEvolutionNode(dragon?.evolutionNodeId);
+  if (!dragon || !core || core.normalizeStage(node?.stage || dragon.stage) !== "evolved") return null;
+  if (!["C", "B", "A"].includes(String(dragon.originalRarity || dragon.rarity).toUpperCase())) return null;
+  if (normalizedNonNegative(dragon.mutation?.count, 0) !== 0 || dragon.finalAwakeningGranted) return null;
+  const rolled = selectedSkillId
+    ? { skill: core.findSkill(dragonSkillsData, selectedSkillId), grade: selectedGrade || calculateCareGrade(dragon) }
+    : core.selectFinalAwakeningSkill(dragon, dragonSkillsData);
+  if (!rolled.skill) return null;
+  const owned = (dragon.skills || []).find((skill) => (skill.skillId || skill.id) === rolled.skill.id);
+  if (owned) owned.level = Math.min(Number(rolled.skill.maxLevel) || 5, Math.max(1, Number(owned.level) || 1) + 1);
+  else dragon.skills.push(normalizeOwnedDragonSkill({
+    skillId: rolled.skill.id,
+    sourceType: "final-awakening",
+    sourceDragonId: null,
+    level: 1
+  }));
+  dragon.finalAwakeningGranted = true;
+  return { skill: rolled.skill, grade: rolled.grade };
+}
+
+function findEvolutionRoute(nodeId, routeId, targetId = null) {
+  const node = getEvolutionNode(nodeId);
+  return (node?.routes || []).find((route) => route.id === routeId)
+    || (node?.routes || []).find((route) => route.targetId === targetId)
+    || null;
+}
+
+function buildPendingDragonEvolution(dragon) {
+  const core = globalThis.DragonEvolutionCore;
+  const outcome = core?.resolveEvolutionOutcome(dragonEvolutionData, dragonMutationData, dragon, {
+    lineageResearch: state?.dragonDex?.lineageResearch || {},
+    researchBonusPerPoint: dragonEvolutionData.settings?.researchBonusPerPoint,
+    researchBonusCap: dragonEvolutionData.settings?.researchBonusCap
+  });
+  if (!outcome?.ok) return null;
+  const targetNode = getEvolutionNode(outcome.targetId);
+  const shouldAwaken = core.normalizeStage(targetNode?.stage) === "evolved"
+    && ["C", "B", "A"].includes(String(dragon.originalRarity || dragon.rarity).toUpperCase())
+    && normalizedNonNegative(dragon.mutation?.count, 0) === 0
+    && !outcome.mutated
+    && !dragon.finalAwakeningGranted;
+  const awakening = shouldAwaken ? core.selectFinalAwakeningSkill(dragon, dragonSkillsData) : null;
+  return {
+    resultId: createId("evolution"),
+    fromNodeId: dragon.evolutionNodeId,
+    routeId: outcome.route.id || outcome.route.targetId,
+    normalTargetId: outcome.normalTargetId,
+    targetId: outcome.targetId,
+    mutated: outcome.mutated,
+    mutationType: outcome.mutationType,
+    mutationChance: outcome.mutationChance,
+    mutationRoll: outcome.mutationRoll,
+    awakeningSkillId: awakening?.skill?.id || null,
+    careGrade: awakening?.grade || calculateCareGrade(dragon),
+    createdAt: Date.now()
+  };
+}
+
+function finalizeDragonPendingEvolution(dragon) {
+  const pending = dragon?.pendingEvolutionResult;
+  if (!pending?.resultId) return null;
+  const existing = (dragon.evolutionHistory || []).find((entry) => entry.resultId === pending.resultId);
+  if (existing) {
+    dragon.pendingEvolutionResult = null;
+    return existing;
+  }
+  const route = findEvolutionRoute(pending.fromNodeId, pending.routeId, pending.normalTargetId);
+  const normalTarget = getEvolutionNode(pending.normalTargetId);
+  const targetNode = getEvolutionNode(pending.targetId);
+  if (!route || !normalTarget || !targetNode) {
+    console.error("[Dragon evolution] 已保存的結果無法套用", pending);
+    return null;
+  }
+  dragon.mutation = normalizeDragonMutation(dragon.mutation);
+  if (pending.mutated) {
+    dragon.mutation.count += 1;
+    dragon.mutation.resonance = 0;
+    dragon.mutation.history.push({
+      resultId: pending.resultId,
+      fromNodeId: pending.fromNodeId,
+      normalTargetId: pending.normalTargetId,
+      targetId: pending.targetId,
+      type: pending.mutationType,
+      chance: pending.mutationChance,
+      timestamp: pending.createdAt
+    });
+  } else {
+    dragon.mutation.failedChecks += 1;
+    dragon.mutation.resonance = Math.min(
+      Number(dragonMutationData.resonanceCap) || 5,
+      dragon.mutation.resonance + (Number(dragonMutationData.resonanceGainPerFailure) || 0.5)
+    );
+  }
+  applyEvolutionNodeToDragon(dragon, targetNode, route);
+  const awakening = grantFinalAwakeningSkill(dragon, pending.awakeningSkillId, pending.careGrade);
+  const history = {
+    resultId: pending.resultId,
+    routeId: pending.routeId,
+    fromNodeId: pending.fromNodeId,
+    normalTargetId: pending.normalTargetId,
+    targetId: pending.targetId,
+    mutated: Boolean(pending.mutated),
+    mutationType: pending.mutationType || null,
+    mutationChance: Number(pending.mutationChance) || 0,
+    careGrade: pending.careGrade,
+    awakeningSkillId: awakening?.skill?.id || pending.awakeningSkillId || null,
+    timestamp: pending.createdAt || Date.now()
+  };
+  dragon.evolutionHistory = Array.isArray(dragon.evolutionHistory) ? dragon.evolutionHistory : [];
+  dragon.evolutionHistory.push(history);
+  discoverDragonEvolution(pending.fromNodeId, route, targetNode);
+  dragon.pendingEvolutionResult = null;
+  return history;
+}
+
+function renderDragonEvolutionResultModal(result) {
+  const dragon = getDragonById(result?.dragonId);
+  if (!dragon || !result) return "";
+  const skill = result.awakeningSkillId ? globalThis.DragonEvolutionCore?.findSkill(dragonSkillsData, result.awakeningSkillId) : null;
+  return `
+    <div class="dragon-evolution-result-backdrop ${result.mutated ? "is-mutated" : ""}" data-v2-backdrop="dragon-evolution-result">
+      <section class="dragon-evolution-result" role="dialog" aria-modal="true" aria-label="進化結果">
+        <div class="dragon-evolution-result-glow" aria-hidden="true"></div>
+        <img src="${getDragonAvatarAsset(dragon)}" alt="${escapeHtml(dragon.name)}" onerror="this.src='${DRAGON_FALLBACK_ASSET}'">
+        ${result.mutated ? `
+          <small>血統異常共鳴</small>
+          <h2>突變發生！</h2>
+          <p>血統產生了意料之外的變化。</p>
+        ` : `
+          <small>進化完成</small>
+          <h2>${escapeHtml(dragon.name)}</h2>
+          <p>新的型態與力量已經覺醒。</p>
+        `}
+        ${skill ? `
+          <div class="dragon-awakening-result">
+            <p>沒有發生突變……<br>但長久以來的陪伴喚醒了牠真正的力量！</p>
+            <b>獲得：【${escapeHtml(skill.name)}】</b>
+          </div>
+        ` : ""}
+        <button type="button" data-v2-action="close-dragon-evolution-result">確認</button>
+      </section>
+    </div>
+  `;
+}
+
+function closeDragonEvolutionResult() {
+  document.querySelectorAll(".dragon-evolution-result-backdrop").forEach((element) => element.remove());
+  if (state?.ui) state.ui.lastDragonEvolutionResult = null;
+}
+
+function canDragonDevour(dragon) {
+  return globalThis.DragonEvolutionCore?.canDragonDevour(dragon, dragonMutationData) || false;
+}
+
+function getTransferableSkills(donorDragon) {
+  return globalThis.DragonEvolutionCore?.getTransferableSkills(donorDragon, dragonSkillsData) || [];
+}
+
+function dragonHasMarketReference(dragonId) {
+  return (state.marketListings || []).some((listing) => [
+    listing?.dragonId,
+    listing?.donorId,
+    listing?.itemId,
+    listing?.entityId
+  ].includes(dragonId));
+}
+
+function getDevourDonorProtectionReason(donor, receiverId = null) {
+  if (!donor || donor.id === receiverId) return "不可選擇接收龍自己";
+  if (donor.locked) return "此龍已鎖定";
+  if (donor.favorite) return "此龍已設為最愛";
+  if (donor.isInTeam || (state.battleTeam || []).includes(donor.id)) return "此龍正在隊伍中";
+  if (donor.isBattling || donor.inBattle) return "此龍正在出戰";
+  if (donor.isTrading || dragonHasMarketReference(donor.id)) return "此龍正在交易或市場上架";
+  if (donor.isMissionDragon || donor.isTrainingTarget || donor.id === state.trainingDragonId) return "此龍正被任務或育成指定";
+  if ([state.activeDragonId, state.selectedRestDragonId, selectedRestDragonId, state.ui?.activeDragonEvolutionId].includes(donor.id)) return "此龍目前正被選取培育";
+  if (!getTransferableSkills(donor).length) return "此龍沒有可繼承技能";
+  return null;
+}
+
+function getDragonInheritedSkills(dragon) {
+  return (dragon?.skills || []).filter((skill) => skill.sourceType === "devour-inherited");
+}
+
+function getDragonDevourDraft() {
+  const receiver = getDragonById(state.ui?.activeDragonDevourId);
+  const draft = state.ui?.dragonDevourDraft || {};
+  const donor = getDragonById(draft.donorId);
+  const skills = donor ? getTransferableSkills(donor) : [];
+  const skill = skills.find((item) => (item.skillId || item.id) === draft.skillId) || null;
+  return { receiver, donor, skills, skill, draft };
+}
+
+function renderDragonDevourModal() {
+  const { receiver, donor, skills, skill, draft } = getDragonDevourDraft();
+  if (!receiver || !canDragonDevour(receiver)) return "";
+  const inherited = getDragonInheritedSkills(receiver);
+  const slotLimit = globalThis.DragonEvolutionCore.getInheritedSlotLimit(receiver, dragonMutationData);
+  const duplicate = skill && (receiver.skills || []).find((owned) => (owned.skillId || owned.id) === (skill.skillId || skill.id));
+  const duplicateAtMax = duplicate && Number(duplicate.level || 1) >= Number(skill.maxLevel || 5);
+  const needsReplacement = Boolean(skill && !duplicate && inherited.length >= slotLimit);
+  const canConfirm = Boolean(donor && skill && !getDevourDonorProtectionReason(donor, receiver.id) && !duplicateAtMax && (!needsReplacement || draft.replaceSkillId));
+  const donors = (state.dragons || []).filter((dragon) => dragon.id !== receiver.id);
+  return `
+    <div class="dragon-devour-backdrop" data-v2-backdrop="dragon-devour">
+      <section class="dragon-devour-modal" role="dialog" aria-modal="true" aria-label="吞噬繼承">
+        <header>
+          <div><small>${receiver.rarity} 血統特性</small><h2>吞噬繼承</h2></div>
+          <button type="button" data-v2-action="close-dragon-devour" aria-label="關閉">×</button>
+        </header>
+        <div class="dragon-devour-receiver">
+          <img src="${getDragonAvatarAsset(receiver)}" alt="">
+          <div><b>${escapeHtml(receiver.name)}</b><span>繼承技能 ${inherited.length} / ${slotLimit}</span></div>
+        </div>
+        <section class="dragon-devour-section">
+          <h3>1. 選擇素材龍</h3>
+          <div class="dragon-devour-donors">
+            ${donors.map((candidate) => {
+              const reason = getDevourDonorProtectionReason(candidate, receiver.id);
+              return `<button type="button" class="${draft.donorId === candidate.id ? "is-selected" : ""} ${reason ? "is-protected" : ""}" data-v2-action="select-devour-donor" data-dragon-id="${candidate.id}" ${reason ? `data-protected-reason="${escapeHtml(reason)}"` : ""}>
+                <img src="${getDragonAvatarAsset(candidate)}" alt=""><span>${escapeHtml(candidate.name)}</span><small>${reason || `${candidate.rarity} / ${getTransferableSkills(candidate).length} 技能`}</small>
+              </button>`;
+            }).join("") || `<p class="dragon-evolution-note">目前沒有其他龍可以作為素材。</p>`}
+          </div>
+        </section>
+        ${donor ? `<section class="dragon-devour-section"><h3>2. 選擇繼承技能</h3><div class="dragon-devour-skills">
+          ${skills.map((candidate) => `<button type="button" class="${draft.skillId === (candidate.skillId || candidate.id) ? "is-selected" : ""}" data-v2-action="select-devour-skill" data-skill-id="${candidate.skillId || candidate.id}"><b>${escapeHtml(candidate.name)}</b><small>Lv.${candidate.level || 1} / ${candidate.maxLevel || 5}</small></button>`).join("") || `<p>沒有合法技能</p>`}
+        </div></section>` : ""}
+        ${needsReplacement ? `<section class="dragon-devour-section"><h3>3. 繼承槽已滿，選擇替換</h3><div class="dragon-devour-skills">
+          ${inherited.map((candidate) => `<button type="button" class="${draft.replaceSkillId === (candidate.skillId || candidate.id) ? "is-selected" : ""}" data-v2-action="select-devour-replacement" data-skill-id="${candidate.skillId || candidate.id}"><b>${escapeHtml(candidate.name || candidate.skillId)}</b><small>Lv.${candidate.level || 1}</small></button>`).join("")}
+        </div></section>` : ""}
+        ${duplicateAtMax ? `<p class="dragon-evolution-error">接收龍的同名技能已達最高等級。</p>` : ""}
+        <div class="dragon-devour-warning">確定讓【${escapeHtml(receiver.name)}】吞噬【${escapeHtml(donor?.name || "尚未選擇")}】，並繼承【${escapeHtml(skill?.name || "尚未選擇")}】嗎？<br>素材龍將永久消失，無法復原。</div>
+        <button class="dragon-devour-confirm" type="button" data-v2-action="hold-confirm-devour" ${canConfirm ? "" : "disabled"}>
+          <span>長按 1 秒確認吞噬</span><i aria-hidden="true"></i>
+        </button>
+      </section>
+    </div>
+  `;
+}
+
+function openDragonDevourModal(dragonId) {
+  const receiver = getDragonById(dragonId);
+  if (!receiver || !canDragonDevour(receiver)) return showToast("這隻龍沒有吞噬能力");
+  state.ui.activeDragonDevourId = receiver.id;
+  state.ui.dragonDevourDraft = { donorId: null, skillId: null, replaceSkillId: null };
+  closeDragonHouseDetail();
+  mountHomeV2Overlay(renderDragonDevourModal());
+}
+
+function closeDragonDevourModal() {
+  document.querySelectorAll(".dragon-devour-backdrop").forEach((element) => element.remove());
+  if (state?.ui) {
+    state.ui.activeDragonDevourId = null;
+    state.ui.dragonDevourDraft = null;
+  }
+}
+
+function refreshDragonDevourModal() {
+  document.querySelectorAll(".dragon-devour-backdrop").forEach((element) => element.remove());
+  mountHomeV2Overlay(renderDragonDevourModal());
+}
+
+function selectDragonDevourDonor(donorId) {
+  const receiver = getDragonById(state.ui?.activeDragonDevourId);
+  const donor = getDragonById(donorId);
+  const reason = getDevourDonorProtectionReason(donor, receiver?.id);
+  if (reason) return showToast(reason);
+  const firstSkill = getTransferableSkills(donor)[0];
+  state.ui.dragonDevourDraft = { donorId, skillId: firstSkill?.skillId || firstSkill?.id || null, replaceSkillId: null };
+  refreshDragonDevourModal();
+}
+
+function clearDragonIdFromMissionReferences(value, dragonId, key = "") {
+  if (Array.isArray(value)) {
+    if (/dragon/i.test(key)) return value.filter((item) => item !== dragonId);
+    value.forEach((item) => clearDragonIdFromMissionReferences(item, dragonId, key));
+    return value;
+  }
+  if (!value || typeof value !== "object") return value;
+  Object.entries(value).forEach(([childKey, childValue]) => {
+    if (/dragon.*id|target.*dragon/i.test(childKey) && childValue === dragonId) value[childKey] = null;
+    else clearDragonIdFromMissionReferences(childValue, dragonId, childKey);
+  });
+  return value;
+}
+
+function devourDragon(receiverId, donorId, skillId, replaceSkillId = null) {
+  const receiver = getDragonById(receiverId);
+  const donor = getDragonById(donorId);
+  if (!receiver || !donor) return { ok: false, message: "找不到接收龍或素材龍" };
+  if (!canDragonDevour(receiver)) return { ok: false, message: "接收龍沒有吞噬能力" };
+  const protection = getDevourDonorProtectionReason(donor, receiver.id);
+  if (protection) return { ok: false, message: protection };
+  const transferable = getTransferableSkills(donor);
+  const selectedSkill = transferable.find((item) => (item.skillId || item.id) === skillId);
+  if (!selectedSkill) return { ok: false, message: "這個技能不可繼承" };
+  const skillKey = selectedSkill.skillId || selectedSkill.id;
+  const existing = (receiver.skills || []).find((owned) => (owned.skillId || owned.id) === skillKey);
+  const inherited = getDragonInheritedSkills(receiver);
+  const slotLimit = globalThis.DragonEvolutionCore.getInheritedSlotLimit(receiver, dragonMutationData);
+  if (existing && Number(existing.level || 1) >= Number(selectedSkill.maxLevel || 5)) return { ok: false, message: "同名技能已達最高等級" };
+  if (!existing && inherited.length >= slotLimit) {
+    const replacement = inherited.find((owned) => (owned.skillId || owned.id) === replaceSkillId);
+    if (!replacement) return { ok: false, message: "請先選擇要替換的繼承技能" };
+    receiver.skills = receiver.skills.filter((owned) => owned !== replacement);
+  }
+  if (existing) existing.level = Math.min(Number(selectedSkill.maxLevel) || 5, Number(existing.level || 1) + 1);
+  else receiver.skills.push(normalizeOwnedDragonSkill({
+    skillId: skillKey,
+    sourceType: "devour-inherited",
+    sourceDragonId: donor.id,
+    level: 1
+  }));
+  const history = {
+    donorId: donor.id,
+    donorTemplateId: donor.templateId || donor.evolutionNodeId || null,
+    skillId: skillKey,
+    timestamp: Date.now()
+  };
+  receiver.devourHistory = Array.isArray(receiver.devourHistory) ? receiver.devourHistory : [];
+  receiver.devourHistory.push(history);
+  state.dragonDex = normalizeDragonDex(state.dragonDex);
+  state.dragonDex.devourDonors.push({
+    ...history,
+    name: donor.name,
+    rarity: donor.rarity,
+    element: donor.element,
+    evolutionNodeId: donor.evolutionNodeId
+  });
+  globalThis.DragonEvolutionCore.cleanupDonorReferences(state, donor.id, receiver.id);
+  if (selectedRestDragonId === donor.id) selectedRestDragonId = null;
+  syncDragonTeamFlags();
+  state.homeIsland = normalizeHomeIsland(state.homeIsland, state.dragons);
+  closeDragonDevourModal();
+  saveGame();
+  refreshRestIslandInteractionLayer();
+  refreshDragonHousePage();
+  showToast(`${receiver.name} 已繼承【${selectedSkill.name}】`);
+  return { ok: true, receiverId, donorId, skillId: skillKey };
+}
+
+let dragonDevourHoldTimer = null;
+let dragonDevourHoldButton = null;
+
+function cancelDragonDevourHold() {
+  if (dragonDevourHoldTimer) window.clearTimeout(dragonDevourHoldTimer);
+  dragonDevourHoldTimer = null;
+  dragonDevourHoldButton?.classList.remove("is-holding");
+  dragonDevourHoldButton = null;
+}
+
+function installDragonDevourHoldHandlers() {
+  document.addEventListener("pointerdown", (event) => {
+    const button = event.target.closest("[data-v2-action='hold-confirm-devour']");
+    if (!button || button.disabled) return;
+    event.preventDefault();
+    cancelDragonDevourHold();
+    dragonDevourHoldButton = button;
+    button.classList.add("is-holding");
+    dragonDevourHoldTimer = window.setTimeout(() => {
+      const { receiver, donor, skill, draft } = getDragonDevourDraft();
+      const result = devourDragon(receiver?.id, donor?.id, skill?.skillId || skill?.id, draft.replaceSkillId);
+      if (!result.ok) showToast(result.message);
+      cancelDragonDevourHold();
+    }, Number(dragonMutationData.devour?.holdToConfirmMs) || 1000);
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach((eventName) => document.addEventListener(eventName, cancelDragonDevourHold));
+}
+
+function confirmDataDrivenDragonEvolution(dragonId) {
+  const dragon = getDragonById(dragonId);
+  if (!dragon) return showToast("找不到這隻龍");
+  const requirements = getDragonEvolutionRequirements(dragon);
+  if (!getEligibleEvolutionRoutes(dragon).length || !requirements) return showToast("目前沒有符合條件的進化路線");
+  const fragmentKey = getDragonFragmentKey(dragon);
+  const fragments = normalizedNonNegative(state.dragonResources.fragments[fragmentKey], 0);
+  const stones = normalizedNonNegative(state.dragonResources.materials.evolutionStone, 0);
+  if (state.coins < requirements.coins) return showToast("金幣不足");
+  if (fragments < requirements.fragments) return showToast("龍碎片不足");
+  if (stones < requirements.materials.evolutionStone) return showToast("進化石不足");
+  const pending = buildPendingDragonEvolution(dragon);
+  if (!pending) return showToast("無法決定進化結果，請檢查進化資料");
+  state.coins -= requirements.coins;
+  state.dragonResources.fragments[fragmentKey] = fragments - requirements.fragments;
+  state.dragonResources.materials.evolutionStone = stones - requirements.materials.evolutionStone;
+  dragon.pendingEvolutionResult = pending;
+  saveGame();
+  const result = finalizeDragonPendingEvolution(dragon);
+  state.ui.lastDragonEvolutionResult = { ...result, dragonId: dragon.id };
+  closeDragonEvolution();
+  saveGame();
+  updateHomeV2HudResources();
+  refreshRestIslandInteractionLayer();
+  refreshDragonHousePage();
+  mountHomeV2Overlay(renderDragonEvolutionResultModal(state.ui.lastDragonEvolutionResult));
+}
+
 function openDragonEvolution(dragonId) {
   const dragon = getDragonById(dragonId);
   if (!dragon) {
@@ -11003,7 +11852,7 @@ function openDragonEvolution(dragonId) {
   }
   state.ui.activeDragonEvolutionId = dragon.id;
   document.querySelector(".dragon-evolution-backdrop")?.remove();
-  mountHomeV2Overlay(renderDragonEvolutionModal());
+  mountHomeV2Overlay(renderDataDrivenDragonEvolutionModal());
 }
 
 function closeDragonEvolution() {
@@ -11012,6 +11861,8 @@ function closeDragonEvolution() {
 }
 
 function confirmDragonEvolution(dragonId) {
+  return confirmDataDrivenDragonEvolution(dragonId);
+  /* Legacy body retained temporarily for old save compatibility; all callers use the data-driven flow above. */
   const dragon = getDragonById(dragonId);
   if (!dragon) {
     closeDragonEvolution();
@@ -11562,6 +12413,7 @@ function renderDragonHouseDetailModal(dragon) {
           <button type="button" data-v2-action="show-dragon-info" data-dragon-id="${dragon.id}">查看</button>
           <button type="button" data-v2-action="${isTeam ? "remove-from-team" : "open-team-modal"}" data-dragon-id="${dragon.id}">${isTeam ? "移出隊伍" : "出戰"}</button>
           <button type="button" data-v2-action="open-dragon-evolution" data-dragon-id="${dragon.id}">進化</button>
+          ${canDragonDevour(dragon) ? `<button type="button" data-v2-action="open-dragon-devour" data-dragon-id="${dragon.id}">吞噬</button>` : ""}
           <button type="button" data-v2-action="open-sell-dragon" data-dragon-id="${dragon.id}">出售</button>
           <button type="button" data-v2-action="trade-dragon-placeholder" data-dragon-id="${dragon.id}">交易</button>
           <button type="button" class="is-muted" data-v2-action="send-dragon-home" data-dragon-id="${dragon.id}">回家</button>
@@ -11812,6 +12664,31 @@ function handleHomeV2Click(event) {
       openTeamModal(dragonId);
       return;
     }
+    if (action === "open-dragon-devour") {
+      openDragonDevourModal(dragonId);
+      return;
+    }
+    if (action === "close-dragon-devour") {
+      closeDragonDevourModal();
+      return;
+    }
+    if (action === "select-devour-donor") {
+      if (actionButton.dataset.protectedReason) showToast(actionButton.dataset.protectedReason);
+      else selectDragonDevourDonor(dragonId);
+      return;
+    }
+    if (action === "select-devour-skill") {
+      state.ui.dragonDevourDraft.skillId = actionButton.dataset.skillId;
+      state.ui.dragonDevourDraft.replaceSkillId = null;
+      refreshDragonDevourModal();
+      return;
+    }
+    if (action === "select-devour-replacement") {
+      state.ui.dragonDevourDraft.replaceSkillId = actionButton.dataset.skillId;
+      refreshDragonDevourModal();
+      return;
+    }
+    if (action === "hold-confirm-devour") return;
     if (action === "open-dragon-evolution") {
       closeDragonHouseDetail();
       openDragonEvolution(dragonId);
@@ -12953,7 +13830,12 @@ function feedRestDragon(dragonId) {
   closeRestDragonActionSheet();
   dragon.hunger = Math.min(100, normalizedNonNegative(dragon.hunger, 80) + 10);
   dragon.mood = Math.min(100, normalizedNonNegative(dragon.mood, 80) + 5);
-  dragon.exp = normalizedNonNegative(dragon.exp, 0) + gameConfigNumber("economy.feedExp", 5);
+  dragon.careStats = globalThis.DragonEvolutionCore.normalizeCareStats(dragon.careStats);
+  dragon.careStats.affection += 2;
+  dragon.careStats.hungerCare += 1;
+  dragon.careStats.mood = dragon.mood;
+  dragon.careStats.foods.jerky = normalizedNonNegative(dragon.careStats.foods.jerky, 0) + 1;
+  gainExp(dragon, gameConfigNumber("economy.feedExp", 5));
   updateBeginnerMissionProgress("feedOnce", 1, { save: false, render: false });
   checkGrowBattleReadyMission({ save: false, render: false });
   setDragonTemporaryAction(dragon, "eat");
@@ -12965,10 +13847,14 @@ function trainRestDragon(dragonId) {
   const dragon = getDragonById(dragonId);
   if (!dragon) return;
   closeRestDragonActionSheet();
-  dragon.exp = normalizedNonNegative(dragon.exp, 0) + gameConfigNumber("economy.trainExp", 20);
-  dragon.power = normalizedNonNegative(dragon.power, 10) + 5;
+  dragon.careStats = globalThis.DragonEvolutionCore.normalizeCareStats(dragon.careStats);
+  dragon.careStats.training.attack += 5;
+  dragon.careStats.mood = Math.max(0, dragon.careStats.mood - 5);
+  gainExp(dragon, gameConfigNumber("economy.trainExp", 20));
+  dragon.attack += 1;
   dragon.hunger = Math.max(0, normalizedNonNegative(dragon.hunger, 80) - 10);
   dragon.mood = Math.max(0, normalizedNonNegative(dragon.mood, 80) - 5);
+  dragon.power = Math.round(dragon.hp * 0.25 + dragon.attack * 2 + dragon.defense * 1.5 + dragon.speed * 1.2);
   updateBeginnerMissionProgress("trainOnce", 1, { save: false, render: false });
   checkGrowBattleReadyMission({ save: false, render: false });
   setDragonTemporaryAction(dragon, "train");
@@ -12977,13 +13863,21 @@ function trainRestDragon(dragonId) {
 }
 
 function handleHomeV2Click(event) {
+  if (event.target.matches("[data-v2-backdrop='dragon-evolution-result']") || event.target.closest("[data-v2-action='close-dragon-evolution-result']")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDragonEvolutionResult();
+    refreshRestIslandInteractionLayer();
+    refreshDragonHousePage();
+    return;
+  }
   if (event.target.matches("[data-v2-backdrop='dragon-evolution']")) {
     event.preventDefault();
     event.stopPropagation();
     closeDragonEvolution();
     return;
   }
-  const evolutionButton = event.target.closest("[data-v2-action='open-dragon-evolution'], [data-v2-action='close-dragon-evolution'], [data-v2-action='confirm-dragon-evolution']");
+  const evolutionButton = event.target.closest("[data-v2-action='open-dragon-evolution'], [data-v2-action='close-dragon-evolution'], [data-v2-action='confirm-dragon-evolution'], [data-v2-action='train-dragon-care']");
   if (evolutionButton) {
     event.preventDefault();
     event.stopPropagation();
@@ -12993,8 +13887,14 @@ function handleHomeV2Click(event) {
       openDragonEvolution(evolutionButton.dataset.dragonId);
     } else if (evolutionAction === "close-dragon-evolution") {
       closeDragonEvolution();
+    } else if (evolutionAction === "train-dragon-care") {
+      if (trainDragonCare(evolutionButton.dataset.dragonId, evolutionButton.dataset.trainingType)) {
+        document.querySelector(".dragon-evolution-backdrop")?.remove();
+        mountHomeV2Overlay(renderDataDrivenDragonEvolutionModal());
+        showToast("培育訓練完成");
+      }
     } else {
-      confirmDragonEvolution(evolutionButton.dataset.dragonId);
+      confirmDataDrivenDragonEvolution(evolutionButton.dataset.dragonId);
     }
     return;
   }

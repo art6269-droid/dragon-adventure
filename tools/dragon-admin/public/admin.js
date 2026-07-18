@@ -31,6 +31,10 @@ const store = {
   matrixFilter: null,
   selectedCharacterId: null,
   simulation: null,
+  evolutionDraft: null,
+  evolutionValidation: null,
+  evolutionSimulation: null,
+  selectedEvolutionNodeId: null,
   health: null,
   backups: [],
   animationTimer: null
@@ -41,7 +45,10 @@ const preview = document.getElementById("gamePreview");
 const toast = document.getElementById("adminToast");
 let toastTimer = null;
 
-function clone(value) { return JSON.parse(JSON.stringify(value)); }
+function clone(value) {
+  if (value === undefined || value === null) return value;
+  return JSON.parse(JSON.stringify(value));
+}
 function escapeHtml(value) {
   return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
 }
@@ -188,6 +195,118 @@ function renderGacha() {
     + probabilityGroup("龍蛋屬性", "gacha.egg.elements", ELEMENTS, "elements")
     + panel("抽卡模擬測試", `<div class="quick-actions"><select id="simulationDraws"><option>100</option><option>1000</option><option selected>10000</option><option>100000</option></select><button class="primary" data-action="simulate">開始模擬</button></div>`)
     + renderSimulation(store.simulation);
+}
+
+function evolutionNumberField(path, label, min = 0, max = 100, step = .1) {
+  const value = Number(getAt(store.evolutionDraft, path) ?? min);
+  return `<label class="control-field"><span>${escapeHtml(label)}</span><input type="range" min="${min}" max="${max}" step="${step}" value="${value}" data-evolution-path="${path}"><input type="number" min="${min}" max="${max}" step="${step}" value="${value}" data-evolution-path="${path}"></label>`;
+}
+
+function renderEvolutionTree(graph) {
+  const stages = ["egg", "baby", "youth", "adult", "evolved"];
+  const normalizeStage = (stage) => ["evolution", "evolve"].includes(stage) ? "evolved" : stage;
+  const grouped = Object.fromEntries(stages.map((stage) => [stage, []]));
+  (graph.nodes || []).forEach((node) => (grouped[normalizeStage(node.stage)] ||= []).push(node));
+  const width = 1100;
+  const columnWidth = 220;
+  const rowHeight = 88;
+  const maxRows = Math.max(1, ...stages.map((stage) => grouped[stage].length));
+  const height = Math.max(240, maxRows * rowHeight + 64);
+  const positions = new Map();
+  stages.forEach((stage, column) => grouped[stage].forEach((node, row) => positions.set(node.id, {
+    x: column * columnWidth + 16,
+    y: row * rowHeight + 42,
+    cx: column * columnWidth + 106,
+    cy: row * rowHeight + 69
+  })));
+  const lines = [];
+  for (const node of graph.nodes || []) {
+    const from = positions.get(node.id);
+    if (!from) continue;
+    for (const route of node.routes || []) {
+      const target = positions.get(route.targetId);
+      if (target) lines.push(`<line class="normal-route" x1="${from.x + 180}" y1="${from.cy}" x2="${target.x}" y2="${target.cy}"></line>`);
+      for (const mutation of route.mutationPool || []) {
+        const mutationTarget = positions.get(mutation.targetId);
+        if (mutationTarget) lines.push(`<line class="mutation-route" x1="${from.x + 180}" y1="${from.cy + 5}" x2="${mutationTarget.x}" y2="${mutationTarget.cy + 5}"></line>`);
+      }
+    }
+  }
+  const nodeGroups = [...positions.entries()].map(([id, pos]) => {
+    const node = (graph.nodes || []).find((item) => item.id === id);
+    const active = id === store.selectedEvolutionNodeId ? "is-active" : "";
+    return `<g class="evolution-tree-node ${active}" data-evolution-node-id="${escapeHtml(id)}" transform="translate(${pos.x} ${pos.y})"><rect width="180" height="54" rx="7"></rect><text x="10" y="22">${escapeHtml(node.name || id)}</text><text class="meta" x="10" y="41">${escapeHtml(node.rarity)} / ${escapeHtml(node.element)} / ${escapeHtml(id)}</text></g>`;
+  }).join("");
+  return `<div class="evolution-tree-scroll"><svg class="evolution-tree" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}"><defs><marker id="arrowGold" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z"></path></marker><marker id="arrowMutation" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z"></path></marker></defs>${stages.map((stage, index) => `<text class="stage-label" x="${index * columnWidth + 16}" y="22">${stage}</text>`).join("")}${lines.join("")}${nodeGroups}</svg></div>`;
+}
+
+function renderEvolutionValidation(validation) {
+  if (!validation) return `<p class="panel-note">尚未執行驗證。</p>`;
+  return `<div class="metric-grid compact">${metric(validation.counts.nodes, "節點")}${metric(validation.counts.errors, "錯誤", validation.counts.errors ? "status-error" : "status-ok")}${metric(validation.counts.warnings, "警告", validation.counts.warnings ? "status-warning" : "status-ok")}${metric(validation.counts.unreachable, "不可達", validation.counts.unreachable ? "status-error" : "status-ok")}</div><div class="issue-list">${validation.issues.map((issue) => `<div class="issue ${issue.level}"><b>${issue.level === "error" ? "錯誤" : "警告"}</b> ${escapeHtml(issue.message)}</div>`).join("") || `<div class="issue status-ok">進化圖驗證通過</div>`}</div>`;
+}
+
+function renderEvolutionSimulation(result) {
+  if (!result) return `<p class="panel-note">選擇參數後可執行 1,000 至 100,000 次模擬，不會修改玩家存檔。</p>`;
+  const finalRows = Object.entries(result.stageResults?.evolved || {}).sort((a, b) => b[1] - a[1]);
+  return `<div class="metric-grid compact">${metric(`${(result.mutationRate * 100).toFixed(2)}%`, "突變率")}${metric(`${(result.rarityUpgradeRate * 100).toFixed(2)}%`, "升稀有度")}${metric(`${(result.ancientMutationRate * 100).toFixed(3)}%`, "古代突變")}${metric(`${(result.finalAwakeningRate * 100).toFixed(2)}%`, "最終覺醒")}</div><table><thead><tr><th>最終型</th><th>次數</th><th>比例</th></tr></thead><tbody>${finalRows.map(([id, count]) => `<tr><td>${escapeHtml(id)}</td><td>${count.toLocaleString()}</td><td>${(count / result.runs * 100).toFixed(3)}%</td></tr>`).join("")}</tbody></table><p class="panel-note">指定目標平均蛋數：${result.averageEggsForTarget ? result.averageEggsForTarget.toFixed(2) : "未指定或未命中"}；平均進化階段：${result.averageEvolutionSteps.toFixed(2)}；平均培育時間：約 ${Number(result.averageCultivationHours || 0).toFixed(1)} 小時</p>`;
+}
+
+function renderEvolutionNodeEditor(node) {
+  if (!node) return `<div class="empty-state">從進化樹選擇一個節點。</div>`;
+  return `<div class="character-editor-grid">
+    <label class="text-field"><span>節點 ID</span><input value="${escapeHtml(node.id)}" disabled></label>
+    <label class="text-field"><span>名稱</span><input data-evolution-node-field="name" value="${escapeHtml(node.name)}"></label>
+    <label class="text-field"><span>階段</span><select data-evolution-node-field="stage">${["egg", "baby", "youth", "adult", "evolved"].map((value) => `<option ${value === node.stage ? "selected" : ""}>${value}</option>`).join("")}</select></label>
+    <label class="text-field"><span>稀有度</span><select data-evolution-node-field="rarity">${RARITIES.map((value) => `<option ${value === node.rarity ? "selected" : ""}>${value}</option>`).join("")}</select></label>
+    <label class="text-field"><span>屬性</span><select data-evolution-node-field="element">${ELEMENTS.map((value) => `<option ${value === node.element ? "selected" : ""}>${value}</option>`).join("")}</select></label>
+    <label class="text-field"><span>素材模板 ID</span><input data-evolution-node-field="templateId" value="${escapeHtml(node.templateId || "")}"></label>
+    <label class="text-field"><span>吞噬特性</span><input type="checkbox" data-evolution-node-devour ${node.traits?.includes("devour") || node.hasDevour ? "checked" : ""}></label>
+  </div><label class="text-field"><span>正常路線與 mutationPool JSON</span><textarea id="evolutionNodeRoutes" rows="14">${escapeHtml(JSON.stringify(node.routes || [], null, 2))}</textarea></label><button class="primary" data-action="apply-evolution-node">套用節點修改</button>`;
+}
+
+function readEvolutionBundleFromEditors() {
+  const bundle = clone(store.evolutionDraft);
+  const graphEditor = document.getElementById("evolutionGraphJson");
+  const skillsEditor = document.getElementById("dragonSkillsJson");
+  if (graphEditor) bundle.evolution = JSON.parse(graphEditor.value);
+  if (skillsEditor) bundle.skills = JSON.parse(skillsEditor.value);
+  const devourTemplatesEditor = document.getElementById("dragonDevourTemplateIds");
+  if (devourTemplatesEditor) {
+    bundle.mutation.devour ||= {};
+    bundle.mutation.devour.templateIds = devourTemplatesEditor.value.split(/\r?\n|,/).map((value) => value.trim()).filter(Boolean);
+  }
+  const selectedNode = bundle.evolution?.nodes?.find((item) => item.id === store.selectedEvolutionNodeId);
+  if (selectedNode) {
+    content.querySelectorAll("[data-evolution-node-field]").forEach((field) => {
+      const key = field.dataset.evolutionNodeField;
+      selectedNode[key] = field.value;
+    });
+    const routesEditor = document.getElementById("evolutionNodeRoutes");
+    if (routesEditor) selectedNode.routes = JSON.parse(routesEditor.value);
+    const devourEnabled = Boolean(content.querySelector("[data-evolution-node-devour]")?.checked);
+    const traits = new Set(Array.isArray(selectedNode.traits) ? selectedNode.traits : []);
+    if (devourEnabled) traits.add("devour");
+    else traits.delete("devour");
+    selectedNode.traits = [...traits];
+    selectedNode.hasDevour = devourEnabled;
+  }
+  return bundle;
+}
+
+function renderEvolution() {
+  const bundle = store.evolutionDraft;
+  if (!bundle) return void (content.innerHTML = `<div class="loading-state">正在載入進化資料…</div>`);
+  const graph = bundle.evolution;
+  const node = graph.nodes.find((item) => item.id === store.selectedEvolutionNodeId) || graph.nodes[0] || null;
+  store.selectedEvolutionNodeId = node?.id || null;
+  const startNodes = graph.nodes.filter((item) => ["baby", "egg"].includes(item.stage));
+  const finalNodes = graph.nodes.filter((item) => item.stage === "evolved");
+  content.innerHTML = pageHeading("進化與突變", "資料驅動分支、突變、覺醒、吞噬與可達性模擬。金色線為正常進化，紫色虛線為突變。", `<button data-action="validate-evolution">完整檢查</button><button class="primary" data-action="save-evolution">儲存三份設定</button>`)
+    + panel("視覺化進化樹", renderEvolutionTree(graph), "evolution-tree-panel")
+    + `<div class="evolution-editor-layout">${panel("節點編輯", renderEvolutionNodeEditor(node))}${panel("驗證結果", renderEvolutionValidation(store.evolutionValidation || bundle.validation))}</div>`
+    + panel("突變機率與吞噬槽", `<div class="field-grid">${RARITIES.map((rarity) => evolutionNumberField(`mutation.baseChanceByRarity.${rarity}`, `${rarity} 基礎突變率 %`, 0, 100, .1)).join("")}${["youth", "adult", "evolved"].map((stage) => evolutionNumberField(`mutation.stageMultiplier.${stage}`, `${stage} 階段倍率`, 0, 5, .05)).join("")}${evolutionNumberField("mutation.resonanceGainPerFailure", "失敗共鳴增加", 0, 10, .1)}${evolutionNumberField("mutation.resonanceCap", "共鳴上限", 0, 50, .1)}${Object.keys(bundle.mutation.resultWeights || {}).map((key) => evolutionNumberField(`mutation.resultWeights.${key}`, `${key} 權重`, 0, 1000, 1)).join("")}${evolutionNumberField("mutation.devour.inheritedSlots.SS", "SS 繼承槽", 0, 5, 1)}${evolutionNumberField("mutation.devour.inheritedSlots.SSS", "SSS 繼承槽", 0, 5, 1)}</div><label class="text-field"><span>擁有吞噬特性的模板 ID（每行一個）</span><textarea id="dragonDevourTemplateIds" rows="4">${escapeHtml((bundle.mutation.devour?.templateIds || []).join("\n"))}</textarea></label>`)
+    + panel("進化模擬器", `<div class="simulation-controls"><label>次數<select id="evolutionSimulationRuns"><option>1000</option><option>10000</option><option>100000</option></select></label><label>初始節點<select id="evolutionSimulationStart">${startNodes.map((item) => `<option value="${item.id}" ${item.stage === "baby" ? "selected" : ""}>${escapeHtml(item.name)} / ${item.id}</option>`).join("")}</select></label><label>指定最終目標<select id="evolutionSimulationTarget"><option value="">不指定</option>${finalNodes.map((item) => `<option value="${item.id}">${escapeHtml(item.name)} / ${item.id}</option>`).join("")}</select></label><label>原始稀有度<select id="evolutionSimulationRarity">${RARITIES.map((rarity) => `<option>${rarity}</option>`).join("")}</select></label><label>培育傾向<select id="evolutionSimulationTendency"><option value="balanced">均衡</option><option value="attack">攻擊</option><option value="defense">防禦</option><option value="speed">速度</option><option value="magic">魔力</option><option value="flight">飛行</option></select></label><label>照顧評級<select id="evolutionSimulationCareGrade">${["D", "C", "B", "A", "S"].map((grade) => `<option ${grade === "A" ? "selected" : ""}>${grade}</option>`).join("")}</select></label><label>親密度<input id="evolutionSimulationAffection" type="number" value="75" min="0" max="100"></label><label>照顧失誤<input id="evolutionSimulationMistakes" type="number" value="0" min="0"></label><label>攻擊訓練<input id="evolutionSimulationAttack" type="number" value="65"></label><label>防禦訓練<input id="evolutionSimulationDefense" type="number" value="50"></label><label>速度訓練<input id="evolutionSimulationSpeed" type="number" value="50"></label><label>魔力訓練<input id="evolutionSimulationMagic" type="number" value="40"></label><label>飛行訓練<input id="evolutionSimulationFlight" type="number" value="45"></label><label>每階培育小時<input id="evolutionSimulationHours" type="number" value="24" min="0"></label><label class="simulation-check"><input id="evolutionSimulationUseItem" type="checkbox"> 使用進化道具</label><button class="primary" data-action="simulate-evolution">開始模擬</button></div>${renderEvolutionSimulation(store.evolutionSimulation)}`)
+    + panel("完整資料 JSON", `<div class="database-layout"><label class="text-field"><span>dragon-evolution.json</span><textarea id="evolutionGraphJson" rows="22">${escapeHtml(JSON.stringify(bundle.evolution, null, 2))}</textarea></label><label class="text-field"><span>dragon-skills.json（含 transferable 與覺醒池）</span><textarea id="dragonSkillsJson" rows="22">${escapeHtml(JSON.stringify(bundle.skills, null, 2))}</textarea></label></div>`);
 }
 
 function matrixTable() {
@@ -343,7 +462,7 @@ function renderHealth() {
 
 function render() {
   clearInterval(store.animationTimer);
-  const renderers = { dashboard: renderDashboard, pages: renderPages, gacha: renderGacha, adventurers: renderAdventurers, sprites: renderSprites, ui: renderUi, economy: renderEconomy, adventure: renderAdventure, unclassified: renderUnclassified, backups: renderBackups, health: renderHealth };
+  const renderers = { dashboard: renderDashboard, pages: renderPages, gacha: renderGacha, evolution: renderEvolution, adventurers: renderAdventurers, sprites: renderSprites, ui: renderUi, economy: renderEconomy, adventure: renderAdventure, unclassified: renderUnclassified, backups: renderBackups, health: renderHealth };
   (renderers[store.activeTab] || renderDashboard)();
   document.querySelectorAll("[data-tab]").forEach((button) => button.classList.toggle("is-active", button.dataset.tab === store.activeTab));
   updateTopbarState();
@@ -351,8 +470,13 @@ function render() {
 
 async function refreshBootstrap({ keepDraft = true } = {}) {
   const data = await api("/api/bootstrap");
+  if (!data.evolution) data.evolution = await api("/api/evolution");
   store.bootstrap = data;
   store.health = data.health;
+  if (!keepDraft || !store.evolutionDraft) {
+    store.evolutionDraft = clone(data.evolution);
+    store.evolutionValidation = clone(data.evolution?.validation || null);
+  }
   store.defaults = clone(data.defaults || data.config);
   if (!keepDraft || !store.draft) {
     store.draft = clone(data.config);
@@ -417,6 +541,13 @@ function startAnimation(character, action) {
 document.addEventListener("click", async (event) => {
   const tab = event.target.closest("[data-tab]");
   if (tab) { store.activeTab = tab.dataset.tab; render(); return; }
+  const evolutionNode = event.target.closest("[data-evolution-node-id]");
+  if (evolutionNode) {
+    try { store.evolutionDraft = readEvolutionBundleFromEditors(); } catch (error) { showToast(`節點草稿格式錯誤：${error.message}`, true); return; }
+    store.selectedEvolutionNodeId = evolutionNode.dataset.evolutionNodeId;
+    render();
+    return;
+  }
   const page = event.target.closest("[data-page-key]");
   if (page) { store.activePage = page.dataset.pageKey; render(); return; }
   const matrix = event.target.closest("[data-matrix-filter]");
@@ -436,6 +567,71 @@ document.addEventListener("click", async (event) => {
   const action = button.dataset.action;
   try {
     if (action === "save-config") await saveConfig();
+    if (action === "apply-evolution-node") {
+      store.evolutionDraft = readEvolutionBundleFromEditors();
+      store.evolutionValidation = null;
+      render();
+      showToast("節點草稿已套用，按儲存才會寫入專案");
+    }
+    if (action === "validate-evolution") {
+      store.evolutionDraft = readEvolutionBundleFromEditors();
+      store.evolutionValidation = await api("/api/evolution/validate", {
+        method: "POST",
+        body: JSON.stringify(store.evolutionDraft)
+      });
+      render();
+      showToast(store.evolutionValidation.valid ? "進化圖檢查完成，沒有阻擋儲存的錯誤" : "進化圖仍有錯誤，請查看驗證結果", !store.evolutionValidation.valid);
+    }
+    if (action === "save-evolution") {
+      store.evolutionDraft = readEvolutionBundleFromEditors();
+      const result = await api("/api/evolution", {
+        method: "PUT",
+        body: JSON.stringify(store.evolutionDraft)
+      });
+      store.evolutionDraft = { evolution: result.evolution, mutation: result.mutation, skills: result.skills };
+      store.evolutionValidation = result.validation;
+      if (store.bootstrap) store.bootstrap.evolution = clone(store.evolutionDraft);
+      render();
+      showToast(result.message || "進化與突變設定已儲存");
+    }
+    if (action === "simulate-evolution") {
+      store.evolutionDraft = readEvolutionBundleFromEditors();
+      const numberValue = (id, fallback = 0) => Number(document.getElementById(id)?.value ?? fallback);
+      const tendency = document.getElementById("evolutionSimulationTendency")?.value || "balanced";
+      const training = {
+        attack: numberValue("evolutionSimulationAttack", 65),
+        defense: numberValue("evolutionSimulationDefense", 50),
+        speed: numberValue("evolutionSimulationSpeed", 50),
+        magic: numberValue("evolutionSimulationMagic", 40),
+        flight: numberValue("evolutionSimulationFlight", 45)
+      };
+      if (tendency !== "balanced" && training[tendency] !== undefined) training[tendency] = Math.max(training[tendency], 80);
+      const options = {
+        runs: numberValue("evolutionSimulationRuns", 1000),
+        startNodeId: document.getElementById("evolutionSimulationStart")?.value,
+        targetNodeId: document.getElementById("evolutionSimulationTarget")?.value || null,
+        originalRarity: document.getElementById("evolutionSimulationRarity")?.value || "C",
+        seed: Date.now() % 2147483647,
+        profile: {
+          level: 100,
+          careGrade: document.getElementById("evolutionSimulationCareGrade")?.value || "A",
+          affection: numberValue("evolutionSimulationAffection", 75),
+          mood: 80,
+          careMistakes: numberValue("evolutionSimulationMistakes", 0),
+          battleWins: 20,
+          foods: { meat: 20, fruit: 18 },
+          training,
+          items: document.getElementById("evolutionSimulationUseItem")?.checked ? { evolutionCatalyst: true } : {},
+          cultivationHoursPerStage: numberValue("evolutionSimulationHours", 24)
+        }
+      };
+      store.evolutionSimulation = await api("/api/evolution/simulate", {
+        method: "POST",
+        body: JSON.stringify({ bundle: store.evolutionDraft, options })
+      });
+      render();
+      showToast(`${store.evolutionSimulation.runs.toLocaleString()} 次進化模擬完成`);
+    }
     if (action === "undo" && store.history.length) { store.future.push(clone(store.draft)); store.draft = store.history.pop(); render(); postPreview(); }
     if (action === "redo" && store.future.length) { store.history.push(clone(store.draft)); store.draft = store.future.pop(); render(); postPreview(); }
     if (action === "reload-preview") { preview.src = `/game/index.html?dragonAdminPreview=1&t=${Date.now()}`; }
@@ -490,6 +686,20 @@ document.addEventListener("click", async (event) => {
 });
 
 content.addEventListener("input", (event) => {
+  const evolutionField = event.target.closest("[data-evolution-path]");
+  if (evolutionField) {
+    const value = evolutionField.type === "checkbox"
+      ? evolutionField.checked
+      : evolutionField.type === "number" || evolutionField.type === "range"
+        ? Number(evolutionField.value)
+        : evolutionField.value;
+    setAt(store.evolutionDraft, evolutionField.dataset.evolutionPath, value);
+    content.querySelectorAll(`[data-evolution-path="${evolutionField.dataset.evolutionPath}"]`).forEach((mirror) => {
+      if (mirror !== evolutionField) mirror.value = value;
+    });
+    store.evolutionValidation = null;
+    return;
+  }
   const field = event.target.closest("[data-config-path]");
   if (!field) return;
   const oldValue = getAt(store.draft, field.dataset.configPath);
@@ -544,6 +754,7 @@ async function initialize() {
     render();
     updatePreviewSize();
   } catch (error) {
+    console.error("Dragon Admin Studio 初始化失敗", error);
     content.innerHTML = `<div class="empty-state status-error">Dragon Admin Studio 載入失敗：${escapeHtml(error.message)}</div>`;
   }
 }

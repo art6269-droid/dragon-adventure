@@ -1,0 +1,475 @@
+/* Shared mobile application shell. Loaded last to normalize legacy page layouts. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@media (max-width: 760px) {
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .game-shell {
+    width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100svh !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .game-app.home-v2-root {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    width: min(100%, 430px);
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100svh;
+    margin: 0 auto;
+    overflow: hidden;
+    transform: none;
+  }
+
+  .game-hud.home-v2-hud {
+    position: relative !important;
+    inset: auto !important;
+    z-index: 30;
+    min-width: 0;
+    min-height: 0 !important;
+    margin: 0;
+    padding: max(8px, env(safe-area-inset-top)) 12px 8px;
+  }
+
+  .game-hud .home-v2-resource,
+  .game-hud .home-v2-settings {
+    min-width: 0;
+    min-height: 42px;
+  }
+
+  .game-main.home-v2-scene {
+    position: relative !important;
+    inset: auto !important;
+    z-index: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  #worldPager {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    touch-action: pan-x pan-y;
+  }
+
+  #worldPager > .worldPage {
+    position: relative;
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px 14px 20px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    touch-action: pan-x pan-y;
+    translate: none !important;
+    scale: none !important;
+    transform: none !important;
+  }
+
+  #worldPager > .worldPage::-webkit-scrollbar,
+  #worldPager > .worldPage *::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  .game-bottom-area {
+    position: relative;
+    z-index: 40;
+    display: grid;
+    min-width: 0;
+    width: 100%;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .game-bottom-nav-row {
+    position: relative;
+    display: block;
+    min-width: 0;
+    width: 100%;
+  }
+
+  #bottomNavViewport.bottom-nav {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: calc(100% - 24px) !important;
+    height: 82px !important;
+    min-height: 82px !important;
+    margin: 0 12px 8px !important;
+    padding: 8px 10px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    transform: none !important;
+    scrollbar-width: none;
+    touch-action: pan-x;
+  }
+
+  #bottomNavViewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  #bottomNavTrack {
+    gap: 8px !important;
+    min-width: max-content;
+    height: 66px;
+    padding: 0 !important;
+  }
+
+  #bottomNavViewport .navItem {
+    flex: 0 0 66px;
+    width: 66px;
+    height: 66px;
+    min-height: 66px;
+    padding: 6px;
+  }
+
+  #bottomNavViewport .navItemIcon {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  #bottomNavViewport .nav-icon-art {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .game-bottom-nav-row > .home-v2-nav-arrow {
+    display: none !important;
+  }
+
+  #mimiDialogue.mimi-dialogue.mimi-guide {
+    position: relative !important;
+    inset: auto !important;
+    width: calc(100% - 32px) !important;
+    min-height: 66px !important;
+    max-height: 92px !important;
+    margin: 6px 16px !important;
+    padding: 8px 14px !important;
+    grid-template-columns: 58px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    transform: none !important;
+  }
+
+  #mimiDialogue.mimi-dialogue:not(.is-visible):not(.is-hiding) {
+    display: none;
+  }
+
+  #mimiDialogue.mimi-dialogue.is-visible,
+  #mimiDialogue.mimi-dialogue.is-hiding {
+    display: grid;
+  }
+
+  #mimiDialogue.mimi-dialogue.is-visible {
+    animation: mobileMimiDialogueIn 0.3s ease-out both;
+  }
+
+  #mimiDialogue.mimi-dialogue.is-hiding {
+    animation: mobileMimiDialogueOut 0.25s ease-in both;
+  }
+
+  #mimiDialogue .mimi-dialogue-avatar {
+    position: relative !important;
+    inset: auto !important;
+    width: 58px !important;
+    height: 58px !important;
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  #mimiDialogue .mimi-dialogue-text.mimi-guide-text {
+    display: -webkit-box;
+    min-width: 0;
+    min-height: 0;
+    padding: 0 !important;
+    overflow: hidden;
+    border: 0 !important;
+    color: #fff;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-size: clamp(14px, 3.7vw, 17px);
+    font-weight: 800;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .homeDots {
+    display: none !important;
+  }
+
+  #worldPager > .worldPage > :is(
+    .dragon-cave-page,
+    .dragon-house-page,
+    .equipment-shop-page-scroll,
+    .adventurer-guild-page,
+    .explore-page-shell,
+    .quest-page-shell,
+    .mission-scroll
+  ) {
+    width: 100%;
+    height: auto !important;
+    min-height: 100%;
+    max-height: none !important;
+    padding-bottom: 20px !important;
+    overflow: visible !important;
+  }
+
+  #worldPager > .worldPage :is(
+    .equipment-shop-grid,
+    .shop-grid,
+    .shop-product-grid,
+    .world-card-grid,
+    .adventurer-grid,
+    .mission-chapters,
+    .mission-chapter,
+    .mission-chapter-body,
+    .mission-list,
+    .quest-chapters,
+    .quest-chapter-list
+  ) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .equipmentShopPage,
+  .adventurerGuildPage,
+  .questPage,
+  .explorePage,
+  .itemShopPage,
+  .adventurePage {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  .equipment-shop-page-scroll,
+  .adventurer-guild-page,
+  .quest-page-shell,
+  .explore-page-shell {
+    overflow: visible !important;
+  }
+
+  .equipment-shop-grid,
+  .shop-grid,
+  .shop-product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+  }
+
+  .equipment-shop-card,
+  .shop-card,
+  .shop-product-card {
+    width: 100%;
+    max-width: 100% !important;
+    min-width: 0;
+    height: auto;
+  }
+
+  .world-card {
+    width: 100%;
+    max-width: 100% !important;
+    min-width: 0;
+  }
+
+  .world-card-grid {
+    position: relative;
+    inset: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    margin-top: 14px;
+    align-content: start;
+  }
+
+  .itemShopPage .world-card-grid {
+    margin-top: 10px;
+  }
+
+  .adventurePage .world-card-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .adventurePage .world-card,
+  .adventure-card {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .adventure-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    width: 100%;
+  }
+
+  .adventurer-guild-tools > div,
+  .guild-filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+  }
+
+  .adventurer-guild-tools :is(input, select),
+  .guild-filters select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .questPage :is(.quest-page-shell, .quest-chapters, .quest-chapter-list, .mission-chapters) {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .questPage .mission-chapter {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .questPage .mission-chapter-header {
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .questPage :is(.mission-chapter-heading, .mission-chapter-title, .mission-row-main) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .dragonCavePage {
+    padding: 0 14px 20px !important;
+  }
+
+  .dragonCavePage .dragon-cave-page {
+    display: flex;
+    flex-direction: column;
+    gap: 8px !important;
+  }
+
+  .dragonCavePage .dragon-cave-page .hatch-island-section {
+    position: relative !important;
+    flex: 0 0 420px !important;
+    width: 100% !important;
+    height: 420px !important;
+    min-height: 420px !important;
+    max-height: none !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  .dragonCavePage .dragon-cave-page .hatch-island-art {
+    width: 100% !important;
+    max-width: 430px !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    transform: none !important;
+  }
+
+  .dragonCavePage .dragon-cave-page .hatch-machines-section {
+    flex: 0 0 auto !important;
+    width: 100%;
+    height: auto !important;
+    min-height: 160px !important;
+    padding: 4px 0 8px !important;
+    overflow: visible !important;
+  }
+
+  .dragonCavePage .dragon-cave-page .hatch-machines-scroll {
+    width: 100%;
+    height: auto !important;
+    min-height: 140px;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+
+  .dragon-detail-panel {
+    left: 50%;
+    width: calc(100% - 24px) !important;
+    max-width: 410px !important;
+    max-height: min(62dvh, 560px) !important;
+    overflow-y: auto !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .dragon-info-modal,
+  .dragon-house-detail-modal {
+    width: calc(100% - 24px) !important;
+    max-width: 410px !important;
+    max-height: min(62dvh, 560px) !important;
+    overflow-y: auto !important;
+  }
+
+  .dragon-actions,
+  .dragon-status-actions,
+  .dragon-house-detail-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .equipment-shop-grid,
+  .shop-grid,
+  .shop-product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .game-hud.home-v2-hud {
+    gap: 5px;
+    padding-inline: 8px;
+  }
+}
+
+@media (min-width: 430px) and (max-width: 760px) {
+  .adventurePage .world-card-grid,
+  .adventure-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@keyframes mobileMimiDialogueIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes mobileMimiDialogueOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(8px) scale(0.98); }
+}

@@ -1,9 +1,21 @@
 {
+  "mobileShell": {
+    "path": "mobile-shell.css",
+    "purpose": "Shared iPhone-safe app shell, page scrolling, Mimi guide, and bottom navigation layout."
+  },
   "adminConfig": {
     "path": "config/game-config.json",
     "defaultsPath": "config/game-config.defaults.json",
     "purpose": "Data-driven game, page, gacha, sprite, UI, economy, and future adventure settings edited by Dragon Admin Studio.",
     "localTool": "tools/dragon-admin/"
+  },
+  "dragonEvolution": {
+    "core": "dragon-evolution-core.js",
+    "graph": "config/dragon-evolution.json",
+    "mutation": "config/dragon-mutation.json",
+    "skills": "config/dragon-skills.json",
+    "adminTab": "進化與突變",
+    "purpose": "Shared data-driven DAG evolution, mutation, final awakening, devour inheritance, validation, and simulation data."
   },
   "backgrounds": {
     "login": {

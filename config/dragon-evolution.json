@@ -1,0 +1,729 @@
+{
+  "version": 2,
+  "entryNodeIds": [
+    "fire-egg-0001",
+    "fire-baby-0001"
+  ],
+  "settings": {
+    "softConditionWeight": 25,
+    "researchBonusPerPoint": 0.005,
+    "researchBonusCap": 0.12
+  },
+  "nodes": [
+    {
+      "id": "fire-egg-0001",
+      "name": "赤火龍蛋",
+      "stage": "egg",
+      "rarity": "C",
+      "element": "fire",
+      "routes": [
+        {
+          "id": "fire-egg-hatch-0001",
+          "label": "赤火血統",
+          "targetId": "fire-baby-0001",
+          "requirements": {},
+          "softConditions": {},
+          "priorityWeight": 100,
+          "hint": "蛋殼內傳來溫暖的心跳",
+          "mutationPool": []
+        }
+      ],
+      "templateId": "",
+      "traits": [],
+      "hasDevour": false
+    },
+    {
+      "id": "fire-baby-0001",
+      "templateId": "fire_c_0001_baby",
+      "name": "赤焰幼龍",
+      "stage": "baby",
+      "rarity": "C",
+      "element": "fire",
+      "routes": [
+        {
+          "id": "fire-baby-power-route",
+          "label": "攻擊型",
+          "targetId": "fire-youth-0001",
+          "requirements": {
+            "level": 10,
+            "attackTraining": 40,
+            "battleWins": 5
+          },
+          "softConditions": {
+            "favoriteFoodTag": "meat",
+            "moodMin": 60
+          },
+          "priorityWeight": 100,
+          "hint": "牠的身體開始散發強烈熱氣",
+          "mutationPool": [
+            {
+              "targetId": "fire-youth-variant-0001",
+              "type": "variant",
+              "resultType": "sameRarityVariant",
+              "weight": 75
+            },
+            {
+              "targetId": "fire-youth-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 23
+            },
+            {
+              "targetId": "fire-youth-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        },
+        {
+          "id": "fire-baby-flight-route",
+          "label": "飛行型",
+          "targetId": "fire-youth-0002",
+          "requirements": {
+            "level": 10,
+            "speedTraining": 35,
+            "flightTraining": 30
+          },
+          "softConditions": {
+            "favoriteFoodTag": "fruit",
+            "affectionMin": 50
+          },
+          "priorityWeight": 100,
+          "hint": "牠常常抬頭凝視天空",
+          "mutationPool": [
+            {
+              "targetId": "fire-youth-variant-0001",
+              "type": "variant",
+              "resultType": "sameRarityVariant",
+              "weight": 75
+            },
+            {
+              "targetId": "fire-youth-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 23
+            },
+            {
+              "targetId": "fire-youth-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        }
+      ],
+      "traits": [],
+      "hasDevour": false
+    },
+    {
+      "id": "fire-youth-0001",
+      "templateId": "fire_c_0001_youth",
+      "name": "烈爪青年龍",
+      "stage": "youth",
+      "rarity": "C",
+      "element": "fire",
+      "routes": [
+        {
+          "id": "fire-youth-power-adult",
+          "label": "烈爪型",
+          "targetId": "fire-adult-0001",
+          "requirements": {
+            "level": 20,
+            "attackTraining": 55,
+            "battleWins": 10
+          },
+          "softConditions": {
+            "moodMin": 60
+          },
+          "priorityWeight": 110,
+          "hint": "牠的前爪凝聚出灼熱火光",
+          "mutationPool": [
+            {
+              "targetId": "fire-adult-light-0001",
+              "type": "elementShift",
+              "resultType": "elementShift",
+              "weight": 70
+            },
+            {
+              "targetId": "fire-adult-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 28
+            },
+            {
+              "targetId": "fire-adult-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        },
+        {
+          "id": "fire-youth-guard-adult",
+          "label": "防禦型",
+          "targetId": "fire-adult-0003",
+          "requirements": {
+            "level": 20,
+            "defenseTraining": 45,
+            "affection": 55
+          },
+          "softConditions": {
+            "careMistakesMax": 2
+          },
+          "priorityWeight": 90,
+          "hint": "牠的鱗片逐漸變得厚實",
+          "mutationPool": [
+            {
+              "targetId": "fire-adult-light-0001",
+              "type": "elementShift",
+              "resultType": "elementShift",
+              "weight": 70
+            },
+            {
+              "targetId": "fire-adult-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 28
+            },
+            {
+              "targetId": "fire-adult-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-youth-0002",
+      "templateId": "fire_c_0001_youth",
+      "name": "翔焰青年龍",
+      "stage": "youth",
+      "rarity": "C",
+      "element": "fire",
+      "routes": [
+        {
+          "id": "fire-youth-flight-adult",
+          "label": "飛行型",
+          "targetId": "fire-adult-0002",
+          "requirements": {
+            "level": 20,
+            "speedTraining": 40,
+            "flightTraining": 35
+          },
+          "softConditions": {
+            "affectionMin": 55
+          },
+          "priorityWeight": 110,
+          "hint": "牠的翼膜浮現流動火紋",
+          "mutationPool": [
+            {
+              "targetId": "fire-adult-light-0001",
+              "type": "elementShift",
+              "resultType": "elementShift",
+              "weight": 70
+            },
+            {
+              "targetId": "fire-adult-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 28
+            },
+            {
+              "targetId": "fire-adult-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-youth-variant-0001",
+      "templateId": "fire_c_0001_youth",
+      "name": "蒼焰青年龍",
+      "stage": "youth",
+      "rarity": "C",
+      "element": "fire",
+      "variant": "azure-flame",
+      "routes": [
+        {
+          "id": "fire-youth-variant-adult",
+          "label": "蒼焰型",
+          "targetId": "fire-adult-0003",
+          "requirements": {
+            "level": 20,
+            "magicTraining": 30
+          },
+          "softConditions": {
+            "affectionMin": 50
+          },
+          "priorityWeight": 100,
+          "hint": "藍色火苗繞著牠的角盤旋",
+          "mutationPool": [
+            {
+              "targetId": "fire-adult-light-0001",
+              "type": "elementShift",
+              "resultType": "elementShift",
+              "weight": 75
+            },
+            {
+              "targetId": "fire-adult-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 23
+            },
+            {
+              "targetId": "fire-adult-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-youth-b-0001",
+      "templateId": "fire_c_0001_youth",
+      "name": "熔核青年龍",
+      "stage": "youth",
+      "rarity": "B",
+      "element": "fire",
+      "routes": [
+        {
+          "id": "fire-youth-b-adult",
+          "label": "熔核型",
+          "targetId": "fire-adult-b-0001",
+          "requirements": {
+            "level": 20,
+            "attackTraining": 45
+          },
+          "softConditions": {
+            "battleWins": 10
+          },
+          "priorityWeight": 100,
+          "hint": "牠胸口的熔核變得更加明亮",
+          "mutationPool": [
+            {
+              "targetId": "fire-adult-light-0001",
+              "type": "elementShift",
+              "resultType": "elementShift",
+              "weight": 80
+            },
+            {
+              "targetId": "fire-adult-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-youth-ancient-0001",
+      "templateId": "fire_c_0001_youth",
+      "name": "古火青年龍",
+      "stage": "youth",
+      "rarity": "C",
+      "element": "fire",
+      "variant": "ancient",
+      "routes": [
+        {
+          "id": "fire-youth-ancient-adult",
+          "label": "古代型",
+          "targetId": "fire-adult-ancient-0001",
+          "requirements": {
+            "level": 20,
+            "battleWins": 8
+          },
+          "softConditions": {
+            "affectionMin": 50
+          },
+          "priorityWeight": 100,
+          "hint": "古老的火紋在鱗片間甦醒",
+          "mutationPool": [
+            {
+              "targetId": "fire-adult-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 98
+            },
+            {
+              "targetId": "fire-adult-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-adult-0001",
+      "templateId": "fire_c_0001_adult",
+      "name": "烈爪成龍",
+      "stage": "adult",
+      "rarity": "C",
+      "element": "fire",
+      "routes": [
+        {
+          "id": "fire-adult-blaze-evolved",
+          "label": "爆炎型",
+          "targetId": "fire-evolved-0001",
+          "requirements": {
+            "level": 40,
+            "attackTraining": 60,
+            "battleWins": 15
+          },
+          "softConditions": {
+            "favoriteFoodTag": "meat",
+            "moodMin": 65
+          },
+          "priorityWeight": 110,
+          "hint": "牠的吐息已能熔化岩石",
+          "unlockSkills": [
+            "skill-flame-burst"
+          ],
+          "mutationPool": [
+            {
+              "targetId": "fire-evolved-skill-0001",
+              "type": "skillMutation",
+              "resultType": "skillMutation",
+              "weight": 60
+            },
+            {
+              "targetId": "fire-evolved-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 38
+            },
+            {
+              "targetId": "fire-evolved-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        },
+        {
+          "id": "fire-adult-guard-evolved",
+          "label": "防禦型",
+          "targetId": "fire-evolved-0003",
+          "requirements": {
+            "level": 40,
+            "defenseTraining": 45,
+            "affection": 65
+          },
+          "softConditions": {
+            "careMistakesMax": 2
+          },
+          "priorityWeight": 90,
+          "hint": "牠總是擋在夥伴前方",
+          "unlockSkills": [
+            "skill-ember-guard"
+          ],
+          "mutationPool": [
+            {
+              "targetId": "fire-evolved-skill-0001",
+              "type": "skillMutation",
+              "resultType": "skillMutation",
+              "weight": 60
+            },
+            {
+              "targetId": "fire-evolved-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 38
+            },
+            {
+              "targetId": "fire-evolved-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-adult-0002",
+      "templateId": "fire_c_0001_adult",
+      "name": "翔焰成龍",
+      "stage": "adult",
+      "rarity": "C",
+      "element": "fire",
+      "routes": [
+        {
+          "id": "fire-adult-sky-evolved",
+          "label": "飛行型",
+          "targetId": "fire-evolved-0002",
+          "requirements": {
+            "level": 40,
+            "speedTraining": 40,
+            "flightTraining": 35
+          },
+          "softConditions": {
+            "affectionMin": 60
+          },
+          "priorityWeight": 110,
+          "hint": "牠的雙翼捲起灼熱上升氣流",
+          "unlockSkills": [
+            "skill-sky-dash"
+          ],
+          "mutationPool": [
+            {
+              "targetId": "fire-evolved-skill-0001",
+              "type": "skillMutation",
+              "resultType": "skillMutation",
+              "weight": 60
+            },
+            {
+              "targetId": "fire-evolved-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 38
+            },
+            {
+              "targetId": "fire-evolved-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-adult-0003",
+      "templateId": "fire_c_0001_adult",
+      "name": "蒼盾成龍",
+      "stage": "adult",
+      "rarity": "C",
+      "element": "fire",
+      "routes": [
+        {
+          "id": "fire-adult-heart-evolved",
+          "label": "守護型",
+          "targetId": "fire-evolved-0003",
+          "requirements": {
+            "level": 40,
+            "defenseTraining": 40,
+            "affection": 60
+          },
+          "softConditions": {
+            "moodMin": 70
+          },
+          "priorityWeight": 100,
+          "hint": "牠的火焰不再灼傷親近的人",
+          "unlockSkills": [
+            "skill-heartflame"
+          ],
+          "mutationPool": [
+            {
+              "targetId": "fire-evolved-skill-0001",
+              "type": "skillMutation",
+              "resultType": "skillMutation",
+              "weight": 60
+            },
+            {
+              "targetId": "fire-evolved-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 38
+            },
+            {
+              "targetId": "fire-evolved-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-adult-light-0001",
+      "templateId": "fire_c_0001_adult",
+      "name": "曦焰成龍",
+      "stage": "adult",
+      "rarity": "C",
+      "element": "light",
+      "secondaryElement": "fire",
+      "routes": [
+        {
+          "id": "fire-adult-light-evolved",
+          "label": "曦焰型",
+          "targetId": "fire-evolved-0002",
+          "requirements": {
+            "level": 40,
+            "affection": 60
+          },
+          "softConditions": {
+            "magicTraining": 30
+          },
+          "priorityWeight": 100,
+          "hint": "金色火光在牠的翼尖聚集",
+          "mutationPool": [
+            {
+              "targetId": "fire-evolved-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 98
+            },
+            {
+              "targetId": "fire-evolved-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-adult-b-0001",
+      "templateId": "fire_c_0001_adult",
+      "name": "熔核成龍",
+      "stage": "adult",
+      "rarity": "B",
+      "element": "fire",
+      "routes": [
+        {
+          "id": "fire-adult-b-evolved",
+          "label": "熔核型",
+          "targetId": "fire-evolved-b-0001",
+          "requirements": {
+            "level": 40,
+            "attackTraining": 50,
+            "battleWins": 12
+          },
+          "softConditions": {
+            "moodMin": 60
+          },
+          "priorityWeight": 100,
+          "hint": "熔核脈動與心跳逐漸同步",
+          "mutationPool": [
+            {
+              "targetId": "fire-evolved-skill-0001",
+              "type": "skillMutation",
+              "resultType": "skillMutation",
+              "weight": 98
+            },
+            {
+              "targetId": "fire-evolved-ancient-0001",
+              "type": "ancient",
+              "resultType": "ancientMutation",
+              "weight": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-adult-ancient-0001",
+      "templateId": "fire_c_0001_adult",
+      "name": "古火成龍",
+      "stage": "adult",
+      "rarity": "C",
+      "element": "fire",
+      "variant": "ancient",
+      "routes": [
+        {
+          "id": "fire-adult-ancient-evolved",
+          "label": "古代型",
+          "targetId": "fire-evolved-ancient-0001",
+          "requirements": {
+            "level": 40,
+            "battleWins": 12
+          },
+          "softConditions": {
+            "affectionMin": 60
+          },
+          "priorityWeight": 100,
+          "hint": "失落的血統記憶正逐漸清晰",
+          "unlockSkills": [
+            "skill-ancient-ember"
+          ],
+          "mutationPool": [
+            {
+              "targetId": "fire-evolved-b-0001",
+              "type": "rarityUpgrade",
+              "resultType": "rarityUpgrade",
+              "weight": 100
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-evolved-0001",
+      "templateId": "fire_c_0001_evolution",
+      "name": "爆炎赤龍",
+      "stage": "evolved",
+      "rarity": "C",
+      "element": "fire",
+      "statMultiplier": 1.18,
+      "routes": []
+    },
+    {
+      "id": "fire-evolved-0002",
+      "templateId": "fire_c_0001_evolution",
+      "name": "天翔焰龍",
+      "stage": "evolved",
+      "rarity": "C",
+      "element": "fire",
+      "statMultiplier": 1.14,
+      "routes": []
+    },
+    {
+      "id": "fire-evolved-0003",
+      "templateId": "fire_c_0001_evolution",
+      "name": "守心焰龍",
+      "stage": "evolved",
+      "rarity": "C",
+      "element": "fire",
+      "statMultiplier": 1.2,
+      "routes": []
+    },
+    {
+      "id": "fire-evolved-skill-0001",
+      "templateId": "fire_c_0001_evolution",
+      "name": "共鳴焰龍",
+      "stage": "evolved",
+      "rarity": "C",
+      "element": "fire",
+      "mutationSkillId": "skill-heartflame",
+      "statMultiplier": 1.16,
+      "routes": []
+    },
+    {
+      "id": "fire-evolved-b-0001",
+      "templateId": "fire_c_0001_evolution",
+      "name": "熔核霸龍",
+      "stage": "evolved",
+      "rarity": "B",
+      "element": "fire",
+      "statMultiplier": 1.28,
+      "routes": []
+    },
+    {
+      "id": "fire-evolved-ancient-0001",
+      "templateId": "fire_c_0001_evolution",
+      "name": "遠古赤炎龍",
+      "stage": "evolved",
+      "rarity": "C",
+      "element": "fire",
+      "variant": "ancient",
+      "statMultiplier": 1.32,
+      "traits": [
+        "ancient-blood"
+      ],
+      "routes": []
+    }
+  ]
+}

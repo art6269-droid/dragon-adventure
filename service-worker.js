@@ -1,4 +1,4 @@
-const CACHE_NAME = "dragon-adventure-v-admin-config-1";
+const CACHE_NAME = "dragon-adventure-v-mobile-shell-1";
 
 const CORE_ASSETS = [
   "./",
@@ -60,6 +60,8 @@ const CORE_ASSETS = [
   "./home-v2.css?v=58",
   "./admin-runtime.css",
   "./admin-runtime.css?v=1",
+  "./mobile-shell.css",
+  "./mobile-shell.css?v=1",
   "./app.js",
   "./app.js?v=14",
   "./app.js?v=15",
@@ -116,6 +118,8 @@ const CORE_ASSETS = [
   "./app.js?v=67",
   "./app.js?v=68",
   "./app.js?v=69",
+  "./app.js?v=70",
+  "./dragon-evolution-core.js?v=1",
   "./home-v2-overrides.js",
   "./home-v2-overrides.js?v=1",
   "./home-v2-overrides.js?v=2",
@@ -133,6 +137,9 @@ const CORE_ASSETS = [
   "./assets/adventurers/index.json",
   "./config/game-config.json",
   "./config/game-config.defaults.json",
+  "./config/dragon-evolution.json",
+  "./config/dragon-mutation.json",
+  "./config/dragon-skills.json",
   "./assets/adventurers/_shared/card-placeholder.png",
   "./assets/adventurers/_shared/portrait-placeholder.png",
   "./assets/adventurers/_shared/icon-placeholder.png",
@@ -368,6 +375,10 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
   const requestUrl = new URL(event.request.url);
+  if (requestUrl.pathname.startsWith("/api/")) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
   const isFreshCoreFile = event.request.mode === "navigate"
     || event.request.destination === "document"
     || event.request.destination === "script"
@@ -380,6 +391,9 @@ self.addEventListener("fetch", (event) => {
     || requestUrl.pathname.endsWith("/assets/adventurers/index.json")
     || requestUrl.pathname.endsWith("/config/game-config.json")
     || requestUrl.pathname.endsWith("/config/game-config.defaults.json")
+    || requestUrl.pathname.endsWith("/config/dragon-evolution.json")
+    || requestUrl.pathname.endsWith("/config/dragon-mutation.json")
+    || requestUrl.pathname.endsWith("/config/dragon-skills.json")
     || (
       requestUrl.pathname.includes("/assets/adventurers/")
       && requestUrl.pathname.endsWith("/data.json")

@@ -16,6 +16,8 @@ npm run admin
 
 - 寫入 API 同時檢查請求主機名稱與連線來源，只接受本機連線。
 - 每次寫入 `game-config.json`、角色 `data.json` 或角色索引前，都會備份到專案的 `backups/dragon-admin/`。
+- 「進化與突變」可視化編輯 `dragon-evolution.json`、`dragon-mutation.json`、`dragon-skills.json`；儲存前會檢查跳階、循環、失效目標、技能池與不可達節點，三個檔案會一起備份。
+- 進化模擬器可執行 1,000、10,000 或 100,000 次，結果只存在後台畫面，不會寫入玩家存檔。
 - 一般備份最多保留最近 50 份。
 - 後台不會讀取、修改或清除瀏覽器的玩家 `localStorage`。
 - 「整理未分類素材」預設只複製原檔；只有再次明確確認時才會刪除來源。

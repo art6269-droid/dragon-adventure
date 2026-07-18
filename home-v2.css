@@ -7990,6 +7990,415 @@ body:not(.home-v2-active) #mimiDialogue {
   transform: translateY(2px);
 }
 
+.dragon-evolution-modal.is-data-driven {
+  max-height: min(720px, calc(100% - 8px));
+}
+
+.dragon-evolution-tendencies {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.dragon-evolution-tendencies h3 {
+  color: #ffe69b;
+  font-size: 0.86rem;
+}
+
+.dragon-evolution-tendency {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  padding: 7px 9px;
+  border: 1px solid rgba(255, 224, 139, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.dragon-evolution-tendency.is-locked {
+  opacity: 0.58;
+}
+
+.dragon-evolution-tendency span,
+.dragon-evolution-tendency b {
+  color: #fff0b0;
+  font-size: 0.75rem;
+}
+
+.dragon-evolution-tendency small {
+  grid-column: 1 / -1;
+  color: #c9dcff;
+  font-size: 0.66rem;
+}
+
+.dragon-evolution-resonance,
+.dragon-evolution-note,
+.dragon-evolution-error {
+  padding: 8px 10px;
+  border-radius: 10px;
+  color: #f8efff;
+  background: rgba(111, 62, 159, 0.3);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.dragon-evolution-error {
+  color: #ffd5d0;
+  background: rgba(154, 42, 42, 0.35);
+}
+
+.dragon-care-training {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 9px;
+}
+
+.dragon-care-training > span {
+  grid-column: 1 / -1;
+  color: #c9dcff;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.dragon-care-training button {
+  min-width: 0;
+  min-height: 38px;
+  padding: 4px 2px;
+  border: 1px solid rgba(255, 225, 139, 0.75);
+  border-radius: 9px;
+  color: #fff2b8;
+  background: linear-gradient(180deg, #31579c, #172c63);
+  font-size: 0.64rem;
+  font-weight: 900;
+}
+
+.dragon-care-training small {
+  display: block;
+  margin-top: 2px;
+  color: #bfe5ff;
+  font-size: 0.58rem;
+}
+
+.dragon-evolution-result-backdrop {
+  position: absolute;
+  z-index: 190;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 72px 20px 118px;
+  box-sizing: border-box;
+  background: rgba(4, 11, 29, 0.78);
+  backdrop-filter: blur(7px);
+}
+
+.dragon-evolution-result {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: min(100%, 360px);
+  padding: 22px 18px 18px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 222, 128, 0.96);
+  border-radius: 20px;
+  box-sizing: border-box;
+  color: #fff;
+  text-align: center;
+  background: rgba(10, 28, 67, 0.97);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.5), inset 0 0 26px rgba(255, 221, 120, 0.1);
+  animation: dragonEvolutionResultIn 0.48s ease-out both;
+}
+
+.dragon-evolution-result-backdrop.is-mutated .dragon-evolution-result {
+  border-color: #d69cff;
+  animation: dragonEvolutionGlitchIn 0.65s ease-out both;
+}
+
+.dragon-evolution-result-glow {
+  position: absolute;
+  left: 50%;
+  top: 78px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(255, 215, 94, 0.18);
+  box-shadow: 0 0 55px rgba(255, 214, 91, 0.72);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.is-mutated .dragon-evolution-result-glow {
+  background: rgba(177, 82, 255, 0.22);
+  box-shadow: 0 0 64px rgba(178, 79, 255, 0.88);
+}
+
+.dragon-evolution-result > img {
+  position: relative;
+  z-index: 1;
+  width: 150px;
+  height: 138px;
+  object-fit: contain;
+  animation: dragonEvolutionReveal 0.75s ease-out both;
+}
+
+.dragon-evolution-result small {
+  color: #c9dcff;
+  font-weight: 900;
+}
+
+.dragon-evolution-result h2 {
+  margin: 3px 0;
+  color: #ffe59a;
+}
+
+.dragon-evolution-result p {
+  margin: 4px 0;
+  font-size: 0.82rem;
+}
+
+.dragon-awakening-result {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid rgba(255, 229, 150, 0.52);
+  border-radius: 12px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.065);
+}
+
+.dragon-awakening-result b {
+  display: block;
+  margin-top: 6px;
+  color: #fff1a9;
+}
+
+.dragon-evolution-result > button {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 14px;
+  border: 1px solid #ffe9a2;
+  border-radius: 999px;
+  color: #17244e;
+  background: linear-gradient(#fff1a9, #efaa3d);
+  font-weight: 950;
+}
+
+@keyframes dragonEvolutionResultIn {
+  from { opacity: 0; transform: translateY(22px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes dragonEvolutionGlitchIn {
+  0% { opacity: 0; transform: scale(0.92); filter: hue-rotate(0deg); }
+  35% { opacity: 1; transform: translateX(-5px) scale(1.03); filter: hue-rotate(95deg); }
+  55% { transform: translateX(5px) scale(0.99); filter: hue-rotate(-55deg); }
+  100% { transform: translateX(0) scale(1); filter: none; }
+}
+
+@keyframes dragonEvolutionReveal {
+  from { opacity: 0; transform: scale(0.65); filter: brightness(2.2); }
+  to { opacity: 1; transform: scale(1); filter: brightness(1); }
+}
+
+.dragon-devour-backdrop {
+  position: absolute;
+  z-index: 195;
+  inset: 0;
+  display: grid;
+  place-items: start center;
+  padding: 72px 16px 118px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  background: rgba(4, 9, 25, 0.8);
+  backdrop-filter: blur(7px);
+  scrollbar-width: none;
+}
+
+.dragon-devour-backdrop::-webkit-scrollbar {
+  display: none;
+}
+
+.dragon-devour-modal {
+  width: min(100%, 380px);
+  padding: 14px;
+  border: 2px solid rgba(213, 157, 255, 0.92);
+  border-radius: 18px;
+  box-sizing: border-box;
+  color: #fff;
+  background: rgba(16, 22, 59, 0.97);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.5), inset 0 0 28px rgba(175, 78, 255, 0.1);
+}
+
+.dragon-devour-modal > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dragon-devour-modal h2,
+.dragon-devour-modal h3 {
+  margin: 0;
+}
+
+.dragon-devour-modal > header small {
+  color: #d9c5ff;
+  font-weight: 900;
+}
+
+.dragon-devour-modal > header > button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #efd5ff;
+  border-radius: 50%;
+  color: #fff;
+  background: #4c347d;
+  font-weight: 900;
+}
+
+.dragon-devour-receiver {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid rgba(224, 187, 255, 0.35);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.dragon-devour-receiver img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+}
+
+.dragon-devour-receiver div {
+  display: grid;
+  gap: 3px;
+}
+
+.dragon-devour-receiver b {
+  color: #ffe9a8;
+}
+
+.dragon-devour-receiver span {
+  color: #d9c5ff;
+  font-size: 0.72rem;
+}
+
+.dragon-devour-section {
+  margin-top: 10px;
+}
+
+.dragon-devour-section h3 {
+  margin-bottom: 6px;
+  color: #ead8ff;
+  font-size: 0.78rem;
+}
+
+.dragon-devour-donors,
+.dragon-devour-skills {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.dragon-devour-donors button,
+.dragon-devour-skills button {
+  min-width: 0;
+  padding: 7px;
+  border: 1px solid rgba(224, 187, 255, 0.35);
+  border-radius: 10px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.055);
+  text-align: left;
+}
+
+.dragon-devour-donors button {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  align-items: center;
+  gap: 2px 7px;
+}
+
+.dragon-devour-donors button.is-selected,
+.dragon-devour-skills button.is-selected {
+  border-color: #ffd976;
+  box-shadow: inset 0 0 0 1px #ffd976, 0 0 14px rgba(255, 211, 94, 0.25);
+}
+
+.dragon-devour-donors button.is-protected {
+  opacity: 0.48;
+}
+
+.dragon-devour-donors img {
+  grid-row: 1 / span 2;
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.dragon-devour-donors span,
+.dragon-devour-skills b {
+  overflow: hidden;
+  color: #fff0b0;
+  font-size: 0.7rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dragon-devour-donors small,
+.dragon-devour-skills small {
+  color: #c9dcff;
+  font-size: 0.58rem;
+}
+
+.dragon-devour-warning {
+  margin-top: 12px;
+  padding: 9px;
+  border: 1px solid rgba(255, 145, 135, 0.5);
+  border-radius: 10px;
+  color: #ffd8d2;
+  background: rgba(115, 30, 43, 0.32);
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.dragon-devour-confirm {
+  position: relative;
+  width: 100%;
+  min-height: 46px;
+  margin-top: 10px;
+  overflow: hidden;
+  border: 1px solid #f0cdff;
+  border-radius: 999px;
+  color: #fff;
+  background: #433070;
+  font-weight: 950;
+}
+
+.dragon-devour-confirm:disabled {
+  opacity: 0.45;
+}
+
+.dragon-devour-confirm span {
+  position: relative;
+  z-index: 2;
+}
+
+.dragon-devour-confirm i {
+  position: absolute;
+  z-index: 1;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: linear-gradient(90deg, #712f9e, #d34b75);
+}
+
+.dragon-devour-confirm.is-holding i {
+  width: 100%;
+  transition: width 1s linear;
+}
+
 .dragon-angry-bubble {
   position: absolute;
   left: 50%;

@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "baseChanceByRarity": {
+    "C": 8,
+    "B": 6,
+    "A": 4,
+    "S": 3,
+    "SS": 2,
+    "SSS": 1
+  },
+  "stageMultiplier": {
+    "youth": 0.75,
+    "adult": 1,
+    "evolved": 1.35
+  },
+  "resonanceGainPerFailure": 0.5,
+  "resonanceCap": 5,
+  "resultWeights": {
+    "sameRarityVariant": 75,
+    "elementShift": 45,
+    "rarityUpgrade": 23,
+    "skillMutation": 35,
+    "ancientMutation": 2
+  },
+  "devour": {
+    "inheritedSlots": {
+      "SS": 1,
+      "SSS": 2
+    },
+    "templateIds": [
+      "legacy_dark_ss_evolution",
+      "legacy_dark_sss_evolution"
+    ],
+    "successRate": 100,
+    "holdToConfirmMs": 1000
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "version": 2,
+  "skills": [
+    {
+      "id": "skill-flame-burst",
+      "name": "烈焰爆發",
+      "element": "fire",
+      "type": "active",
+      "rarity": "S",
+      "power": 180,
+      "cooldown": 4,
+      "transferable": true,
+      "unique": false,
+      "ultimate": false,
+      "maxLevel": 5
+    },
+    {
+      "id": "skill-sky-dash",
+      "name": "天際突襲",
+      "element": "fire",
+      "type": "active",
+      "rarity": "A",
+      "power": 145,
+      "cooldown": 3,
+      "transferable": true,
+      "unique": false,
+      "ultimate": false,
+      "maxLevel": 5
+    },
+    {
+      "id": "skill-ember-guard",
+      "name": "餘燼守護",
+      "element": "fire",
+      "type": "passive",
+      "rarity": "A",
+      "power": 0,
+      "cooldown": 0,
+      "transferable": true,
+      "unique": false,
+      "ultimate": false,
+      "maxLevel": 5
+    },
+    {
+      "id": "skill-heartflame",
+      "name": "心火共鳴",
+      "element": "fire",
+      "type": "passive",
+      "rarity": "S",
+      "power": 0,
+      "cooldown": 0,
+      "transferable": true,
+      "unique": false,
+      "ultimate": false,
+      "maxLevel": 5
+    },
+    {
+      "id": "skill-veteran-roar",
+      "name": "歷戰咆哮",
+      "element": "neutral",
+      "type": "active",
+      "rarity": "A",
+      "power": 155,
+      "cooldown": 4,
+      "transferable": true,
+      "unique": false,
+      "ultimate": false,
+      "maxLevel": 5
+    },
+    {
+      "id": "skill-balanced-instinct",
+      "name": "均衡本能",
+      "element": "neutral",
+      "type": "passive",
+      "rarity": "B",
+      "power": 0,
+      "cooldown": 0,
+      "transferable": true,
+      "unique": false,
+      "ultimate": false,
+      "maxLevel": 5
+    },
+    {
+      "id": "skill-ancient-ember",
+      "name": "遠古餘火",
+      "element": "fire",
+      "type": "passive",
+      "rarity": "SS",
+      "power": 0,
+      "cooldown": 0,
+      "transferable": false,
+      "unique": true,
+      "ultimate": false,
+      "maxLevel": 1
+    },
+    {
+      "id": "skill-dragon-ultimate",
+      "name": "真龍終焉",
+      "element": "fire",
+      "type": "active",
+      "rarity": "SSS",
+      "power": 420,
+      "cooldown": 8,
+      "transferable": false,
+      "unique": true,
+      "ultimate": true,
+      "maxLevel": 1
+    },
+    {
+      "id": "skill-devour",
+      "name": "吞噬",
+      "element": "dark",
+      "type": "trait",
+      "rarity": "SS",
+      "power": 0,
+      "cooldown": 0,
+      "transferable": false,
+      "unique": true,
+      "ultimate": false,
+      "maxLevel": 1
+    }
+  ],
+  "finalAwakeningPools": {
+    "byCareGrade": {
+      "D": [
+        {
+          "skillId": "skill-balanced-instinct",
+          "weight": 100
+        }
+      ],
+      "C": [
+        {
+          "skillId": "skill-balanced-instinct",
+          "weight": 75
+        },
+        {
+          "skillId": "skill-ember-guard",
+          "weight": 25
+        }
+      ],
+      "B": [
+        {
+          "skillId": "skill-ember-guard",
+          "weight": 55
+        },
+        {
+          "skillId": "skill-sky-dash",
+          "weight": 45
+        }
+      ],
+      "A": [
+        {
+          "skillId": "skill-sky-dash",
+          "weight": 35
+        },
+        {
+          "skillId": "skill-veteran-roar",
+          "weight": 35
+        },
+        {
+          "skillId": "skill-heartflame",
+          "weight": 30
+        }
+      ],
+      "S": [
+        {
+          "skillId": "skill-heartflame",
+          "weight": 55
+        },
+        {
+          "skillId": "skill-flame-burst",
+          "weight": 45
+        }
+      ]
+    },
+    "byElement": {
+      "fire": [
+        {
+          "skillId": "skill-flame-burst",
+          "weight": 20
+        },
+        {
+          "skillId": "skill-heartflame",
+          "weight": 20
+        }
+      ],
+      "water": [],
+      "wood": [],
+      "light": [],
+      "dark": []
+    }
+  }
+}
